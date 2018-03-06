@@ -22,7 +22,7 @@
     1.将代码下载至本地workspace
     2.配置Pom.xml文件，接通你的Maven库
     3.配置jdbc.properties文件，保证工程可以连接到你的数据库
-    4.配置constant.properties文件中的file.output.path属性，生成的文件将保存在该路径下
+    4.配置constant.properties文件，生成的文件将保存在该路径下
     5.发布至Tomcat，并启动工程
     6.打开浏览器输入url：
         http://ip:port/FlashMaker/domainobject/generate/数据库中的表名/本地包名.do
