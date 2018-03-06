@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suych.fm.web.mapper.impl.ExampleMapper">
+
+	<resultMap id="exampleModel" type="ExampleModel">
+		<result property="example1" column="example1" javaType="java.lang.String"></result>
+		<result property="example2" column="example2" javaType="java.lang.Integer"></result>
+		<result property="example3" column="example3" javaType="java.util.Date"></result>
+		<result property="example4" column="example4" javaType="java.lang.String"></result>
+	</resultMap>
+
+	<select id="getExampleByIds" resultMap="exampleModel">
+		select example1, example2, example3, example4 from
+		exampleforspringmybatis
+		where example1 in (
+		<foreach collection="list" item="id" separator=",">
+			#{id}
+		</foreach>
+		)
+	</select>
+
+	<insert id="batchInsertExample" parameterType="java.util.List">
+		insert all
+		<foreach collection="examples" item="example" separator="">
+			into
+			exampleforspringmybatis (example1,example2,example3,example4)
+			values
+			(#{example.example1},#{example.example2},#{example.example3},#{example.example4})
+		</foreach>
+		SELECT 1 FROM DUAL
+	</insert>
+
+	<delete id="batchDeleteExample">
+		delete from exampleforspringmybatis where example1 in (
+		<foreach collection="ids" item="id" separator=",">
+			#{id}
+		</foreach>
+		)
+	</delete>
+
+</mapper> 

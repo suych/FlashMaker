@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper   
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.suych.fm.web.mapper.impl.TableInfoMapper">
+
+	<resultMap id="tableInfoDO" type="TableInfoDO"/>
+	<resultMap id="fieldInfoDO" type="FieldInfoDO"/>
+	
+	<select id="getTableInfo" resultMap="tableInfoDO">
+		SELECT 
+			t.table_name, t.table_type, t.comments
+		FROM 
+			user_tab_comments t
+		WHERE 
+			t.table_name = #{tableName}
+	</select>
+
+	<select id="listFieldInfo" resultMap="fieldInfoDO">
+		SELECT 
+			b.column_name, b.data_type, a.comments 
+		FROM 
+			user_col_comments a, all_tab_columns b 
+		WHERE 
+			a.table_name = b.table_name 
+		AND 
+			a.column_name = b.column_name 
+		AND 
+			a.table_name = #{tableName}
+	</select>
+	
+</mapper> 
