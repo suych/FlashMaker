@@ -18,7 +18,7 @@
 
 	<select id="listFieldInfo" resultMap="fieldInfoDO">
 		SELECT 
-			b.column_name, b.data_type, a.comments 
+			b.column_name, b.data_type, b.data_length, b.data_precision, a.comments 
 		FROM 
 			user_col_comments a, all_tab_columns b 
 		WHERE 

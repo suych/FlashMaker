@@ -10,8 +10,17 @@ public class ConstantJavaSyntax {
 	public final static String PUBLIC = "public";
 	public final static String PRIVATE = "private";
 
-	public final static String STRING = "String";
 	public final static String VOID = "void";
+	public final static String STRING = "String";
+	public final static String TIMESTAMP = "Timestamp";
+	public final static String OBJECT = "Object";
+	public final static String BIGDECIMAL = "BigDecimal";
+	public final static String BOOLEAN = "Boolean";
+	public final static String BYTE = "Byte";
+	public final static String SHORT = "Short";
+	public final static String INTEGER = "Integer";
+	public final static String LONG = "Long";
+	public final static String FLOAT = "Float";
 
 	public final static String ANNOTATIONS_OVERRIDE = "@Override";
 

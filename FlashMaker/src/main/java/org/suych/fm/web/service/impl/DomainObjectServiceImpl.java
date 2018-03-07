@@ -2,14 +2,21 @@ package org.suych.fm.web.service.impl;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_OVERRIDE;
 import static org.suych.fm.constant.ConstantJavaSyntax.ASTERISK;
+import static org.suych.fm.constant.ConstantJavaSyntax.BIGDECIMAL;
+import static org.suych.fm.constant.ConstantJavaSyntax.BOOLEAN;
+import static org.suych.fm.constant.ConstantJavaSyntax.BYTE;
 import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
 import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
+import static org.suych.fm.constant.ConstantJavaSyntax.FLOAT;
 import static org.suych.fm.constant.ConstantJavaSyntax.IMPORT;
+import static org.suych.fm.constant.ConstantJavaSyntax.INTEGER;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_SQUARE_BRACKET;
+import static org.suych.fm.constant.ConstantJavaSyntax.LONG;
+import static org.suych.fm.constant.ConstantJavaSyntax.OBJECT;
 import static org.suych.fm.constant.ConstantJavaSyntax.PACKAGE;
 import static org.suych.fm.constant.ConstantJavaSyntax.PLUS_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
@@ -21,11 +28,13 @@ import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_SQUARE_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
+import static org.suych.fm.constant.ConstantJavaSyntax.SHORT;
 import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.STRING;
 import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 import static org.suych.fm.constant.ConstantJavaSyntax.THIS;
+import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.io.File;
@@ -35,12 +44,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.suych.fm.constant.ConfigureContainer;
 import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantMethod;
+import org.suych.fm.constant.ConstantOracleType;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.utils.StringUtil;
 import org.suych.fm.web.mapper.impl.TableInfoMapper;
@@ -125,19 +137,64 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 			FieldInfoBO r = new FieldInfoBO();
 			r.setColumnName(StringUtil.null2Empty(t.getColumn_name()).toLowerCase());
 			r.setComments(StringUtil.null2Empty(t.getComments()));
-			String data_type = t.getData_type().toUpperCase();
-			// TODO 增加oracle和java类型对应，将字符提出常量类
-			if ("VARCHAR2".equals(data_type) || "CHAR".equals(data_type)) {
-				String javaType = "String";
-				r.setJavaType(javaType);
-				importPackage.add(javaType);
-			} else if ("DATE".equals(data_type)) {
-				String javaType = "Date";
-				r.setJavaType(javaType);
-				importPackage.add(javaType);
-			}
+			String data_type = parseDataType(t.getData_type());
+			String data_precision = StringUtil.null2Empty(t.getData_precision());
+			String javaType = parseJavaType(data_type, data_precision);
+			r.setJavaType(javaType);
+			importPackage.add(javaType);
 			fieldInfoBOs.add(r);
 		}
+	}
+
+	private String parseDataType(String data_type) {
+		data_type = data_type.toUpperCase();
+		Pattern pattern_type = Pattern.compile(".*?(?=\\()");
+		Matcher matcher_type = pattern_type.matcher(data_type);
+		return matcher_type.find() ? matcher_type.group(0) : data_type;
+	}
+
+	private String parseJavaType(String data_type, String data_precision) {
+		if (ConstantOracleType.VARCHAR2.equals(data_type) || ConstantOracleType.CHAR.equals(data_type)
+				|| ConstantOracleType.NVARCHAR2.equals(data_type) || ConstantOracleType.CLOB.equals(data_type)) {
+			return STRING;
+		}
+		if (ConstantOracleType.DATE.equals(data_type) || ConstantOracleType.TIMESTAMP.equals(data_type)) {
+			return TIMESTAMP;
+		}
+		if (ConstantOracleType.BLOB.equals(data_type)) {
+			return OBJECT;
+		}
+		if (ConstantOracleType.INTEGER.equals(data_type)) {
+			return INTEGER;
+		}
+		if (ConstantOracleType.LONG.equals(data_type)) {
+			return LONG;
+		}
+		if (ConstantOracleType.FLOAT.equals(data_type)) {
+			return FLOAT;
+		}
+
+		if (ConstantOracleType.NUMBER.equals(data_type)) {
+			if ("".equals(data_precision)) {
+				return BIGDECIMAL;
+			} else {
+				int i = Integer.valueOf(data_precision);
+				if (i == 1) {
+					return BOOLEAN;
+				} else if (i == 2) {
+					return BYTE;
+				} else if (3 <= i && i <= 4) {
+					return SHORT;
+				} else if (5 <= i && i <= 9) {
+					return INTEGER;
+				} else if (10 <= i && i <= 18) {
+					return LONG;
+				} else if (19 <= i && i <= 38) {
+					return BIGDECIMAL;
+				}
+			}
+		}
+		return "UnknowType"; // 其他类型暂未UnknowType，方便后续扩展
 	}
 
 	private String assembleClassName(String tableName) {
@@ -186,9 +243,10 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 
 	private void printImportPackage(FileWriter fw, Set<String> importPackage) throws IOException {
 		for (String ip : importPackage) {
-			// TODO 添加其他类型
-			if ("Date".equals(ip)) {
-				fw.write(IMPORT + SPACE + ConstantImportPackage.DATE + SEMICOLON + RETURN_NEWLINE);
+			if (TIMESTAMP.equals(ip)) {
+				fw.write(IMPORT + SPACE + ConstantImportPackage.TIMESTAMP + SEMICOLON + RETURN_NEWLINE);
+			} else if (BIGDECIMAL.equals(ip)) {
+				fw.write(IMPORT + SPACE + ConstantImportPackage.BIGDECIMAL + SEMICOLON + RETURN_NEWLINE);
 			}
 		}
 	}
@@ -215,8 +273,8 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 				fw.write(TAB + SLASH + ASTERISK + ASTERISK + RETURN_NEWLINE);
 				fw.write(TAB + SPACE + ASTERISK + SPACE + comments + RETURN_NEWLINE);
 				fw.write(TAB + SPACE + ASTERISK + SLASH + RETURN_NEWLINE);
-				fw.write(TAB + PRIVATE + SPACE + javaType + SPACE + columnName + SEMICOLON + RETURN_NEWLINE);
 			}
+			fw.write(TAB + PRIVATE + SPACE + javaType + SPACE + columnName + SEMICOLON + RETURN_NEWLINE);
 		}
 	}
 
