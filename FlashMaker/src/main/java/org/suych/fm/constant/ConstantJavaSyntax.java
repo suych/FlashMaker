@@ -10,6 +10,7 @@ public class ConstantJavaSyntax {
 	public final static String PUBLIC = "public";
 	public final static String PRIVATE = "private";
 
+	// java类型
 	public final static String VOID = "void";
 	public final static String STRING = "String";
 	public final static String TIMESTAMP = "Timestamp";
@@ -21,9 +22,12 @@ public class ConstantJavaSyntax {
 	public final static String INTEGER = "Integer";
 	public final static String LONG = "Long";
 	public final static String FLOAT = "Float";
+	public final static String BYTE_ARRAY = "Byte[]";
 
+	// 注解
 	public final static String ANNOTATIONS_OVERRIDE = "@Override";
 
+	// 符号
 	public final static String POINT = ".";
 	public final static String COMMA = ",";
 	public final static String LEFT_BRACE = "{";

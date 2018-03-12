@@ -5,6 +5,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.ASTERISK;
 import static org.suych.fm.constant.ConstantJavaSyntax.BIGDECIMAL;
 import static org.suych.fm.constant.ConstantJavaSyntax.BOOLEAN;
 import static org.suych.fm.constant.ConstantJavaSyntax.BYTE;
+import static org.suych.fm.constant.ConstantJavaSyntax.BYTE_ARRAY;
 import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
 import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
@@ -16,7 +17,6 @@ import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_SQUARE_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LONG;
-import static org.suych.fm.constant.ConstantJavaSyntax.OBJECT;
 import static org.suych.fm.constant.ConstantJavaSyntax.PACKAGE;
 import static org.suych.fm.constant.ConstantJavaSyntax.PLUS_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
@@ -162,7 +162,7 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 			return TIMESTAMP;
 		}
 		if (ConstantOracleType.BLOB.equals(data_type)) {
-			return OBJECT;
+			return BYTE_ARRAY;
 		}
 		if (ConstantOracleType.INTEGER.equals(data_type)) {
 			return INTEGER;
