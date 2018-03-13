@@ -72,7 +72,13 @@
 			<artifactId>mybatis</artifactId>
 			<version>3.4.1</version>
 		</dependency>
-
+		
+		<!-- pagehelper分页助手 -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>5.0.1</version>
+		</dependency>
 
 		<!--spring-mybatis整合包 -->
 		<dependency>

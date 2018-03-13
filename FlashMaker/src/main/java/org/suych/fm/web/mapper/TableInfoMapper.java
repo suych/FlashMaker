@@ -1,4 +1,4 @@
-package org.suych.fm.web.mapper.impl;
+package org.suych.fm.web.mapper;
 
 import java.util.List;
 

@@ -55,7 +55,7 @@ import org.suych.fm.constant.ConstantMethod;
 import org.suych.fm.constant.ConstantOracleType;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.utils.StringUtil;
-import org.suych.fm.web.mapper.impl.TableInfoMapper;
+import org.suych.fm.web.mapper.TableInfoMapper;
 import org.suych.fm.web.model.bo.FieldInfoBO;
 import org.suych.fm.web.model.domain.FieldInfoDO;
 import org.suych.fm.web.model.domain.TableInfoDO;
