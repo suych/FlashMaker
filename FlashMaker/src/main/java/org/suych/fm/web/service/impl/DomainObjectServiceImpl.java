@@ -1,35 +1,25 @@
 package org.suych.fm.web.service.impl;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_OVERRIDE;
-import static org.suych.fm.constant.ConstantJavaSyntax.ASTERISK;
 import static org.suych.fm.constant.ConstantJavaSyntax.BIGDECIMAL;
 import static org.suych.fm.constant.ConstantJavaSyntax.BOOLEAN;
 import static org.suych.fm.constant.ConstantJavaSyntax.BYTE;
 import static org.suych.fm.constant.ConstantJavaSyntax.BYTE_ARRAY;
-import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
 import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.FLOAT;
-import static org.suych.fm.constant.ConstantJavaSyntax.IMPORT;
 import static org.suych.fm.constant.ConstantJavaSyntax.INTEGER;
-import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACE;
-import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_SQUARE_BRACKET;
+import static org.suych.fm.constant.ConstantJavaSyntax.LIST;
 import static org.suych.fm.constant.ConstantJavaSyntax.LONG;
-import static org.suych.fm.constant.ConstantJavaSyntax.PACKAGE;
 import static org.suych.fm.constant.ConstantJavaSyntax.PLUS_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
-import static org.suych.fm.constant.ConstantJavaSyntax.PRIVATE;
-import static org.suych.fm.constant.ConstantJavaSyntax.PUBLIC;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN_NEWLINE;
-import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACE;
-import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_SQUARE_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
 import static org.suych.fm.constant.ConstantJavaSyntax.SHORT;
-import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.STRING;
 import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
@@ -37,29 +27,34 @@ import static org.suych.fm.constant.ConstantJavaSyntax.THIS;
 import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.suych.fm.constant.ConfigureContainer;
+import org.suych.fm.constant.ConstantClassAccessModifier;
+import org.suych.fm.constant.ConstantClassNonAccessModifier;
+import org.suych.fm.constant.ConstantFieldAccessModifier;
 import org.suych.fm.constant.ConstantImportPackage;
-import org.suych.fm.constant.ConstantMethod;
+import org.suych.fm.constant.ConstantMethodAccessModifier;
+import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantOracleType;
 import org.suych.fm.constant.ConstantSuffix;
-import org.suych.fm.utils.StringUtil;
+import org.suych.fm.tool.CommonTool;
+import org.suych.fm.util.StringUtil;
+import org.suych.fm.util.generate.GenerateClassUtil;
+import org.suych.fm.util.generate.model.ClassStructure;
+import org.suych.fm.util.generate.model.FieldStructure;
+import org.suych.fm.util.generate.model.MethodStructure;
 import org.suych.fm.web.mapper.TableInfoMapper;
-import org.suych.fm.web.model.bo.FieldInfoBO;
 import org.suych.fm.web.model.domain.FieldInfoDO;
 import org.suych.fm.web.model.domain.TableInfoDO;
-import org.suych.fm.web.model.dto.DomainObjectDTO;
 import org.suych.fm.web.model.dto.ResultDoubleDTO;
 import org.suych.fm.web.service.IDomainObjectService;
 
@@ -70,80 +65,126 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 	TableInfoMapper tableInfoMapper;
 
 	@Override
-	public ResultDoubleDTO<Set<String>, List<FieldInfoBO>> getImportPackageAndlistTableInfo(String tableName) {
-		Set<String> importPackage = new HashSet<String>(); // 引用的包名
-		List<FieldInfoBO> fieldInfoBOs = new ArrayList<FieldInfoBO>(); // 字段类型/字段名/字段注释
-		List<FieldInfoDO> fieldInfoDOs = tableInfoMapper.listFieldInfo(tableName.toUpperCase());
-		assembleImportPackageAndFieldInfo(importPackage, fieldInfoBOs, fieldInfoDOs);
-		return new ResultDoubleDTO<Set<String>, List<FieldInfoBO>>(importPackage, fieldInfoBOs);
+	public ClassStructure generate(String tableName, String localPackage) {
+		// 1.获得引入包名和字段结构(查询数据库)
+		ResultDoubleDTO<Set<String>, List<FieldStructure>> importPackageAndFieldStructure = getImportPackageAndFieldStructure(
+				tableName);
+		// 2.获得表信息(查询数据库)
+		TableInfoDO tableInfo = getTableInfo(tableName);
+		// 3.组装方法结构
+		List<MethodStructure> method = assembleMethodStructure(tableName, importPackageAndFieldStructure.second);
+		// 4.组装DO类结构
+		ClassStructure doClassStructure = assembleDOClassStructure(localPackage, importPackageAndFieldStructure.first,
+				tableInfo, tableName, importPackageAndFieldStructure.second, method);
+		// 5.按规范输出至文件
+		GenerateClassUtil.generate(doClassStructure);
+		return doClassStructure;
 	}
 
-	@Override
-	public TableInfoDO getTableInfo(String tableName) {
-		return tableInfoMapper.getTableInfo(tableName.toUpperCase());
+	/**
+	 * 获得引入包名和字段结构(查询数据库)
+	 * 
+	 * @param tableName 数据库表名
+	 * @return
+	 */
+	private ResultDoubleDTO<Set<String>, List<FieldStructure>> getImportPackageAndFieldStructure(String tableName) {
+		List<FieldInfoDO> fieldInfoDO = tableInfoMapper.listFieldInfo(tableName.toUpperCase());
+		return parseImportPackageAndFieldStructure(fieldInfoDO);
 	}
 
-	@Override
-	public DomainObjectDTO assembleDO(String localPackage, Set<String> importPackage, TableInfoDO tableInfo,
-			String tableName, List<FieldInfoBO> fieldInfo) {
-		DomainObjectDTO result = new DomainObjectDTO();
-		result.setLocalPackage(StringUtil.null2Empty(localPackage));
-		result.setImportPackage(importPackage);
-		if (tableInfo != null) {
-			result.setClassComments(StringUtil.null2Empty(tableInfo.getComments()));
-		} else {
-			result.setClassComments("");
+	private List<MethodStructure> assembleMethodStructure(String tableName, List<FieldStructure> field) {
+		List<MethodStructure> result = new ArrayList<MethodStructure>();
+		// toString()方法
+		MethodStructure toString = assembleToStringMethod(tableName, field);
+		result.add(toString);
+		// get/set方法
+		for (FieldStructure t : field) {
+			String fieldName = t.getName();
+			String javaType = t.getJavaType();
+			String fieldNameFirstChar = fieldName.substring(0, 1).toUpperCase(); // 字段首字母大写
+			String fieldNameOtherChar = fieldName.substring(1);
+			String getMethodName = ConstantMethodName.GET + fieldNameFirstChar + fieldNameOtherChar;
+			String setMethodName = ConstantMethodName.SET + fieldNameFirstChar + fieldNameOtherChar;
+
+			MethodStructure get = assembleGetMethod(fieldName, javaType, getMethodName);
+			result.add(get);
+
+			MethodStructure set = assembleSetMethod(fieldName, javaType, setMethodName);
+			result.add(set);
 		}
-		String className = assembleClassName(tableName);
-		result.setClassName(className);
-		result.setFieldInfo(fieldInfo);
 		return result;
 	}
 
-	@Override
-	public void generateJavaFile(DomainObjectDTO doDTO) {
-		FileWriter fw = null;
-		try {
-			String pathName = ConfigureContainer.constantMap.get("file.output.path") + doDTO.getClassName()
-					+ ConstantSuffix.JAVA_FILE;
-			File file = new File(pathName);
-			if (!file.exists()) {
-				File parentFile = file.getParentFile();
-				if (!parentFile.exists()) {
-					parentFile.mkdirs();
-				}
-				file.createNewFile();
-			}
-			fw = new FileWriter(file);
-			// 输出至文件
-			print2File(doDTO, fw);
-			fw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+	/**
+	 * 获得表信息(查询数据库)
+	 * 
+	 * @param tableName
+	 * @return
+	 */
+	private TableInfoDO getTableInfo(String tableName) {
+		return tableInfoMapper.getTableInfo(tableName.toUpperCase());
 	}
 
-	private void assembleImportPackageAndFieldInfo(Set<String> importPackage, List<FieldInfoBO> fieldInfoBOs,
-			List<FieldInfoDO> fieldInfoDOs) {
-		for (FieldInfoDO t : fieldInfoDOs) {
-			FieldInfoBO r = new FieldInfoBO();
-			r.setColumnName(StringUtil.null2Empty(t.getColumn_name()).toLowerCase());
-			r.setComments(StringUtil.null2Empty(t.getComments()));
-			String data_type = parseDataType(t.getData_type());
-			String data_precision = StringUtil.null2Empty(t.getData_precision());
-			String javaType = parseJavaType(data_type, data_precision);
-			r.setJavaType(javaType);
-			importPackage.add(javaType);
-			fieldInfoBOs.add(r);
+	/**
+	 * 组装DO类结构
+	 * 
+	 * @param localPackage 本地包名
+	 * @param importPackage 引入包名
+	 * @param tableName 表名
+	 * @param field 字段结构
+	 * @param method 方法结构
+	 * @return
+	 */
+	private ClassStructure assembleDOClassStructure(String localPackage, Set<String> importPackage,
+			TableInfoDO tableInfo, String tableName, List<FieldStructure> field, List<MethodStructure> method) {
+		ClassStructure result = new ClassStructure();
+		String comments = "";
+		if (tableInfo != null) {
+			comments = StringUtil.null2Empty(tableInfo.getComments());
 		}
+		String className = CommonTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.CLASS_DOMAIN_OBJECT);
+
+		// 组装类结构
+		result.setLocalPackage(localPackage);
+		result.setImportPackage(importPackage);
+		result.setComments(comments);
+		result.setAcessModifier(ConstantClassAccessModifier.PUBLIC);
+		result.setNonAccessModifier(ConstantClassNonAccessModifier.DEFAULT);
+		result.setName(className);
+		result.setField(field);
+		result.setMethod(method);
+
+		return result;
+	}
+
+	private ResultDoubleDTO<Set<String>, List<FieldStructure>> parseImportPackageAndFieldStructure(
+			List<FieldInfoDO> fieldInfoDOs) {
+		Set<String> importPackage = new HashSet<String>(); // 引用的包名
+		List<FieldStructure> fieldStructure = new ArrayList<FieldStructure>(); // 字段类型/字段名/字段注释
+		for (FieldInfoDO fieldDO : fieldInfoDOs) {
+			FieldStructure fs = new FieldStructure();
+			String data_type = parseDataType(fieldDO.getData_type());
+			String data_precision = StringUtil.null2Empty(fieldDO.getData_precision());
+			String javaType = parseJavaType(data_type, data_precision);
+
+			// 组装字段结构
+			fs.setComments(StringUtil.null2Empty(fieldDO.getComments()));
+			fs.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
+			fs.setJavaType(javaType);
+			fs.setName(StringUtil.null2Empty(fieldDO.getColumn_name()).toLowerCase());
+			fieldStructure.add(fs);
+
+			// 组装引入包名
+			if (TIMESTAMP.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.TIMESTAMP);
+			} else if (BIGDECIMAL.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.BIGDECIMAL);
+			} else if (LIST.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.LIST);
+			}
+
+		}
+		return new ResultDoubleDTO<Set<String>, List<FieldStructure>>(importPackage, fieldStructure);
 	}
 
 	private String parseDataType(String data_type) {
@@ -197,127 +238,54 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 		return "UnknowType"; // 其他类型暂未UnknowType，方便后续扩展
 	}
 
-	private String assembleClassName(String tableName) {
-		String result = "";
-		if (tableName.length() > 1) {
-			String classNameFirstChar = tableName.substring(0, 1).toUpperCase(); // 类名首字母大写
-			String classNameOtherChar = tableName.substring(1);
-			result = classNameFirstChar + classNameOtherChar;
-		} else {
-			result = tableName.toUpperCase();
+	private MethodStructure assembleToStringMethod(String tableName, List<FieldStructure> field) {
+		MethodStructure result = new MethodStructure();
+		List<String> annotation = new ArrayList<String>();
+		annotation.add(ANNOTATIONS_OVERRIDE);
+		StringBuilder methodBody = new StringBuilder();
+		String className = CommonTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.CLASS_DOMAIN_OBJECT);
+		methodBody.append(TAB + TAB + RETURN + SPACE + DOUBLE_QUOTATION + className + SPACE + LEFT_SQUARE_BRACKET);
+		for (int i = 0, j = field.size(); i < j; i++) {
+			String fieldName = field.get(i).getName();
+			if (i != j - 1) {
+				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + fieldName
+						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + COMMA + SPACE);
+			} else {
+				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + fieldName
+						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + RIGHT_SQUARE_BRACKET + DOUBLE_QUOTATION
+						+ SEMICOLON + RETURN_NEWLINE);
+			}
 		}
-		result += ConstantSuffix.DOMAIN_OBJECT_CLASS_NAME;
+		result.setAnnotation(annotation);
+		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
+		result.setReturnValue(STRING);
+		result.setName(ConstantMethodName.TO_STRING);
+		result.setMethodBody(methodBody.toString());
 		return result;
 	}
 
-	private void print2File(DomainObjectDTO doDTO, FileWriter fw) throws IOException {
-		String localPackage = doDTO.getLocalPackage();
-		Set<String> importPackage = doDTO.getImportPackage();
-		String classComments = doDTO.getClassComments();
-		String className = doDTO.getClassName();
-		List<FieldInfoBO> fieldInfo = doDTO.getFieldInfo();
-		// 1.本地包名
-		printLocalPackage(fw, localPackage);
-		fw.write(RETURN_NEWLINE);
-		// 2.引入包名
-		printImportPackage(fw, importPackage);
-		fw.write(RETURN_NEWLINE);
-		// 3.表注释
-		printClassComments(fw, classComments);
-		// 4.类名
-		printClassName(fw, className);
-		// 5.修饰符+字段类型+字段名称
-		printField(fw, fieldInfo);
-		fw.write(RETURN_NEWLINE);
-		// 6.toString()方法
-		printToString(fw, className, fieldInfo);
-		fw.write(RETURN_NEWLINE);
-		// 7.get/set方法
-		printGetSet(fw, fieldInfo);
-		fw.write(RIGHT_BRACE);
+	private MethodStructure assembleGetMethod(String fieldName, String javaType, String getMethodName) {
+		MethodStructure result = new MethodStructure();
+		String methodBody = TAB + TAB + RETURN + SPACE + fieldName + SEMICOLON + RETURN_NEWLINE;
+		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
+		result.setReturnValue(javaType);
+		result.setName(getMethodName);
+		result.setMethodBody(methodBody);
+		return result;
 	}
 
-	private void printLocalPackage(FileWriter fw, String localPackage) throws IOException {
-		fw.write(PACKAGE + SPACE + localPackage + SEMICOLON + RETURN_NEWLINE);
+	private MethodStructure assembleSetMethod(String fieldName, String javaType, String setMethodName) {
+		MethodStructure result = new MethodStructure();
+		Map<String, String> parameter = new HashMap<String, String>();
+		parameter.put(javaType, fieldName);
+		String methodBody = TAB + TAB + THIS + POINT + fieldName + SPACE + EQUAL_SIGN + SPACE + fieldName + SEMICOLON
+				+ RETURN_NEWLINE;
+		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
+		result.setReturnValue(VOID);
+		result.setName(setMethodName);
+		result.setParameter(parameter);
+		result.setMethodBody(methodBody);
+		return result;
 	}
 
-	private void printImportPackage(FileWriter fw, Set<String> importPackage) throws IOException {
-		for (String ip : importPackage) {
-			if (TIMESTAMP.equals(ip)) {
-				fw.write(IMPORT + SPACE + ConstantImportPackage.TIMESTAMP + SEMICOLON + RETURN_NEWLINE);
-			} else if (BIGDECIMAL.equals(ip)) {
-				fw.write(IMPORT + SPACE + ConstantImportPackage.BIGDECIMAL + SEMICOLON + RETURN_NEWLINE);
-			}
-		}
-	}
-
-	private void printClassComments(FileWriter fw, String classComments) throws IOException {
-		if (!"".equals(classComments)) {
-			fw.write(SLASH + ASTERISK + ASTERISK + RETURN_NEWLINE);
-			fw.write(SPACE + ASTERISK + SPACE + classComments + RETURN_NEWLINE);
-			fw.write(SPACE + ASTERISK + SLASH + RETURN_NEWLINE);
-		}
-	}
-
-	private void printClassName(FileWriter fw, String className) throws IOException {
-		fw.write(PUBLIC + SPACE + CLASS + SPACE + className + SPACE + LEFT_BRACE + RETURN_NEWLINE);
-	}
-
-	private void printField(FileWriter fw, List<FieldInfoBO> fieldInfo) throws IOException {
-		for (FieldInfoBO t : fieldInfo) {
-			fw.write(RETURN_NEWLINE);
-			String columnName = t.getColumnName();
-			String javaType = t.getJavaType();
-			String comments = t.getComments();
-			if (!"".equals(comments)) {
-				fw.write(TAB + SLASH + ASTERISK + ASTERISK + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SPACE + comments + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SLASH + RETURN_NEWLINE);
-			}
-			fw.write(TAB + PRIVATE + SPACE + javaType + SPACE + columnName + SEMICOLON + RETURN_NEWLINE);
-		}
-	}
-
-	private void printToString(FileWriter fw, String className, List<FieldInfoBO> fieldInfo) throws IOException {
-		fw.write(TAB + ANNOTATIONS_OVERRIDE + RETURN_NEWLINE);
-		fw.write(TAB + PUBLIC + SPACE + STRING + SPACE + ConstantMethod.TO_STRING + LEFT_BRACKET + RIGHT_BRACKET + SPACE
-				+ LEFT_BRACE + RETURN_NEWLINE);
-		fw.write(TAB + TAB + RETURN + SPACE + DOUBLE_QUOTATION + className + SPACE + LEFT_SQUARE_BRACKET);
-		for (int i = 0, j = fieldInfo.size(); i < j; i++) {
-			String columnName = fieldInfo.get(i).getColumnName();
-			if (i != j - 1) {
-				fw.write(columnName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + columnName + SPACE
-						+ PLUS_SIGN + SPACE + DOUBLE_QUOTATION + COMMA + SPACE);
-			} else {
-				fw.write(columnName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + columnName + SPACE
-						+ PLUS_SIGN + SPACE + DOUBLE_QUOTATION + RIGHT_SQUARE_BRACKET + DOUBLE_QUOTATION + SEMICOLON
-						+ RETURN_NEWLINE);
-			}
-		}
-		fw.write(TAB + RIGHT_BRACE + RETURN_NEWLINE);
-	}
-
-	private void printGetSet(FileWriter fw, List<FieldInfoBO> fieldInfo) throws IOException {
-		for (FieldInfoBO t : fieldInfo) {
-			String columnName = t.getColumnName();
-			String javaType = t.getJavaType();
-			String columnNameFirstChar = columnName.substring(0, 1).toUpperCase(); // 字段首字母大写
-			String columnNameOtherChar = columnName.substring(1);
-			String getMethod = ConstantMethod.GET + columnNameFirstChar + columnNameOtherChar;
-			String setMethod = ConstantMethod.SET + columnNameFirstChar + columnNameOtherChar;
-			// get方法
-			fw.write(TAB + PUBLIC + SPACE + javaType + SPACE + getMethod + LEFT_BRACKET + RIGHT_BRACKET + SPACE
-					+ LEFT_BRACE + RETURN_NEWLINE);
-			fw.write(TAB + TAB + RETURN + SPACE + columnName + SEMICOLON + RETURN_NEWLINE);
-			fw.write(TAB + RIGHT_BRACE + RETURN_NEWLINE);
-			fw.write(RETURN_NEWLINE);
-			// set方法
-			fw.write(TAB + PUBLIC + SPACE + VOID + SPACE + setMethod + LEFT_BRACKET + javaType + SPACE + columnName
-					+ RIGHT_BRACKET + SPACE + LEFT_BRACE + RETURN_NEWLINE);
-			fw.write(TAB + TAB + THIS + POINT + columnName + SPACE + EQUAL_SIGN + SPACE + columnName + SEMICOLON
-					+ RETURN_NEWLINE);
-			fw.write(TAB + RIGHT_BRACE + RETURN_NEWLINE);
-			fw.write(RETURN_NEWLINE);
-		}
-	}
 }

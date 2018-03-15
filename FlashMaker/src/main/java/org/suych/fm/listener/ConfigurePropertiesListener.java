@@ -9,7 +9,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.suych.fm.constant.ConfigureContainer;
-import org.suych.fm.utils.AnnotationUtils;
+import org.suych.fm.util.AnnotationUtils;
 
 public class ConfigurePropertiesListener implements ServletContextListener {
 

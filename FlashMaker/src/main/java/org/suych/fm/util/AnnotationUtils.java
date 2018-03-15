@@ -1,4 +1,4 @@
-package org.suych.fm.utils;
+package org.suych.fm.util;
 
 import java.io.File;
 import java.net.URISyntaxException;

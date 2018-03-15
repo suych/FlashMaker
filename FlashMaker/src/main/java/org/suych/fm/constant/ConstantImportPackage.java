@@ -5,4 +5,5 @@ public class ConstantImportPackage {
 	public final static String TIMESTAMP = "java.sql.Timestamp";
 	public final static String BIGDECIMAL = "java.math.BigDecimal";
 	public final static String DATE = "java.util.Date";
+	public final static String LIST = "java.util.List";
 }
