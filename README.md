@@ -7,16 +7,18 @@
 1.FlashMaker/闪电代码生成器
 --------
 这是我们的第一个小工具，用来快速生成和Oracle数据库表相关的领域建模代码。<br>
-采用Java来编写，使用Spring+Mybatis的经典MVC架构。<br>
+适用于Spring+MyBatis的开发架构体系，一键生成和数据库表相关的增删改查代码，是快速开发中小型项目的得力助手！<br>
+采用Java来编写，使用Spring+Mybatis架构。<br>
 
 可以自动生成的代码如下：<br>
 
     1.DO.java(数据库映射POJO文件)
     2.Mapper.java(MyBatis的接口文件)
+    3.Mapper.xml(MyBatis的sql配置文件)
     
 当前版本：<br>
 
-    0.0.2
+    0.0.3
 
 开发环境配置如下：<br>
 
@@ -39,7 +41,7 @@
         http://localhost:8080/FlashMaker/home/generate/dbm_data/org.suych.do
     其中，数据库中的表名就是你要生成领域建模的表名，本地包名对应生成Java文件的本地包名（可以为空，生成文件后你再自行填写即可）。
     7.生成完毕后，控制台会提示(-------mission completed-------)
-    8.在第4步中你配置的文件路径下查看生成的Java文件吧！
+    8.在第4步中你配置的文件路径下查看生成的文件吧！
 
 这个工具会越来越强大！<br>
 让我们拭目以待吧，祝你在这里玩的开心！<br>
