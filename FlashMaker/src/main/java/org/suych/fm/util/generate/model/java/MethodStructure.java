@@ -1,4 +1,4 @@
-package org.suych.fm.util.generate.model;
+package org.suych.fm.util.generate.model.java;
 
 import java.util.List;
 import java.util.Map;

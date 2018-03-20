@@ -5,15 +5,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.suych.fm.base.BaseInfo;
 import org.suych.fm.exception.TableNameEmptyException;
 import org.suych.fm.util.StringUtil;
-import org.suych.fm.util.generate.model.ClassStructure;
+import org.suych.fm.web.model.model.TableInfoModel;
 import org.suych.fm.web.service.IDomainObjectService;
 import org.suych.fm.web.service.IMapperService;
+import org.suych.fm.web.service.IMapperXmlService;
+import org.suych.fm.web.service.ITableInfoService;
 
 @RestController
 @RequestMapping(value = "/home")
 public class GenerateController {
+
+	@Autowired
+	private ITableInfoService tableInfoService;
 
 	@Autowired
 	private IDomainObjectService domainObjectService;
@@ -21,8 +27,8 @@ public class GenerateController {
 	@Autowired
 	private IMapperService mapperService;
 
-	// DO类结构，在生成其他类或文件时使用
-	private ClassStructure doClassStructure;
+	@Autowired
+	private IMapperXmlService mapperXmlService;
 
 	/**
 	 * 入口方法
@@ -38,11 +44,16 @@ public class GenerateController {
 			throw new TableNameEmptyException();
 		}
 		localPackage = StringUtil.null2Empty(localPackage);
-		// 1.生成DO.java
-		doClassStructure = domainObjectService.generate(tableName, localPackage);
-		// 2.生成Mapper.java
-		String doClassName = doClassStructure.getName();
-		mapperService.generate(tableName, localPackage, doClassName);
+		// 1.加载表信息
+		TableInfoModel tableInfo = tableInfoService.getTableInfo(tableName);
+		// 2.初始化基础信息
+		BaseInfo.init(localPackage, tableInfo);
+		// 3.生成DO.java
+		domainObjectService.generate();
+		// 4.生成Mapper.java
+		mapperService.generate();
+		// 5.生成Mapper.xml
+		mapperXmlService.generate();
 		System.out.println("-------mission completed-------");
 	}
 

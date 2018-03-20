@@ -30,8 +30,8 @@ import org.suych.fm.constant.ConstantInterfaceAccessModifier;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
-import org.suych.fm.util.generate.model.InterfaceStructure;
-import org.suych.fm.util.generate.model.MethodStructure;
+import org.suych.fm.util.generate.model.java.InterfaceStructure;
+import org.suych.fm.util.generate.model.java.MethodStructure;
 
 public class GenerateInterfaceUtil {
 
@@ -39,7 +39,7 @@ public class GenerateInterfaceUtil {
 		FileWriter fw = null;
 		try {
 			String pathName = ConfigureContainer.constantMap.get("file.output.path") + is.getName()
-					+ ConstantSuffix.JAVA_FILE;
+					+ ConstantSuffix.JAVA_FILE.getType();
 			File file = new File(pathName);
 			if (!file.exists()) {
 				File parentFile = file.getParentFile();

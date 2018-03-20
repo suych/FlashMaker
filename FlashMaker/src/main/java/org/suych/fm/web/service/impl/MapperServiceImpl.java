@@ -15,42 +15,37 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
-import org.suych.fm.constant.ConstantSuffix;
-import org.suych.fm.tool.CommonTool;
 import org.suych.fm.util.generate.GenerateInterfaceUtil;
-import org.suych.fm.util.generate.model.InterfaceStructure;
-import org.suych.fm.util.generate.model.MethodStructure;
+import org.suych.fm.util.generate.model.java.InterfaceStructure;
+import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.web.service.IMapperService;
 
 @Service
 public class MapperServiceImpl implements IMapperService {
 
 	@Override
-	public void generate(String tableName, String localPackage, String doClassName) {
+	public void generate() {
 		// 1.组装方法结构
-		List<MethodStructure> method = assembleMethodStructure(doClassName);
+		List<MethodStructure> method = assembleMethodStructure();
 		// 2.组装Mapper接口结构
-		InterfaceStructure mapperInterface = assembleMapperInterface(tableName, localPackage, doClassName, method);
+		InterfaceStructure mapperInterface = assembleMapperInterface(method);
 		// 3.按规范输出至文件
 		GenerateInterfaceUtil.generate(mapperInterface);
 	}
 
-	/**
-	 * 组装方法结构
-	 * @param doClassName DO类名
-	 * @return
-	 */
-	private List<MethodStructure> assembleMethodStructure(String doClassName) {
+	private List<MethodStructure> assembleMethodStructure() {
+		String domainClassName = BaseInfo.getDomainClassName();
 		// 5个方法
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
 
 		// 1.List<DO类名> list()
 		MethodStructure m1 = new MethodStructure();
-		String m1_returnValue = LIST + LEFT_ANGLE_BRACKETS + doClassName + RIGHT_ANGLE_BRACKETS;
+		String m1_returnValue = LIST + LEFT_ANGLE_BRACKETS + domainClassName + RIGHT_ANGLE_BRACKETS;
 		String m1_methodName = ConstantMethodName.LIST;
 		Map<String, String> m1_parameter = new HashMap<String, String>();
 		m1.setReturnValue(m1_returnValue);
@@ -59,7 +54,7 @@ public class MapperServiceImpl implements IMapperService {
 
 		// 2.DO类名 getById(String id);
 		MethodStructure m2 = new MethodStructure();
-		String m2_returnValue = doClassName;
+		String m2_returnValue = domainClassName;
 		String m2_methodName = ConstantMethodName.GET_BY_ID;
 		Map<String, String> m2_parameter = new HashMap<String, String>();
 		m2_parameter.put(STRING, ConstantParameterName.ID);
@@ -72,7 +67,7 @@ public class MapperServiceImpl implements IMapperService {
 		String m3_returnValue = VOID;
 		String m3_methodName = ConstantMethodName.SAVE;
 		Map<String, String> m3_parameter = new HashMap<String, String>();
-		m3_parameter.put(doClassName, firstLetterToLowerCase(doClassName));
+		m3_parameter.put(domainClassName, firstLetterToLowerCase(domainClassName));
 		m3.setReturnValue(m3_returnValue);
 		m3.setName(m3_methodName);
 		m3.setParameter(m3_parameter);
@@ -82,7 +77,7 @@ public class MapperServiceImpl implements IMapperService {
 		String m4_returnValue = VOID;
 		String m4_methodName = ConstantMethodName.UPDATE_BY_ID;
 		Map<String, String> m4_parameter = new HashMap<String, String>();
-		m4_parameter.put(doClassName, firstLetterToLowerCase(doClassName));
+		m4_parameter.put(domainClassName, firstLetterToLowerCase(domainClassName));
 		m4.setReturnValue(m4_returnValue);
 		m4.setName(m4_methodName);
 		m4.setParameter(m4_parameter);
@@ -106,23 +101,14 @@ public class MapperServiceImpl implements IMapperService {
 		return result;
 	}
 
-	/**
-	 * 组装Mapper接口结构
-	 * 
-	 * @param tableName 表名
-	 * @param localPackage 本地包名
-	 * @param doClassName DO类名
-	 * @param method 方法结构
-	 * @return
-	 */
-	private InterfaceStructure assembleMapperInterface(String tableName, String localPackage, String doClassName,
-			List<MethodStructure> method) {
+	private InterfaceStructure assembleMapperInterface(List<MethodStructure> method) {
 		InterfaceStructure result = new InterfaceStructure();
+		String localPackage = BaseInfo.getLocalPackage();
 		Set<String> importPackage = new HashSet<String>();
 		importPackage.add(ConstantImportPackage.LIST);
-		String doPackage = localPackage + POINT + doClassName; // DO文件包名
-		importPackage.add(doPackage);
-		String interfaceName = CommonTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.INTERFACE_MAPPER);
+		String domainPackage = localPackage + POINT + BaseInfo.getDomainClassName(); // DO文件包名
+		importPackage.add(domainPackage);
+		String interfaceName = BaseInfo.getMapperInterfaceName();
 
 		result.setLocalPackage(localPackage);
 		result.setImportPackage(importPackage);

@@ -1,11 +1,11 @@
-package org.suych.fm.web.model.dto;
+package org.suych.fm.web.model.model;
 
-public class ResultDoubleDTO<A, B> {
+public class ResultDoubleModel<A, B> {
 
 	public final A first;
 	public final B second;
 
-	public ResultDoubleDTO(A first, B second) {
+	public ResultDoubleModel(A first, B second) {
 		this.first = first;
 		this.second = second;
 	}

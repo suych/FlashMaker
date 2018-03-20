@@ -2,9 +2,6 @@ package org.suych.fm.web.model.domain;
 
 /**
  * 字段信息DO
- * 
- * @author suych
- *
  */
 public class FieldInfoDO {
 

@@ -56,6 +56,7 @@ public class ConstantJavaSyntax {
 	public final static String ASTERISK = "*";
 	public final static String PLUS_SIGN = "+";
 	public final static String EQUAL_SIGN = "=";
+	public final static String NUMBER_SIGN = "#";
 	public final static String SPACE = " ";
 
 	public final static String RETURN_NEWLINE = "\r\n";

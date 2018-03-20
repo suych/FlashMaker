@@ -36,8 +36,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
 import org.suych.fm.constant.ConstantFieldAccessModifier;
@@ -45,57 +45,75 @@ import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantOracleType;
-import org.suych.fm.constant.ConstantSuffix;
-import org.suych.fm.tool.CommonTool;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.GenerateClassUtil;
-import org.suych.fm.util.generate.model.ClassStructure;
-import org.suych.fm.util.generate.model.FieldStructure;
-import org.suych.fm.util.generate.model.MethodStructure;
-import org.suych.fm.web.mapper.TableInfoMapper;
-import org.suych.fm.web.model.domain.FieldInfoDO;
-import org.suych.fm.web.model.domain.TableInfoDO;
-import org.suych.fm.web.model.dto.ResultDoubleDTO;
+import org.suych.fm.util.generate.model.java.ClassStructure;
+import org.suych.fm.util.generate.model.java.FieldStructure;
+import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.web.model.model.FieldInfoModel;
+import org.suych.fm.web.model.model.ResultDoubleModel;
 import org.suych.fm.web.service.IDomainObjectService;
 
 @Service
 public class DomainObjectServiceImpl implements IDomainObjectService {
 
-	@Autowired
-	TableInfoMapper tableInfoMapper;
-
 	@Override
-	public ClassStructure generate(String tableName, String localPackage) {
-		// 1.获得引入包名和字段结构(查询数据库)
-		ResultDoubleDTO<Set<String>, List<FieldStructure>> importPackageAndFieldStructure = getImportPackageAndFieldStructure(
-				tableName);
-		// 2.获得表信息(查询数据库)
-		TableInfoDO tableInfo = getTableInfo(tableName);
-		// 3.组装方法结构
-		List<MethodStructure> method = assembleMethodStructure(tableName, importPackageAndFieldStructure.second);
-		// 4.组装DO类结构
-		ClassStructure doClassStructure = assembleDOClassStructure(localPackage, importPackageAndFieldStructure.first,
-				tableInfo, tableName, importPackageAndFieldStructure.second, method);
-		// 5.按规范输出至文件
+	public void generate() {
+		// 1.获得引入包名和字段结构
+		ResultDoubleModel<Set<String>, List<FieldStructure>> importPackageAndFieldStructure = assembleImportPackageAndFieldStructure();
+		// 2.组装方法结构
+		List<MethodStructure> method = assembleMethodStructure(importPackageAndFieldStructure.second);
+		// 3.组装Domain类结构
+		ClassStructure doClassStructure = assembleDomainClassStructure(importPackageAndFieldStructure.first,
+				importPackageAndFieldStructure.second, method);
+		// 4.按规范输出至文件
 		GenerateClassUtil.generate(doClassStructure);
-		return doClassStructure;
 	}
 
 	/**
-	 * 获得引入包名和字段结构(查询数据库)
+	 * 获得引入包名和字段结构
 	 * 
-	 * @param tableName 数据库表名
 	 * @return
 	 */
-	private ResultDoubleDTO<Set<String>, List<FieldStructure>> getImportPackageAndFieldStructure(String tableName) {
-		List<FieldInfoDO> fieldInfoDO = tableInfoMapper.listFieldInfo(tableName.toUpperCase());
-		return parseImportPackageAndFieldStructure(fieldInfoDO);
+	private ResultDoubleModel<Set<String>, List<FieldStructure>> assembleImportPackageAndFieldStructure() {
+		Set<String> importPackage = new HashSet<String>(); // 引用的包名
+		List<FieldStructure> fieldStructure = new ArrayList<FieldStructure>(); // 字段类型/字段名/字段注释
+		for (FieldInfoModel field : BaseInfo.getTableInfo().getField()) {
+			FieldStructure fs = new FieldStructure();
+			String data_type = parseDataType(field.getDataType());
+			String data_precision = StringUtil.null2Empty(field.getDataPrecision());
+			String javaType = parseJavaType(data_type, data_precision);
+
+			// 组装字段结构
+			fs.setComments(StringUtil.null2Empty(field.getComments()));
+			fs.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
+			fs.setJavaType(javaType);
+			fs.setName(StringUtil.null2Empty(field.getColumnName()));
+			fieldStructure.add(fs);
+
+			// 组装引入包名
+			if (TIMESTAMP.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.TIMESTAMP);
+			} else if (BIGDECIMAL.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.BIGDECIMAL);
+			} else if (LIST.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.LIST);
+			}
+
+		}
+		return new ResultDoubleModel<Set<String>, List<FieldStructure>>(importPackage, fieldStructure);
 	}
 
-	private List<MethodStructure> assembleMethodStructure(String tableName, List<FieldStructure> field) {
+	/**
+	 * 组装方法结构
+	 * 
+	 * @param field 字段结构
+	 * @return
+	 */
+	private List<MethodStructure> assembleMethodStructure(List<FieldStructure> field) {
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
 		// toString()方法
-		MethodStructure toString = assembleToStringMethod(tableName, field);
+		MethodStructure toString = assembleToStringMethod(field);
 		result.add(toString);
 		// get/set方法
 		for (FieldStructure t : field) {
@@ -116,75 +134,27 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 	}
 
 	/**
-	 * 获得表信息(查询数据库)
-	 * 
-	 * @param tableName
-	 * @return
-	 */
-	private TableInfoDO getTableInfo(String tableName) {
-		return tableInfoMapper.getTableInfo(tableName.toUpperCase());
-	}
-
-	/**
 	 * 组装DO类结构
 	 * 
-	 * @param localPackage 本地包名
 	 * @param importPackage 引入包名
-	 * @param tableName 表名
 	 * @param field 字段结构
 	 * @param method 方法结构
 	 * @return
 	 */
-	private ClassStructure assembleDOClassStructure(String localPackage, Set<String> importPackage,
-			TableInfoDO tableInfo, String tableName, List<FieldStructure> field, List<MethodStructure> method) {
+	private ClassStructure assembleDomainClassStructure(Set<String> importPackage, List<FieldStructure> field,
+			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
-		String comments = "";
-		if (tableInfo != null) {
-			comments = StringUtil.null2Empty(tableInfo.getComments());
-		}
-		String className = CommonTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.CLASS_DOMAIN_OBJECT);
-
 		// 组装类结构
-		result.setLocalPackage(localPackage);
+		result.setLocalPackage(BaseInfo.getLocalPackage());
 		result.setImportPackage(importPackage);
-		result.setComments(comments);
+		result.setComments(StringUtil.null2Empty(BaseInfo.getTableInfo().getComments()));
 		result.setAcessModifier(ConstantClassAccessModifier.PUBLIC);
 		result.setNonAccessModifier(ConstantClassNonAccessModifier.DEFAULT);
-		result.setName(className);
+		result.setName(BaseInfo.getDomainClassName());
 		result.setField(field);
 		result.setMethod(method);
 
 		return result;
-	}
-
-	private ResultDoubleDTO<Set<String>, List<FieldStructure>> parseImportPackageAndFieldStructure(
-			List<FieldInfoDO> fieldInfoDOs) {
-		Set<String> importPackage = new HashSet<String>(); // 引用的包名
-		List<FieldStructure> fieldStructure = new ArrayList<FieldStructure>(); // 字段类型/字段名/字段注释
-		for (FieldInfoDO fieldDO : fieldInfoDOs) {
-			FieldStructure fs = new FieldStructure();
-			String data_type = parseDataType(fieldDO.getData_type());
-			String data_precision = StringUtil.null2Empty(fieldDO.getData_precision());
-			String javaType = parseJavaType(data_type, data_precision);
-
-			// 组装字段结构
-			fs.setComments(StringUtil.null2Empty(fieldDO.getComments()));
-			fs.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
-			fs.setJavaType(javaType);
-			fs.setName(StringUtil.null2Empty(fieldDO.getColumn_name()).toLowerCase());
-			fieldStructure.add(fs);
-
-			// 组装引入包名
-			if (TIMESTAMP.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.TIMESTAMP);
-			} else if (BIGDECIMAL.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.BIGDECIMAL);
-			} else if (LIST.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.LIST);
-			}
-
-		}
-		return new ResultDoubleDTO<Set<String>, List<FieldStructure>>(importPackage, fieldStructure);
 	}
 
 	private String parseDataType(String data_type) {
@@ -238,12 +208,12 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 		return "UnknowType"; // 其他类型暂未UnknowType，方便后续扩展
 	}
 
-	private MethodStructure assembleToStringMethod(String tableName, List<FieldStructure> field) {
+	private MethodStructure assembleToStringMethod(List<FieldStructure> field) {
 		MethodStructure result = new MethodStructure();
 		List<String> annotation = new ArrayList<String>();
 		annotation.add(ANNOTATIONS_OVERRIDE);
 		StringBuilder methodBody = new StringBuilder();
-		String className = CommonTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.CLASS_DOMAIN_OBJECT);
+		String className = BaseInfo.getDomainClassName();
 		methodBody.append(TAB + TAB + RETURN + SPACE + DOUBLE_QUOTATION + className + SPACE + LEFT_SQUARE_BRACKET);
 		for (int i = 0, j = field.size(); i < j; i++) {
 			String fieldName = field.get(i).getName();

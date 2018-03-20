@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>   
-<!DOCTYPE mapper   
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.suych.fm.web.mapper.TableInfoMapper">
 
-	<resultMap id="tableInfoDO" type="TableInfoDO"/>
-	<resultMap id="fieldInfoDO" type="FieldInfoDO"/>
-	
-	<select id="getTableInfo" resultMap="tableInfoDO">
+	<select id="getTableBaseInfo" resultType="TableBaseInfoDO">
 		SELECT 
 			t.table_name, t.table_type, t.comments
 		FROM 
@@ -16,7 +11,7 @@
 			t.table_name = #{tableName}
 	</select>
 
-	<select id="listFieldInfo" resultMap="fieldInfoDO">
+	<select id="listFieldInfo" resultType="FieldInfoDO">
 		SELECT 
 			b.column_name, b.data_type, b.data_length, b.data_precision, a.comments 
 		FROM 
@@ -27,6 +22,21 @@
 			a.column_name = b.column_name 
 		AND 
 			a.table_name = #{tableName}
+		ORDER BY 
+			b.COLUMN_ID
+	</select>
+	
+	<select id="getPrimaryKey" resultType="String">
+		SELECT 
+			cu.column_name
+  		FROM 
+  			user_cons_columns cu, user_constraints au
+ 		WHERE 
+ 			cu.constraint_name = au.constraint_name
+   		AND 
+   			au.constraint_type = 'P'
+   		AND 
+   			au.table_name = #{tableName}
 	</select>
 	
 </mapper> 

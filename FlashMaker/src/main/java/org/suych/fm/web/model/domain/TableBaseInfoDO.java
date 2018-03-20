@@ -1,12 +1,9 @@
 package org.suych.fm.web.model.domain;
 
 /**
- * 表信息DO
- * 
- * @author suych
- *
+ * 表基础信息DO
  */
-public class TableInfoDO {
+public class TableBaseInfoDO {
 
 	/**
 	 * 表名
@@ -25,7 +22,8 @@ public class TableInfoDO {
 
 	@Override
 	public String toString() {
-		return "TableInfoDO [table_name=" + table_name + ", table_type=" + table_type + ", comments=" + comments + "]";
+		return "TableBaseInfoDO [table_name=" + table_name + ", table_type=" + table_type + ", comments=" + comments
+				+ "]";
 	}
 
 	public String getTable_name() {

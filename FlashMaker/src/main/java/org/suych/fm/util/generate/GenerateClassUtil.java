@@ -41,9 +41,9 @@ import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodNonAccessModifier;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
-import org.suych.fm.util.generate.model.ClassStructure;
-import org.suych.fm.util.generate.model.FieldStructure;
-import org.suych.fm.util.generate.model.MethodStructure;
+import org.suych.fm.util.generate.model.java.ClassStructure;
+import org.suych.fm.util.generate.model.java.FieldStructure;
+import org.suych.fm.util.generate.model.java.MethodStructure;
 
 public class GenerateClassUtil {
 
@@ -51,7 +51,7 @@ public class GenerateClassUtil {
 		FileWriter fw = null;
 		try {
 			String pathName = ConfigureContainer.constantMap.get("file.output.path") + cs.getName()
-					+ ConstantSuffix.JAVA_FILE;
+					+ ConstantSuffix.JAVA_FILE.getType();
 			File file = new File(pathName);
 			if (!file.exists()) {
 				File parentFile = file.getParentFile();
