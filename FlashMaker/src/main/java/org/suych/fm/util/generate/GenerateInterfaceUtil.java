@@ -25,53 +25,32 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.suych.fm.constant.ConfigureContainer;
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
-import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.model.java.InterfaceStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 
-public class GenerateInterfaceUtil {
+public class GenerateInterfaceUtil extends GenerateCommonUtil {
 
 	public static void generate(InterfaceStructure is) {
-		FileWriter fw = null;
-		try {
-			String pathName = ConfigureContainer.constantMap.get("file.output.path") + is.getName()
-					+ ConstantSuffix.JAVA_FILE.getType();
-			File file = new File(pathName);
-			if (!file.exists()) {
-				File parentFile = file.getParentFile();
-				if (!parentFile.exists()) {
-					parentFile.mkdirs();
-				}
-				file.createNewFile();
-			}
-			fw = new FileWriter(file);
+		File file = getFile(is);
+		try (FileWriter fw = new FileWriter(file)) {
 			// 输出至文件
 			print2File(fw, is);
 			fw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	private static void print2File(FileWriter fw, InterfaceStructure is) throws IOException {
 		// 1.本地包名
-		GenerateCommonUtil.printLocalPackage(fw, is.getLocalPackage());
+		printLocalPackage(fw, is.getLocalPackage());
 		// 2.引入包名
-		GenerateCommonUtil.printImportPackage(fw, is.getImportPackage());
+		printImportPackage(fw, is.getImportPackage());
 		// 3.接口注释
-		GenerateCommonUtil.printComments(fw, is.getComments());
+		printComments(fw, is.getComments());
 		// 4.修饰符+接口名+继承
 		printModifierAndInterfaceNameAndExtends(fw, is);
 		// 5.方法

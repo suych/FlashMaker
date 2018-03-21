@@ -2,15 +2,12 @@ package org.suych.fm.util.generate.model.xml;
 
 import java.util.List;
 
+import org.suych.fm.util.generate.model.BaseStructure;
+
 /**
  * XML结构
  */
-public class XmlStructure {
-
-	/**
-	 * Xml名称
-	 */
-	private String name;
+public class XmlStructure extends BaseStructure {
 
 	/**
 	 * 文档类型
@@ -34,16 +31,8 @@ public class XmlStructure {
 
 	@Override
 	public String toString() {
-		return "XmlStructure [name=" + name + ", docType=" + docType + ", rootNodeName=" + rootNodeName + ", namespace="
-				+ namespace + ", node=" + node + "]";
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return "XmlStructure [docType=" + docType + ", rootNodeName=" + rootNodeName + ", namespace=" + namespace
+				+ ", node=" + node + "]";
 	}
 
 	public String getDocType() {

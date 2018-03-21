@@ -5,11 +5,12 @@ import java.util.Set;
 
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
+import org.suych.fm.util.generate.model.BaseStructure;
 
 /**
  * 类结构
  */
-public class ClassStructure {
+public class ClassStructure extends BaseStructure {
 
 	/**
 	 * 本地包名
@@ -35,11 +36,6 @@ public class ClassStructure {
 	 * 类非访问控制修饰符
 	 */
 	private ConstantClassNonAccessModifier nonAccessModifier;
-
-	/**
-	 * 类名
-	 */
-	private String name;
 
 	/**
 	 * 是否继承其他类 
@@ -76,8 +72,8 @@ public class ClassStructure {
 	@Override
 	public String toString() {
 		return "ClassStructure [localPackage=" + localPackage + ", importPackage=" + importPackage + ", comments="
-				+ comments + ", acessModifier=" + acessModifier + ", nonAccessModifier=" + nonAccessModifier + ", name="
-				+ name + ", extendsClass=" + extendsClass + ", baseClassName=" + baseClassName + ", implementInterface="
+				+ comments + ", acessModifier=" + acessModifier + ", nonAccessModifier=" + nonAccessModifier
+				+ ", extendsClass=" + extendsClass + ", baseClassName=" + baseClassName + ", implementInterface="
 				+ implementInterface + ", interfaceName=" + interfaceName + ", field=" + field + ", method=" + method
 				+ "]";
 	}
@@ -120,14 +116,6 @@ public class ClassStructure {
 
 	public void setNonAccessModifier(ConstantClassNonAccessModifier nonAccessModifier) {
 		this.nonAccessModifier = nonAccessModifier;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Boolean getExtendsClass() {

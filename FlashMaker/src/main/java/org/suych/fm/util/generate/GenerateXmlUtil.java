@@ -10,8 +10,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
-import org.suych.fm.constant.ConfigureContainer;
-import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.generate.model.xml.XmlCommonNode;
 import org.suych.fm.util.generate.model.xml.XmlDeleteNode;
 import org.suych.fm.util.generate.model.xml.XmlForeachNode;
@@ -20,38 +18,38 @@ import org.suych.fm.util.generate.model.xml.XmlSelectNode;
 import org.suych.fm.util.generate.model.xml.XmlStructure;
 import org.suych.fm.util.generate.model.xml.XmlUpdateNode;
 
-public class GenerateXmlUtil {
+public class GenerateXmlUtil extends GenerateCommonUtil {
 
 	public static void generate(XmlStructure xs) {
+		File file = getFile(xs);
 		FileWriter fw = null;
+		XMLWriter xw = null;
 		try {
-			String pathName = ConfigureContainer.constantMap.get("file.output.path") + xs.getName()
-					+ ConstantSuffix.XML.getType();
-			File file = new File(pathName);
-			if (!file.exists()) {
-				File parentFile = file.getParentFile();
-				if (!parentFile.exists()) {
-					parentFile.mkdirs();
-				}
-				file.createNewFile();
-			}
 			fw = new FileWriter(file);
-			// 输出至文件
-			print2File(fw, xs);
-		} catch (IOException e) {
-			e.printStackTrace();
+			Document document = print2File(fw, xs);
+			xw = getXmlWriter(fw, document);
+			xw.write(document);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		} finally {
 			if (fw != null) {
 				try {
 					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (Exception e2) {
+					throw new RuntimeException(e2);
+				}
+			}
+			if (xw != null) {
+				try {
+					xw.close();
+				} catch (Exception e2) {
+					throw new RuntimeException(e2);
 				}
 			}
 		}
 	}
 
-	private static void print2File(FileWriter fw, XmlStructure xs) throws IOException {
+	private static Document print2File(FileWriter fw, XmlStructure xs) throws IOException {
 		// 创建XML文档树
 		Document document = DocumentHelper.createDocument();
 		// 添加文档类型说明
@@ -95,29 +93,30 @@ public class GenerateXmlUtil {
 				deleteElement.addText(deleteNode.getTextTwo());
 			}
 		}
-		// 不会过滤回车换行
-		OutputFormat outputFormat = new OutputFormat();
-		// 设置XML编码方式,即是用指定的编码方式保存XML文档到字符串(String),这里也可以指定为GBK或是ISO8859-1
-		outputFormat.setEncoding("UTF-8");
-		// 是否生产xml头 false-生成
-		outputFormat.setSuppressDeclaration(false);
-		// 设置是否缩进 true-是
-		outputFormat.setIndent(true);
-		// 以四个空格方式实现缩进
-		outputFormat.setIndentSize(4);
-		// 设置是否换行
-		outputFormat.setNewlines(true);
-		// xmlWriter是用来把XML文档写入字符串的(工具)
-		XMLWriter xmlWriter = new XMLWriter(fw, outputFormat);
-		xmlWriter.setEscapeText(false);
-		try {
-			// 把创建好的XML文档写入字符串
-			xmlWriter.write(document);
-			// 打印字符串,即是XML文档
-			fw.flush();
-		} finally {
-			xmlWriter.close();
-		}
-
+		return document;
 	}
+
+	private static XMLWriter getXmlWriter(FileWriter fw, Document document) throws IOException {
+		// xmlWriter是用来把XML文档写入字符串的(工具)
+		XMLWriter result = new XMLWriter(fw, getOutputFormat());
+		result.setEscapeText(false);
+		return result;
+	}
+
+	private static OutputFormat getOutputFormat() {
+		// 不会过滤回车换行
+		OutputFormat result = new OutputFormat();
+		// 设置XML编码方式,即是用指定的编码方式保存XML文档到字符串(String),这里也可以指定为GBK或是ISO8859-1
+		result.setEncoding("UTF-8");
+		// 是否生产xml头 false-生成
+		result.setSuppressDeclaration(false);
+		// 设置是否缩进 true-是
+		result.setIndent(true);
+		// 以四个空格方式实现缩进
+		result.setIndentSize(4);
+		// 设置是否换行
+		result.setNewlines(true);
+		return result;
+	}
+
 }

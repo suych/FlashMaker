@@ -32,58 +32,37 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.suych.fm.constant.ConfigureContainer;
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
 import org.suych.fm.constant.ConstantFieldAccessModifier;
 import org.suych.fm.constant.ConstantFieldNonAccessModifier;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodNonAccessModifier;
-import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 
-public class GenerateClassUtil {
+public class GenerateClassUtil extends GenerateCommonUtil {
 
 	public static void generate(ClassStructure cs) {
-		FileWriter fw = null;
-		try {
-			String pathName = ConfigureContainer.constantMap.get("file.output.path") + cs.getName()
-					+ ConstantSuffix.JAVA_FILE.getType();
-			File file = new File(pathName);
-			if (!file.exists()) {
-				File parentFile = file.getParentFile();
-				if (!parentFile.exists()) {
-					parentFile.mkdirs();
-				}
-				file.createNewFile();
-			}
-			fw = new FileWriter(file);
+		File file = getFile(cs);
+		try (FileWriter fw = new FileWriter(file)) {
 			// 输出至文件
 			print2File(fw, cs);
 			fw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	private static void print2File(FileWriter fw, ClassStructure cs) throws IOException {
 		// 1.本地包名
-		GenerateCommonUtil.printLocalPackage(fw, cs.getLocalPackage());
+		printLocalPackage(fw, cs.getLocalPackage());
 		// 2.引入包名
-		GenerateCommonUtil.printImportPackage(fw, cs.getImportPackage());
+		printImportPackage(fw, cs.getImportPackage());
 		// 3.类注释
-		GenerateCommonUtil.printComments(fw, cs.getComments());
+		printComments(fw, cs.getComments());
 		// 4.修饰符+类名+继承+接口
 		printModifierAndClassNameAndExtendsAndInterface(fw, cs);
 		// 5.字段

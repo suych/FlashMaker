@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
+import org.suych.fm.util.generate.model.BaseStructure;
 
 /**
  * 接口结构
  */
-public class InterfaceStructure {
+public class InterfaceStructure extends BaseStructure {
 
 	/**
 	 * 本地包名
@@ -31,11 +32,6 @@ public class InterfaceStructure {
 	private ConstantInterfaceAccessModifier acessModifier;
 
 	/**
-	 * 接口名
-	 */
-	private String name;
-
-	/**
 	 * 是否继承其他接口
 	 * true-是/false-否
 	 */
@@ -54,8 +50,8 @@ public class InterfaceStructure {
 	@Override
 	public String toString() {
 		return "InterfaceStructure [localPackage=" + localPackage + ", importPackage=" + importPackage + ", comments="
-				+ comments + ", acessModifier=" + acessModifier + ", name=" + name + ", extendsInterface="
-				+ extendsInterface + ", baseInterfaceName=" + baseInterfaceName + ", method=" + method + "]";
+				+ comments + ", acessModifier=" + acessModifier + ", extendsInterface=" + extendsInterface
+				+ ", baseInterfaceName=" + baseInterfaceName + ", method=" + method + "]";
 	}
 
 	public String getLocalPackage() {
@@ -88,14 +84,6 @@ public class InterfaceStructure {
 
 	public void setAcessModifier(ConstantInterfaceAccessModifier acessModifier) {
 		this.acessModifier = acessModifier;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Boolean getExtendsInterface() {

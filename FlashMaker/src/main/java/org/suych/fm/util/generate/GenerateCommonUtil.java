@@ -8,13 +8,44 @@ import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
 import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
+import org.suych.fm.constant.ConfigureContainer;
+import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
+import org.suych.fm.util.generate.model.BaseStructure;
+import org.suych.fm.util.generate.model.java.ClassStructure;
+import org.suych.fm.util.generate.model.java.InterfaceStructure;
+import org.suych.fm.util.generate.model.xml.XmlStructure;
 
 class GenerateCommonUtil {
+
+	protected static File getFile(BaseStructure handle) {
+		String outputPath = ConfigureContainer.constantMap.get("file.output.path");
+		String fileName = handle.getName();
+		String pathName = outputPath + fileName;
+		if (handle instanceof ClassStructure || handle instanceof InterfaceStructure) {
+			pathName += ConstantSuffix.JAVA_FILE.getType();
+		} else if (handle instanceof XmlStructure) {
+			pathName += ConstantSuffix.XML.getType();
+		}
+		File file = new File(pathName);
+		if (!file.exists()) {
+			File parentFile = file.getParentFile();
+			if (!parentFile.exists()) {
+				parentFile.mkdirs();
+			}
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return file;
+	}
 
 	protected static void printLocalPackage(FileWriter fw, String localPackage) throws IOException {
 		if (!"".equals(localPackage)) {
