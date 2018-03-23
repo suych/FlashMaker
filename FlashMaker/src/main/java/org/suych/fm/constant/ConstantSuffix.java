@@ -9,6 +9,9 @@ public class ConstantSuffix {
 
 	public static final ConstantSuffix DOMAIN_OBJECT = new ConstantSuffix("DO");
 	public static final ConstantSuffix MAPPER = new ConstantSuffix("Mapper");
+	public static final ConstantSuffix SERVICE = new ConstantSuffix("Service");
+	public static final ConstantSuffix SERVICE_IMPL = new ConstantSuffix("ServiceImpl");
+	public static final ConstantSuffix CONTROLLER = new ConstantSuffix("Controller");
 
 	public ConstantSuffix(String type) {
 		this.type = type;

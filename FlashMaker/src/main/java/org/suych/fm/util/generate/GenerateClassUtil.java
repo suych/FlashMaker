@@ -1,7 +1,6 @@
 package org.suych.fm.util.generate;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ABSTRACT;
-import static org.suych.fm.constant.ConstantJavaSyntax.ASTERISK;
 import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
 import static org.suych.fm.constant.ConstantJavaSyntax.EXTENDS;
@@ -16,7 +15,6 @@ import static org.suych.fm.constant.ConstantJavaSyntax.RETURN_NEWLINE;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
-import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.STATIC;
 import static org.suych.fm.constant.ConstantJavaSyntax.SYNCHRONIZED;
@@ -38,7 +36,6 @@ import org.suych.fm.constant.ConstantFieldAccessModifier;
 import org.suych.fm.constant.ConstantFieldNonAccessModifier;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodNonAccessModifier;
-import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
@@ -62,12 +59,14 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 		// 2.引入包名
 		printImportPackage(fw, cs.getImportPackage());
 		// 3.类注释
-		printComments(fw, cs.getComments());
-		// 4.修饰符+类名+继承+接口
+		printComments(fw, cs.getComments(), "");
+		// 4.类注解
+		printAnnotation(fw, cs.getAnnotation(), "");
+		// 5.修饰符+类名+继承+接口
 		printModifierAndClassNameAndExtendsAndInterface(fw, cs);
-		// 5.字段
+		// 6.字段
 		printField(fw, cs);
-		// 6.方法
+		// 7.方法
 		printMethod(fw, cs);
 		fw.write(RIGHT_BRACE);
 	}
@@ -128,14 +127,11 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 		for (FieldStructure field : fieldStructures) {
 			fw.write(RETURN_NEWLINE);
 			// 注释
-			String comments = field.getComments();
-			if (!"".equals(comments)) {
-				fw.write(TAB + SLASH + ASTERISK + ASTERISK + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SPACE + comments + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SLASH + RETURN_NEWLINE);
-			}
-			fw.write(TAB);
+			printComments(fw, field.getComments(), TAB);
+			// 注解
+			printAnnotation(fw, field.getAnnotation(), TAB);
 			// 访问控制修饰符
+			fw.write(TAB);
 			ConstantFieldAccessModifier fieldAccessModifier = field.getAccessModifier();
 			if (fieldAccessModifier == ConstantFieldAccessModifier.PUBLIC) {
 				fw.write(PUBLIC + SPACE);
@@ -182,19 +178,9 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 		}
 		for (MethodStructure method : methodStructures) {
 			// 注释
-			String comments = StringUtil.null2Empty(method.getComments());
-			if (!"".equals(comments)) {
-				fw.write(TAB + SLASH + ASTERISK + ASTERISK + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SPACE + comments + RETURN_NEWLINE);
-				fw.write(TAB + SPACE + ASTERISK + SLASH + RETURN_NEWLINE);
-			}
+			printComments(fw, method.getComments(), TAB);
 			// 注解
-			List<String> annotations = method.getAnnotation();
-			if (annotations != null && annotations.size() > 0) {
-				for (String annotation : annotations) {
-					fw.write(TAB + annotation + RETURN_NEWLINE);
-				}
-			}
+			printAnnotation(fw, method.getAnnotation(), TAB);
 			// 访问控制修饰符
 			fw.write(TAB);
 			ConstantMethodAccessModifier methodAccessModifier = method.getAccessModifier();

@@ -50,7 +50,7 @@ public class GenerateInterfaceUtil extends GenerateCommonUtil {
 		// 2.引入包名
 		printImportPackage(fw, is.getImportPackage());
 		// 3.接口注释
-		printComments(fw, is.getComments());
+		printComments(fw, is.getComments(), "");
 		// 4.修饰符+接口名+继承
 		printModifierAndInterfaceNameAndExtends(fw, is);
 		// 5.方法

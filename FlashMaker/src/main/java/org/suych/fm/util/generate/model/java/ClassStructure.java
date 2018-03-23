@@ -28,6 +28,11 @@ public class ClassStructure extends BaseStructure {
 	private String comments;
 
 	/**
+	 * 注解
+	 */
+	private List<AnnotationStructure> annotation;
+
+	/**
 	 * 访问控制修饰符
 	 */
 	private ConstantClassAccessModifier acessModifier;
@@ -72,10 +77,10 @@ public class ClassStructure extends BaseStructure {
 	@Override
 	public String toString() {
 		return "ClassStructure [localPackage=" + localPackage + ", importPackage=" + importPackage + ", comments="
-				+ comments + ", acessModifier=" + acessModifier + ", nonAccessModifier=" + nonAccessModifier
-				+ ", extendsClass=" + extendsClass + ", baseClassName=" + baseClassName + ", implementInterface="
-				+ implementInterface + ", interfaceName=" + interfaceName + ", field=" + field + ", method=" + method
-				+ "]";
+				+ comments + ", annotation=" + annotation + ", acessModifier=" + acessModifier + ", nonAccessModifier="
+				+ nonAccessModifier + ", extendsClass=" + extendsClass + ", baseClassName=" + baseClassName
+				+ ", implementInterface=" + implementInterface + ", interfaceName=" + interfaceName + ", field=" + field
+				+ ", method=" + method + "]";
 	}
 
 	public String getLocalPackage() {
@@ -100,6 +105,14 @@ public class ClassStructure extends BaseStructure {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public List<AnnotationStructure> getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(List<AnnotationStructure> annotation) {
+		this.annotation = annotation;
 	}
 
 	public ConstantClassAccessModifier getAcessModifier() {

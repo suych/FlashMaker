@@ -9,9 +9,11 @@ import org.suych.fm.base.BaseInfo;
 import org.suych.fm.exception.TableNameEmptyException;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.web.model.model.TableInfoModel;
-import org.suych.fm.web.service.IDomainObjectService;
-import org.suych.fm.web.service.IMapperService;
+import org.suych.fm.web.service.IDomainObjectClassService;
+import org.suych.fm.web.service.IMapperInterfaceService;
 import org.suych.fm.web.service.IMapperXmlService;
+import org.suych.fm.web.service.IServiceImplService;
+import org.suych.fm.web.service.IServiceInterfaceService;
 import org.suych.fm.web.service.ITableInfoService;
 
 @RestController
@@ -22,13 +24,19 @@ public class GenerateController {
 	private ITableInfoService tableInfoService;
 
 	@Autowired
-	private IDomainObjectService domainObjectService;
+	private IDomainObjectClassService domainObjectClassService;
 
 	@Autowired
-	private IMapperService mapperService;
+	private IMapperInterfaceService mapperInterfaceService;
 
 	@Autowired
 	private IMapperXmlService mapperXmlService;
+
+	@Autowired
+	private IServiceInterfaceService serviceInterfaceService;
+
+	@Autowired
+	private IServiceImplService serviceImplService;
 
 	/**
 	 * 入口方法
@@ -49,11 +57,15 @@ public class GenerateController {
 		// 2.初始化基础信息
 		BaseInfo.init(localPackage, tableInfo);
 		// 3.生成DO.java
-		domainObjectService.generate();
+		domainObjectClassService.generate();
 		// 4.生成Mapper.java
-		mapperService.generate();
+		mapperInterfaceService.generate();
 		// 5.生成Mapper.xml
 		mapperXmlService.generate();
+		// 6.生成Service.java接口
+		serviceInterfaceService.generate();
+		// 7.生成ServiceImpl.java
+		serviceImplService.generate();
 		System.out.println("-------mission completed-------");
 	}
 

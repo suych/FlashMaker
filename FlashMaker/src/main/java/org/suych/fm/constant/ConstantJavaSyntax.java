@@ -19,6 +19,8 @@ public class ConstantJavaSyntax {
 	public final static String SYNCHRONIZED = "synchronized";
 	public final static String EXTENDS = "extends";
 	public final static String IMPLEMENTS = "implements";
+	public final static String TRUE = "true";
+	public final static String FALSE = "false";
 
 	// java类型
 	public final static String VOID = "void";
@@ -37,6 +39,12 @@ public class ConstantJavaSyntax {
 
 	// 注解
 	public final static String ANNOTATIONS_OVERRIDE = "@Override";
+	public final static String ANNOTATIONS_SERVICE = "@Service";
+	public final static String ANNOTATIONS_AUTOWIRED = "@Autowired";
+	public final static String ANNOTATIONS_TRANSACTIONAL = "@Transactional";
+
+	// 注解属性
+	public final static String ANNOTATIONS_ATTRIBUTE_READONLY = "readOnly";
 
 	// 符号
 	public final static String POINT = ".";

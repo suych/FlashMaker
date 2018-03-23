@@ -20,13 +20,14 @@ import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
+import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.GenerateInterfaceUtil;
 import org.suych.fm.util.generate.model.java.InterfaceStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
-import org.suych.fm.web.service.IMapperService;
+import org.suych.fm.web.service.IMapperInterfaceService;
 
 @Service
-public class MapperServiceImpl implements IMapperService {
+public class MapperInterfaceServiceImpl implements IMapperInterfaceService {
 
 	@Override
 	public void generate() {
@@ -67,7 +68,7 @@ public class MapperServiceImpl implements IMapperService {
 		String m3_returnValue = VOID;
 		String m3_methodName = ConstantMethodName.SAVE;
 		Map<String, String> m3_parameter = new HashMap<String, String>();
-		m3_parameter.put(domainClassName, firstLetterToLowerCase(domainClassName));
+		m3_parameter.put(domainClassName, FileNameTool.firstLetterToLowerCase(domainClassName));
 		m3.setReturnValue(m3_returnValue);
 		m3.setName(m3_methodName);
 		m3.setParameter(m3_parameter);
@@ -77,7 +78,7 @@ public class MapperServiceImpl implements IMapperService {
 		String m4_returnValue = VOID;
 		String m4_methodName = ConstantMethodName.UPDATE_BY_ID;
 		Map<String, String> m4_parameter = new HashMap<String, String>();
-		m4_parameter.put(domainClassName, firstLetterToLowerCase(domainClassName));
+		m4_parameter.put(domainClassName, FileNameTool.firstLetterToLowerCase(domainClassName));
 		m4.setReturnValue(m4_returnValue);
 		m4.setName(m4_methodName);
 		m4.setParameter(m4_parameter);
@@ -115,18 +116,6 @@ public class MapperServiceImpl implements IMapperService {
 		result.setAcessModifier(ConstantInterfaceAccessModifier.PUBLIC);
 		result.setName(interfaceName);
 		result.setMethod(method);
-		return result;
-	}
-
-	private String firstLetterToLowerCase(String param) {
-		String result = "";
-		if (param.length() > 1) {
-			String classNameFirstChar = param.substring(0, 1).toLowerCase(); // 类名首字母小写
-			String classNameOtherChar = param.substring(1);
-			result = classNameFirstChar + classNameOtherChar;
-		} else {
-			result = param.toUpperCase();
-		}
 		return result;
 	}
 

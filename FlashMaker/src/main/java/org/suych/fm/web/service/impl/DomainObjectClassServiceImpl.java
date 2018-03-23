@@ -47,15 +47,16 @@ import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantOracleType;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.GenerateClassUtil;
+import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.web.model.model.FieldInfoModel;
 import org.suych.fm.web.model.model.ResultDoubleModel;
-import org.suych.fm.web.service.IDomainObjectService;
+import org.suych.fm.web.service.IDomainObjectClassService;
 
 @Service
-public class DomainObjectServiceImpl implements IDomainObjectService {
+public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 
 	@Override
 	public void generate() {
@@ -64,7 +65,7 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 		// 2.组装方法结构
 		List<MethodStructure> method = assembleMethodStructure(importPackageAndFieldStructure.second);
 		// 3.组装Domain类结构
-		ClassStructure doClassStructure = assembleDomainClassStructure(importPackageAndFieldStructure.first,
+		ClassStructure doClassStructure = assembleClassStructure(importPackageAndFieldStructure.first,
 				importPackageAndFieldStructure.second, method);
 		// 4.按规范输出至文件
 		GenerateClassUtil.generate(doClassStructure);
@@ -141,7 +142,7 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 	 * @param method 方法结构
 	 * @return
 	 */
-	private ClassStructure assembleDomainClassStructure(Set<String> importPackage, List<FieldStructure> field,
+	private ClassStructure assembleClassStructure(Set<String> importPackage, List<FieldStructure> field,
 			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
 		// 组装类结构
@@ -210,8 +211,10 @@ public class DomainObjectServiceImpl implements IDomainObjectService {
 
 	private MethodStructure assembleToStringMethod(List<FieldStructure> field) {
 		MethodStructure result = new MethodStructure();
-		List<String> annotation = new ArrayList<String>();
-		annotation.add(ANNOTATIONS_OVERRIDE);
+		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
+		AnnotationStructure as = new AnnotationStructure();
+		as.setName(ANNOTATIONS_OVERRIDE);
+		annotation.add(as);
 		StringBuilder methodBody = new StringBuilder();
 		String className = BaseInfo.getDomainClassName();
 		methodBody.append(TAB + TAB + RETURN + SPACE + DOUBLE_QUOTATION + className + SPACE + LEFT_SQUARE_BRACKET);

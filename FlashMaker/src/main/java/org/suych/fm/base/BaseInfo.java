@@ -15,9 +15,15 @@ public class BaseInfo {
 	private static String mapperInterfaceName = "";
 	// Mapper.xml名称
 	private static String mapperXmlName = "";
+	// Service接口名称
+	private static String serviceInterfaceName = "";
+	// Service实现类名称
+	private static String serviceImplName = "";
 
 	// 数据库表信息
 	private static TableInfoModel tableInfo;
+
+	private static final String INTERFACE_PREFIX = "I";
 
 	/**
 	 * 初始化基础信息
@@ -71,6 +77,24 @@ public class BaseInfo {
 	}
 
 	/**
+	 * 获取Service接口名称
+	 * 
+	 * @return
+	 */
+	public static String getServiceInterfaceName() {
+		return serviceInterfaceName;
+	}
+
+	/**
+	 * 获得ServiceImpl实现类名称
+	 * 
+	 * @return
+	 */
+	public static String getServiceImplName() {
+		return serviceImplName;
+	}
+
+	/**
 	 * 获取数据库表信息
 	 * 
 	 * @return
@@ -83,6 +107,9 @@ public class BaseInfo {
 		domainClassName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.DOMAIN_OBJECT);
 		mapperInterfaceName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
 		mapperXmlName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
+		serviceInterfaceName = INTERFACE_PREFIX
+				+ FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.SERVICE);
+		serviceImplName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.SERVICE_IMPL);
 	}
 
 }

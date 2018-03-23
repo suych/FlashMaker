@@ -1,9 +1,9 @@
 package org.suych.fm.web.service;
 
-public interface IDomainObjectService {
+public interface IDomainObjectClassService {
 
 	/**
-	 * 生成DO.java入口
+	 * 生成DO.java类
 	 */
 	void generate();
 }

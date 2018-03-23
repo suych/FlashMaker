@@ -28,7 +28,26 @@ public class FileNameTool {
 		} else {
 			result = tableName.toUpperCase();
 		}
+		// 4.拼接后缀
 		result += suffix.getType();
+		return result;
+	}
+
+	/**
+	 * 将字符串首字母小写
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public static String firstLetterToLowerCase(String param) {
+		String result = "";
+		if (param.length() > 1) {
+			String classNameFirstChar = param.substring(0, 1).toLowerCase(); // 类名首字母小写
+			String classNameOtherChar = param.substring(1);
+			result = classNameFirstChar + classNameOtherChar;
+		} else {
+			result = param.toUpperCase();
+		}
 		return result;
 	}
 

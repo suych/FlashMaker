@@ -4,7 +4,7 @@ public class BaseStructure {
 
 	/**
 	 * 结构名称
-	 * 类名/接口名/XML名
+	 * 类名/接口名/XML名/注解名/字段名
 	 */
 	private String name;
 

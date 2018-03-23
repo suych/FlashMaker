@@ -4,16 +4,22 @@ import java.util.List;
 
 import org.suych.fm.constant.ConstantFieldAccessModifier;
 import org.suych.fm.constant.ConstantFieldNonAccessModifier;
+import org.suych.fm.util.generate.model.BaseStructure;
 
 /**
  * 字段结构
  */
-public class FieldStructure {
+public class FieldStructure extends BaseStructure {
 
 	/**
 	 * 字段注释
 	 */
 	private String comments;
+
+	/**
+	 * 注解
+	 */
+	private List<AnnotationStructure> annotation;
 
 	/**
 	 * 访问控制修饰符
@@ -30,15 +36,10 @@ public class FieldStructure {
 	 */
 	private String javaType;
 
-	/**
-	 * 字段名
-	 */
-	private String name;
-
 	@Override
 	public String toString() {
-		return "FieldStructure [comments=" + comments + ", accessModifier=" + accessModifier + ", nonAccessModifier="
-				+ nonAccessModifier + ", javaType=" + javaType + ", name=" + name + "]";
+		return "FieldStructure [comments=" + comments + ", annotation=" + annotation + ", accessModifier="
+				+ accessModifier + ", nonAccessModifier=" + nonAccessModifier + ", javaType=" + javaType + "]";
 	}
 
 	public String getComments() {
@@ -47,6 +48,14 @@ public class FieldStructure {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public List<AnnotationStructure> getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(List<AnnotationStructure> annotation) {
+		this.annotation = annotation;
 	}
 
 	public ConstantFieldAccessModifier getAccessModifier() {
@@ -71,14 +80,6 @@ public class FieldStructure {
 
 	public void setJavaType(String javaType) {
 		this.javaType = javaType;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 }

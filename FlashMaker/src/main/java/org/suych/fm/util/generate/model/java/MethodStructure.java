@@ -19,7 +19,7 @@ public class MethodStructure {
 	/**
 	 * 注解
 	 */
-	private List<String> annotation;
+	private List<AnnotationStructure> annotation;
 
 	/**
 	 * 访问控制修饰符
@@ -66,11 +66,11 @@ public class MethodStructure {
 		this.comments = comments;
 	}
 
-	public List<String> getAnnotation() {
+	public List<AnnotationStructure> getAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(List<String> annotation) {
+	public void setAnnotation(List<AnnotationStructure> annotation) {
 		this.annotation = annotation;
 	}
 
