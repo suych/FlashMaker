@@ -25,6 +25,7 @@ public class ConstantJavaSyntax {
 	// java类型
 	public final static String VOID = "void";
 	public final static String STRING = "String";
+	public final static String DATE = "Date";
 	public final static String TIMESTAMP = "Timestamp";
 	public final static String OBJECT = "Object";
 	public final static String BIGDECIMAL = "BigDecimal";

@@ -6,6 +6,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.BOOLEAN;
 import static org.suych.fm.constant.ConstantJavaSyntax.BYTE;
 import static org.suych.fm.constant.ConstantJavaSyntax.BYTE_ARRAY;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
+import static org.suych.fm.constant.ConstantJavaSyntax.DATE;
 import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.FLOAT;
@@ -26,6 +27,8 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 import static org.suych.fm.constant.ConstantJavaSyntax.THIS;
 import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
+import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
+import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +60,8 @@ import org.suych.fm.web.service.IDomainObjectClassService;
 
 @Service
 public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
+
+	private static final String ARRAYS_TOSTRING = "Arrays.toString";
 
 	@Override
 	public void generate() {
@@ -99,6 +104,10 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 				importPackage.add(ConstantImportPackage.BIGDECIMAL);
 			} else if (LIST.equals(javaType)) {
 				importPackage.add(ConstantImportPackage.LIST);
+			} else if (DATE.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.DATE);
+			} else if (BYTE_ARRAY.equals(javaType)) {
+				importPackage.add(ConstantImportPackage.ARRAYS);
 			}
 
 		}
@@ -170,22 +179,18 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 				|| ConstantOracleType.NVARCHAR2.equals(data_type) || ConstantOracleType.CLOB.equals(data_type)) {
 			return STRING;
 		}
-		if (ConstantOracleType.DATE.equals(data_type) || ConstantOracleType.TIMESTAMP.equals(data_type)) {
+		if (ConstantOracleType.TIMESTAMP.equals(data_type)) {
 			return TIMESTAMP;
+		}
+		if (ConstantOracleType.DATE.equals(data_type)) {
+			return DATE;
 		}
 		if (ConstantOracleType.BLOB.equals(data_type)) {
 			return BYTE_ARRAY;
 		}
-		if (ConstantOracleType.INTEGER.equals(data_type)) {
-			return INTEGER;
-		}
-		if (ConstantOracleType.LONG.equals(data_type)) {
-			return LONG;
-		}
 		if (ConstantOracleType.FLOAT.equals(data_type)) {
 			return FLOAT;
 		}
-
 		if (ConstantOracleType.NUMBER.equals(data_type)) {
 			if ("".equals(data_precision)) {
 				return BIGDECIMAL;
@@ -219,12 +224,20 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 		String className = BaseInfo.getDomainClassName();
 		methodBody.append(TAB + TAB + RETURN + SPACE + DOUBLE_QUOTATION + className + SPACE + LEFT_SQUARE_BRACKET);
 		for (int i = 0, j = field.size(); i < j; i++) {
-			String fieldName = field.get(i).getName();
+			FieldStructure fs = field.get(i);
+			String toStringField = "";
+			String fieldName = fs.getName();
+			String javaType = fs.getJavaType();
+			if (BYTE_ARRAY.equals(javaType)) {
+				toStringField = ARRAYS_TOSTRING + LEFT_BRACKET + fieldName + RIGHT_BRACKET;
+			} else {
+				toStringField = fieldName;
+			}
 			if (i != j - 1) {
-				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + fieldName
+				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + toStringField
 						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + COMMA + SPACE);
 			} else {
-				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + fieldName
+				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + toStringField
 						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + RIGHT_SQUARE_BRACKET + DOUBLE_QUOTATION
 						+ SEMICOLON + RETURN_NEWLINE);
 			}

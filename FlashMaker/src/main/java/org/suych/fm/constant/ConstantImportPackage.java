@@ -6,6 +6,7 @@ public class ConstantImportPackage {
 	public final static String BIGDECIMAL = "java.math.BigDecimal";
 	public final static String DATE = "java.util.Date";
 	public final static String LIST = "java.util.List";
+	public final static String ARRAYS = "java.util.Arrays";
 
 	public final static String SPRING_AUTOWIRED = "org.springframework.beans.factory.annotation.Autowired";
 	public final static String SPRING_SERVICE = "org.springframework.stereotype.Service";
