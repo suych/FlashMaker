@@ -14,11 +14,13 @@
 
     1.DO.java(数据库映射POJO文件)
     2.Mapper.java(MyBatis的接口文件)
-    3.Mapper.xml(MyBatis的sql配置文件)
+    3.Mapper.xml(MyBatis的sql配置文件)    
+    4.IService.java(Spring的Service接口文件)
+    5.ServiceImpl.java(Service的实现类)
     
 当前版本：<br>
 
-    0.0.3
+    0.0.5
 
 开发环境配置如下：<br>
 
