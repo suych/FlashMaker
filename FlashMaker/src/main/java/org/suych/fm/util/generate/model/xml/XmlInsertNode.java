@@ -1,5 +1,7 @@
 package org.suych.fm.util.generate.model.xml;
 
+import java.util.List;
+
 /**
  * insert节点
  */
@@ -15,9 +17,14 @@ public class XmlInsertNode extends XmlCommonNode {
 	 */
 	private String text;
 
+	/**
+	 * trim节点
+	 */
+	private List<XmlTrimNode> trim;
+
 	@Override
 	public String toString() {
-		return "XmlInsertNode [parameterType=" + parameterType + ", text=" + text + "]";
+		return "XmlInsertNode [parameterType=" + parameterType + ", text=" + text + ", trim=" + trim + "]";
 	}
 
 	public String getParameterType() {
@@ -34,6 +41,14 @@ public class XmlInsertNode extends XmlCommonNode {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public List<XmlTrimNode> getTrim() {
+		return trim;
+	}
+
+	public void setTrim(List<XmlTrimNode> trim) {
+		this.trim = trim;
 	}
 
 }

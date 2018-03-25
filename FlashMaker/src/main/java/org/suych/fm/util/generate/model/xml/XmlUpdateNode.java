@@ -1,5 +1,7 @@
 package org.suych.fm.util.generate.model.xml;
 
+import java.util.List;
+
 /**
  * update节点
  */
@@ -11,13 +13,24 @@ public class XmlUpdateNode extends XmlCommonNode {
 	private String parameterType;
 
 	/**
-	 * sql语句
+	 * sql语句第一部分
 	 */
-	private String text;
+	private String textOne;
+
+	/**
+	 * trim节点
+	 */
+	private List<XmlTrimNode> trim;
+
+	/**
+	 * sql语句第二部分
+	 */
+	private String textTwo;
 
 	@Override
 	public String toString() {
-		return "XmlUpdateNode [parameterType=" + parameterType + ", text=" + text + "]";
+		return "XmlUpdateNode [parameterType=" + parameterType + ", textOne=" + textOne + ", trim=" + trim
+				+ ", textTwo=" + textTwo + "]";
 	}
 
 	public String getParameterType() {
@@ -28,12 +41,28 @@ public class XmlUpdateNode extends XmlCommonNode {
 		this.parameterType = parameterType;
 	}
 
-	public String getText() {
-		return text;
+	public String getTextOne() {
+		return textOne;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setTextOne(String textOne) {
+		this.textOne = textOne;
+	}
+
+	public List<XmlTrimNode> getTrim() {
+		return trim;
+	}
+
+	public void setTrim(List<XmlTrimNode> trim) {
+		this.trim = trim;
+	}
+
+	public String getTextTwo() {
+		return textTwo;
+	}
+
+	public void setTextTwo(String textTwo) {
+		this.textTwo = textTwo;
 	}
 
 }

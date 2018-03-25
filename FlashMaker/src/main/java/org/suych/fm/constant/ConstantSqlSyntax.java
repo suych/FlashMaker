@@ -13,4 +13,6 @@ public class ConstantSqlSyntax {
 	public final static String SET = "SET";
 	public final static String IN = "IN";
 
+	public final static String JDBCTYPE = "jdbcType";
+
 }

@@ -11,6 +11,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.FLOAT;
 import static org.suych.fm.constant.ConstantJavaSyntax.INTEGER;
+import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_SQUARE_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.LIST;
 import static org.suych.fm.constant.ConstantJavaSyntax.LONG;
@@ -18,6 +19,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.PLUS_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN_NEWLINE;
+import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_SQUARE_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
 import static org.suych.fm.constant.ConstantJavaSyntax.SHORT;
@@ -27,8 +29,6 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 import static org.suych.fm.constant.ConstantJavaSyntax.THIS;
 import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
-import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
-import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 import org.suych.fm.base.BaseInfo;
@@ -48,6 +46,7 @@ import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantOracleType;
+import org.suych.fm.tool.DataTypeTool;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.GenerateClassUtil;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
@@ -86,9 +85,8 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 		List<FieldStructure> fieldStructure = new ArrayList<FieldStructure>(); // 字段类型/字段名/字段注释
 		for (FieldInfoModel field : BaseInfo.getTableInfo().getField()) {
 			FieldStructure fs = new FieldStructure();
-			String data_type = parseDataType(field.getDataType());
 			String data_precision = StringUtil.null2Empty(field.getDataPrecision());
-			String javaType = parseJavaType(data_type, data_precision);
+			String javaType = parseDataType2JavaType(field.getDataType(), data_precision);
 
 			// 组装字段结构
 			fs.setComments(StringUtil.null2Empty(field.getComments()));
@@ -117,7 +115,8 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	/**
 	 * 组装方法结构
 	 * 
-	 * @param field 字段结构
+	 * @param field
+	 *            字段结构
 	 * @return
 	 */
 	private List<MethodStructure> assembleMethodStructure(List<FieldStructure> field) {
@@ -146,9 +145,12 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	/**
 	 * 组装DO类结构
 	 * 
-	 * @param importPackage 引入包名
-	 * @param field 字段结构
-	 * @param method 方法结构
+	 * @param importPackage
+	 *            引入包名
+	 * @param field
+	 *            字段结构
+	 * @param method
+	 *            方法结构
 	 * @return
 	 */
 	private ClassStructure assembleClassStructure(Set<String> importPackage, List<FieldStructure> field,
@@ -167,31 +169,25 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 		return result;
 	}
 
-	private String parseDataType(String data_type) {
-		data_type = data_type.toUpperCase();
-		Pattern pattern_type = Pattern.compile(".*?(?=\\()");
-		Matcher matcher_type = pattern_type.matcher(data_type);
-		return matcher_type.find() ? matcher_type.group(0) : data_type;
-	}
-
-	private String parseJavaType(String data_type, String data_precision) {
-		if (ConstantOracleType.VARCHAR2.equals(data_type) || ConstantOracleType.CHAR.equals(data_type)
-				|| ConstantOracleType.NVARCHAR2.equals(data_type) || ConstantOracleType.CLOB.equals(data_type)) {
+	private String parseDataType2JavaType(String data_Type, String data_precision) {
+		String dataType = DataTypeTool.parseDataType(data_Type);
+		if (ConstantOracleType.VARCHAR2.equals(dataType) || ConstantOracleType.CHAR.equals(dataType)
+				|| ConstantOracleType.NVARCHAR2.equals(dataType) || ConstantOracleType.CLOB.equals(dataType)) {
 			return STRING;
 		}
-		if (ConstantOracleType.TIMESTAMP.equals(data_type)) {
+		if (ConstantOracleType.TIMESTAMP.equals(dataType)) {
 			return TIMESTAMP;
 		}
-		if (ConstantOracleType.DATE.equals(data_type)) {
+		if (ConstantOracleType.DATE.equals(dataType)) {
 			return DATE;
 		}
-		if (ConstantOracleType.BLOB.equals(data_type)) {
+		if (ConstantOracleType.BLOB.equals(dataType)) {
 			return BYTE_ARRAY;
 		}
-		if (ConstantOracleType.FLOAT.equals(data_type)) {
+		if (ConstantOracleType.FLOAT.equals(dataType)) {
 			return FLOAT;
 		}
-		if (ConstantOracleType.NUMBER.equals(data_type)) {
+		if (ConstantOracleType.NUMBER.equals(dataType)) {
 			if ("".equals(data_precision)) {
 				return BIGDECIMAL;
 			} else {
@@ -233,13 +229,12 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 			} else {
 				toStringField = fieldName;
 			}
+			methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + toStringField
+					+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION);
 			if (i != j - 1) {
-				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + toStringField
-						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + COMMA + SPACE);
+				methodBody.append(COMMA + SPACE);
 			} else {
-				methodBody.append(fieldName + EQUAL_SIGN + DOUBLE_QUOTATION + SPACE + PLUS_SIGN + SPACE + toStringField
-						+ SPACE + PLUS_SIGN + SPACE + DOUBLE_QUOTATION + RIGHT_SQUARE_BRACKET + DOUBLE_QUOTATION
-						+ SEMICOLON + RETURN_NEWLINE);
+				methodBody.append(RIGHT_SQUARE_BRACKET + DOUBLE_QUOTATION + SEMICOLON + RETURN_NEWLINE);
 			}
 		}
 		result.setAnnotation(annotation);

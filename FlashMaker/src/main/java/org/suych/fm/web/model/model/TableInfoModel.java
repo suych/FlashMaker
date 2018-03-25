@@ -28,6 +28,11 @@ public class TableInfoModel {
 	private String primaryKey;
 
 	/**
+	 * 主键数据类型
+	 */
+	private String primaryKeyDataType;
+
+	/**
 	 * 字段信息
 	 */
 	private List<FieldInfoModel> field;
@@ -35,7 +40,8 @@ public class TableInfoModel {
 	@Override
 	public String toString() {
 		return "TableInfoModel [tableName=" + tableName + ", tableType=" + tableType + ", comments=" + comments
-				+ ", primaryKey=" + primaryKey + ", field=" + field + "]";
+				+ ", primaryKey=" + primaryKey + ", primaryKeyDataType=" + primaryKeyDataType + ", field=" + field
+				+ "]";
 	}
 
 	public String getTableName() {
@@ -68,6 +74,14 @@ public class TableInfoModel {
 
 	public void setPrimaryKey(String primaryKey) {
 		this.primaryKey = primaryKey;
+	}
+
+	public String getPrimaryKeyDataType() {
+		return primaryKeyDataType;
+	}
+
+	public void setPrimaryKeyDataType(String primaryKeyDataType) {
+		this.primaryKeyDataType = primaryKeyDataType;
 	}
 
 	public List<FieldInfoModel> getField() {

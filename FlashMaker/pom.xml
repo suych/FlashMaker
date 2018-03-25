@@ -9,7 +9,7 @@
 	<repositories>
 		<repository>
 			<id>public</id>
-			<url>http://192.168.25.137:8081/nexus/content/groups/public/</url>
+			<url>http://127.0.0.1:8081/nexus/content/groups/public/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
@@ -148,9 +148,9 @@
 
 		<!--*****start***** 数据库连接包 *****start***** -->
 		<dependency>
-			<groupId>com.pcd</groupId>
-			<artifactId>oracle11</artifactId>
-			<version>1.0</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>11.2.0.4</version>
 		</dependency>
 		<!--*****end***** 数据库连接包 *****end***** -->
 

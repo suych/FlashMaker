@@ -13,9 +13,13 @@ import org.dom4j.io.XMLWriter;
 import org.suych.fm.util.generate.model.xml.XmlCommonNode;
 import org.suych.fm.util.generate.model.xml.XmlDeleteNode;
 import org.suych.fm.util.generate.model.xml.XmlForeachNode;
+import org.suych.fm.util.generate.model.xml.XmlIfNode;
+import org.suych.fm.util.generate.model.xml.XmlIncludeNode;
 import org.suych.fm.util.generate.model.xml.XmlInsertNode;
 import org.suych.fm.util.generate.model.xml.XmlSelectNode;
+import org.suych.fm.util.generate.model.xml.XmlSqlNode;
 import org.suych.fm.util.generate.model.xml.XmlStructure;
+import org.suych.fm.util.generate.model.xml.XmlTrimNode;
 import org.suych.fm.util.generate.model.xml.XmlUpdateNode;
 
 public class GenerateXmlUtil extends GenerateCommonUtil {
@@ -60,40 +64,141 @@ public class GenerateXmlUtil extends GenerateCommonUtil {
 
 		List<XmlCommonNode> node = xs.getNode();
 		for (XmlCommonNode xmlCommonNode : node) {
-			if (xmlCommonNode instanceof XmlSelectNode) {
-				XmlSelectNode selectNode = (XmlSelectNode) xmlCommonNode;
-				Element selectElement = mapperElement.addElement("select");
-				selectElement.addAttribute("id", selectNode.getId());
-				selectElement.addAttribute("resultType", selectNode.getResultType());
-				selectElement.setText(selectNode.getText());
+			if (xmlCommonNode instanceof XmlSqlNode) {
+				assembleSqlElement(mapperElement, xmlCommonNode);
+			} else if (xmlCommonNode instanceof XmlSelectNode) {
+				assembleSelectElement(mapperElement, xmlCommonNode);
 			} else if (xmlCommonNode instanceof XmlInsertNode) {
-				XmlInsertNode insertNode = (XmlInsertNode) xmlCommonNode;
-				Element insertElement = mapperElement.addElement("insert");
-				insertElement.addAttribute("id", insertNode.getId());
-				insertElement.addAttribute("parameterType", insertNode.getParameterType());
-				insertElement.setText(insertNode.getText());
+				assembleInsertElement(mapperElement, xmlCommonNode);
 			} else if (xmlCommonNode instanceof XmlUpdateNode) {
-				XmlUpdateNode updateNode = (XmlUpdateNode) xmlCommonNode;
-				Element updateElement = mapperElement.addElement("update");
-				updateElement.addAttribute("id", updateNode.getId());
-				updateElement.addAttribute("parameterType", updateNode.getParameterType());
-				updateElement.setText(updateNode.getText());
+				assembleUpdateElement(mapperElement, xmlCommonNode);
 			} else if (xmlCommonNode instanceof XmlDeleteNode) {
-				XmlDeleteNode deleteNode = (XmlDeleteNode) xmlCommonNode;
-				Element deleteElement = mapperElement.addElement("delete");
-				deleteElement.addText(deleteNode.getTextOne());
-				if (deleteNode.getForeach() != null) {
-					XmlForeachNode foreachNode = deleteNode.getForeach();
-					Element foreachElement = deleteElement.addElement("foreach");
-					foreachElement.addAttribute("collection", foreachNode.getCollection());
-					foreachElement.addAttribute("item", foreachNode.getItem());
-					foreachElement.addAttribute("separator", foreachNode.getSeparator());
-					foreachElement.setText(foreachNode.getText());
-				}
-				deleteElement.addText(deleteNode.getTextTwo());
+				assembleDeleteElement(mapperElement, xmlCommonNode);
 			}
 		}
 		return document;
+	}
+
+	private static void assembleSqlElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlSqlNode sqlNode = (XmlSqlNode) xmlCommonNode;
+		Element sqlElement = mapperElement.addElement("sql");
+		sqlElement.addAttribute("id", sqlNode.getId());
+		sqlElement.setText(sqlNode.getText());
+	}
+
+	private static void assembleSelectElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlSelectNode selectNode = (XmlSelectNode) xmlCommonNode;
+		Element selectElement = mapperElement.addElement("select");
+		selectElement.addAttribute("id", selectNode.getId());
+		selectElement.addAttribute("resultType", selectNode.getResultType());
+		selectElement.addText(selectNode.getTextOne());
+		if (selectNode.getInclude() != null) {
+			XmlIncludeNode includeNode = selectNode.getInclude();
+			Element includeElement = selectElement.addElement("include");
+			includeElement.addAttribute("refid", includeNode.getRefid());
+		}
+		selectElement.addText(selectNode.getTextTwo());
+	}
+
+	private static void assembleInsertElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlInsertNode insertNode = (XmlInsertNode) xmlCommonNode;
+		Element insertElement = mapperElement.addElement("insert");
+		insertElement.addAttribute("id", insertNode.getId());
+		insertElement.addAttribute("parameterType", insertNode.getParameterType());
+		insertElement.setText(insertNode.getText());
+		if (insertNode.getTrim() != null) {
+			List<XmlTrimNode> trims = insertNode.getTrim();
+			for (XmlTrimNode trim : trims) {
+				Element trimElement = insertElement.addElement("trim");
+				String prefix = trim.getPrefix();
+				String suffix = trim.getSuffix();
+				String suffixOverrides = trim.getSuffixOverrides();
+				String prefixOverrides = trim.getPrefixOverrides();
+				List<XmlIfNode> ifNodes = trim.getIfNode();
+				if (prefix != null) {
+					trimElement.addAttribute("prefix", prefix);
+				}
+				if (suffix != null) {
+					trimElement.addAttribute("suffix", suffix);
+				}
+				if (suffixOverrides != null) {
+					trimElement.addAttribute("suffixOverrides", suffixOverrides);
+				}
+				if (prefixOverrides != null) {
+					trimElement.addAttribute("prefixOverrides", prefixOverrides);
+				}
+				if (ifNodes != null) {
+					for (XmlIfNode ifNode : ifNodes) {
+						Element ifElement = trimElement.addElement("if");
+						String test = ifNode.getTest();
+						String text = ifNode.getText();
+						if (test != null) {
+							ifElement.addAttribute("test", test);
+							ifElement.setText(text);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static void assembleUpdateElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlUpdateNode updateNode = (XmlUpdateNode) xmlCommonNode;
+		Element updateElement = mapperElement.addElement("update");
+		updateElement.addAttribute("id", updateNode.getId());
+		updateElement.addAttribute("parameterType", updateNode.getParameterType());
+		updateElement.addText(updateNode.getTextOne());
+		if (updateNode.getTrim() != null) {
+			List<XmlTrimNode> trims = updateNode.getTrim();
+			for (XmlTrimNode trim : trims) {
+				Element trimElement = updateElement.addElement("trim");
+				String prefix = trim.getPrefix();
+				String suffix = trim.getSuffix();
+				String suffixOverrides = trim.getSuffixOverrides();
+				String prefixOverrides = trim.getPrefixOverrides();
+				List<XmlIfNode> ifNodes = trim.getIfNode();
+				if (prefix != null) {
+					trimElement.addAttribute("prefix", prefix);
+				}
+				if (suffix != null) {
+					trimElement.addAttribute("suffix", suffix);
+				}
+				if (suffixOverrides != null) {
+					trimElement.addAttribute("suffixOverrides", suffixOverrides);
+				}
+				if (prefixOverrides != null) {
+					trimElement.addAttribute("prefixOverrides", prefixOverrides);
+				}
+				if (ifNodes != null) {
+					for (XmlIfNode ifNode : ifNodes) {
+						Element ifElement = trimElement.addElement("if");
+						String test = ifNode.getTest();
+						String text = ifNode.getText();
+						if (test != null) {
+							ifElement.addAttribute("test", test);
+							ifElement.setText(text);
+						}
+					}
+				}
+			}
+		}
+		updateElement.addText(updateNode.getTextTwo());
+	}
+
+	private static void assembleDeleteElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlDeleteNode deleteNode = (XmlDeleteNode) xmlCommonNode;
+		Element deleteElement = mapperElement.addElement("delete");
+		deleteElement.addAttribute("id", deleteNode.getId());
+		deleteElement.addText(deleteNode.getTextOne());
+		if (deleteNode.getForeach() != null) {
+			XmlForeachNode foreachNode = deleteNode.getForeach();
+			Element foreachElement = deleteElement.addElement("foreach");
+			foreachElement.addAttribute("collection", foreachNode.getCollection());
+			foreachElement.addAttribute("item", foreachNode.getItem());
+			foreachElement.addAttribute("separator", foreachNode.getSeparator());
+			foreachElement.setText(foreachNode.getText());
+		}
+		deleteElement.addText(deleteNode.getTextTwo());
 	}
 
 	private static XMLWriter getXmlWriter(FileWriter fw, Document document) throws IOException {

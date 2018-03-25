@@ -1,33 +1,29 @@
 package org.suych.fm.web.service.impl;
 
-import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_ANGLE_BRACKETS;
-import static org.suych.fm.constant.ConstantJavaSyntax.LIST;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
-import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_ANGLE_BRACKETS;
-import static org.suych.fm.constant.ConstantJavaSyntax.STRING;
-import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
-import org.suych.fm.constant.ConstantMethodName;
-import org.suych.fm.constant.ConstantParameterName;
-import org.suych.fm.tool.FileNameTool;
+import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.generate.GenerateInterfaceUtil;
 import org.suych.fm.util.generate.model.java.InterfaceStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.web.service.IMapperInterfaceService;
+import org.suych.fm.web.service.strategy.mapper.MapperMethodFactory;
 
 @Service
 public class MapperInterfaceServiceImpl implements IMapperInterfaceService {
+
+	@Autowired
+	MapperMethodFactory factory;
 
 	@Override
 	public void generate() {
@@ -40,65 +36,19 @@ public class MapperInterfaceServiceImpl implements IMapperInterfaceService {
 	}
 
 	private List<MethodStructure> assembleMethodStructure() {
-		String domainClassName = BaseInfo.getDomainClassName();
-		// 5个方法
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
-
 		// 1.List<DO类名> list()
-		MethodStructure m1 = new MethodStructure();
-		String m1_returnValue = LIST + LEFT_ANGLE_BRACKETS + domainClassName + RIGHT_ANGLE_BRACKETS;
-		String m1_methodName = ConstantMethodName.LIST;
-		Map<String, String> m1_parameter = new HashMap<String, String>();
-		m1.setReturnValue(m1_returnValue);
-		m1.setName(m1_methodName);
-		m1.setParameter(m1_parameter);
-
-		// 2.DO类名 getById(String id);
-		MethodStructure m2 = new MethodStructure();
-		String m2_returnValue = domainClassName;
-		String m2_methodName = ConstantMethodName.GET_BY_ID;
-		Map<String, String> m2_parameter = new HashMap<String, String>();
-		m2_parameter.put(STRING, ConstantParameterName.ID);
-		m2.setReturnValue(m2_returnValue);
-		m2.setName(m2_methodName);
-		m2.setParameter(m2_parameter);
-
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_LIST));
+		// 2.DO类名 getByPrimaryKey(String id);
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_GET_BY_PRIMARYKEY));
 		// 3.void save(DO类名 DO类名首字母小写);
-		MethodStructure m3 = new MethodStructure();
-		String m3_returnValue = VOID;
-		String m3_methodName = ConstantMethodName.SAVE;
-		Map<String, String> m3_parameter = new HashMap<String, String>();
-		m3_parameter.put(domainClassName, FileNameTool.firstLetterToLowerCase(domainClassName));
-		m3.setReturnValue(m3_returnValue);
-		m3.setName(m3_methodName);
-		m3.setParameter(m3_parameter);
-
-		// 4.void updateById(DO类名 DO类名首字母小写);
-		MethodStructure m4 = new MethodStructure();
-		String m4_returnValue = VOID;
-		String m4_methodName = ConstantMethodName.UPDATE_BY_ID;
-		Map<String, String> m4_parameter = new HashMap<String, String>();
-		m4_parameter.put(domainClassName, FileNameTool.firstLetterToLowerCase(domainClassName));
-		m4.setReturnValue(m4_returnValue);
-		m4.setName(m4_methodName);
-		m4.setParameter(m4_parameter);
-
-		// 5.void removeByIds(List<String> ids);
-		MethodStructure m5 = new MethodStructure();
-		String m5_returnValue = VOID;
-		String m5_methodName = ConstantMethodName.REMOVE_BY_IDS;
-		Map<String, String> m5_parameter = new HashMap<String, String>();
-		String type = LIST + LEFT_ANGLE_BRACKETS + STRING + RIGHT_ANGLE_BRACKETS;
-		m5_parameter.put(type, ConstantParameterName.IDS);
-		m5.setReturnValue(m5_returnValue);
-		m5.setName(m5_methodName);
-		m5.setParameter(m5_parameter);
-
-		result.add(m1);
-		result.add(m2);
-		result.add(m3);
-		result.add(m4);
-		result.add(m5);
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_SAVE));
+		// 4.void saveSelective(DO类名 DO类名首字母小写);
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_SAVE_SELECTIVE));
+		// 5.void updateByPrimaryKeySelective(DO类名 DO类名首字母小写);
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_UPDATE_BY_PRIMARYKEY_SELECTIVE));
+		// 6.void removeByPrimaryKeys(List<String> ids);
+		result.add(factory.assemble(ConstantStrategyComponentName.MAPPER_REMOVE_BY_PRIMARYKEYS));
 		return result;
 	}
 

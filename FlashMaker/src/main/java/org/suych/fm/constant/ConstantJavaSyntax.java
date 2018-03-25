@@ -37,6 +37,7 @@ public class ConstantJavaSyntax {
 	public final static String FLOAT = "Float";
 	public final static String BYTE_ARRAY = "Byte[]";
 	public final static String LIST = "List";
+	public final static String NULL = "null";
 
 	// 注解
 	public final static String ANNOTATIONS_OVERRIDE = "@Override";
@@ -66,6 +67,7 @@ public class ConstantJavaSyntax {
 	public final static String PLUS_SIGN = "+";
 	public final static String EQUAL_SIGN = "=";
 	public final static String NUMBER_SIGN = "#";
+	public final static String EXCLAMATION_POINT = "!";
 	public final static String SPACE = " ";
 
 	public final static String RETURN_NEWLINE = "\r\n";

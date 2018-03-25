@@ -38,7 +38,17 @@ public class TableInfoServiceImpl implements ITableInfoService {
 			primaryKey = fieldInfo.get(0).getColumnName();
 		}
 
+		// 4.加载主键的字段类型
+		String primaryKeyDataType = "";
+		for (FieldInfoModel field : fieldInfo) {
+			if (field.getColumnName().equals(primaryKey.toLowerCase())) {
+				primaryKeyDataType = field.getDataType();
+				break;
+			}
+		}
+
 		result.setPrimaryKey(primaryKey.toLowerCase());
+		result.setPrimaryKeyDataType(primaryKeyDataType);
 		result.setField(fieldInfo);
 		return result;
 	}
