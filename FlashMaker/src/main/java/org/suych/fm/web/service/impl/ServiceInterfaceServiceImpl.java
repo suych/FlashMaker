@@ -70,6 +70,7 @@ public class ServiceInterfaceServiceImpl implements IServiceInterfaceService {
 		importPackage.add(ConstantImportPackage.LIST);
 		String domainPackage = localPackage + POINT + BaseInfo.getDomainClassName(); // DO文件包名
 		importPackage.add(domainPackage);
+		importPackage.add(ConstantImportPackage.PAGEINFO);
 
 		result.setLocalPackage(localPackage);
 		result.setImportPackage(importPackage);

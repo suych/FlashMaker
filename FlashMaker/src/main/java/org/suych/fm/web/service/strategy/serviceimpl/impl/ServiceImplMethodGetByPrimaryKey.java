@@ -28,6 +28,7 @@ import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.serviceimpl.IServiceImplMethod;
 
 @Component(ConstantStrategyComponentName.SERVICE_IMPL_GET_BY_PRIMARYKEY)
@@ -48,13 +49,16 @@ public class ServiceImplMethodGetByPrimaryKey implements IServiceImplMethod {
 		annotation.add(transactional);
 		annotation.add(override);
 
-		Map<String, String> parameter = new HashMap<String, String>();
-		parameter.put(STRING, ConstantParameterName.PRIMARY_KEY);
+		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
+		ParamterStructure p1 = new ParamterStructure();
+		p1.setType(STRING);
+		p1.setName(ConstantParameterName.PRIMARY_KEY);
+		parameter.add(p1);
 
 		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
 		String methodBody = TAB + TAB + RETURN + SPACE + FileNameTool.firstLetterToLowerCase(mapperInterfaceName)
-				+ POINT + ConstantMethodName.GET_BY_PRIMARYKEY + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY + RIGHT_BRACKET
-				+ SEMICOLON + RETURN_NEWLINE;
+				+ POINT + ConstantMethodName.GET_BY_PRIMARYKEY + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY
+				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

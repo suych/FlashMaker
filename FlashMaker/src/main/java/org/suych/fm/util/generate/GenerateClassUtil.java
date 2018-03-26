@@ -26,9 +26,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
@@ -39,6 +36,7 @@ import org.suych.fm.constant.ConstantMethodNonAccessModifier;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.util.generate.model.java.ParamterStructure;
 
 public class GenerateClassUtil extends GenerateCommonUtil {
 
@@ -214,18 +212,15 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 			fw.write(methodName);
 			// 参数<类型，参数名>
 			fw.write(LEFT_BRACKET);
-			Map<String, String> parameters = method.getParameter();
+			List<ParamterStructure> parameters = method.getParameter();
 			if (parameters != null && parameters.size() > 0) {
-				Set<Entry<String, String>> javaTypes = parameters.entrySet();
-				int current = 0;
-				int total = javaTypes.size();
-				for (Entry<String, String> parameter : javaTypes) {
-					String javaType = parameter.getKey();
-					String fieldName = parameter.getValue();
-					if (current != total - 1) {
-						fw.write(javaType + SPACE + fieldName + COMMA + SPACE);
-					} else {
-						fw.write(javaType + SPACE + fieldName);
+				for (int i = 0, j = parameters.size(); i < j; i++) {
+					ParamterStructure parameter = parameters.get(i);
+					String javaType = parameter.getType();
+					String fieldName = parameter.getName();
+					fw.write(javaType + SPACE + fieldName);
+					if (i != j - 1) {
+						fw.write(COMMA + SPACE);
 					}
 				}
 			}

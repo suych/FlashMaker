@@ -42,9 +42,9 @@ public class MethodStructure {
 	private String name;
 
 	/**
-	 * 参数<类型，参数名>
+	 * 参数
 	 */
-	private Map<String, String> parameter;
+	private List<ParamterStructure> parameter;
 
 	/**
 	 * 方法体
@@ -106,11 +106,11 @@ public class MethodStructure {
 		this.name = name;
 	}
 
-	public Map<String, String> getParameter() {
+	public List<ParamterStructure> getParameter() {
 		return parameter;
 	}
 
-	public void setParameter(Map<String, String> parameter) {
+	public void setParameter(List<ParamterStructure> parameter) {
 		this.parameter = parameter;
 	}
 

@@ -15,9 +15,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
@@ -28,6 +26,7 @@ import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.serviceimpl.IServiceImplMethod;
 
 @Component(ConstantStrategyComponentName.SERVICE_IMPL_REMOVE_BY_PRIMARYKEYS)
@@ -45,14 +44,17 @@ public class ServiceImplMethodRemoveByPrimaryKeys implements IServiceImplMethod 
 		annotation.add(transactional);
 		annotation.add(override);
 
-		Map<String, String> parameter = new HashMap<String, String>();
+		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
+		ParamterStructure p1 = new ParamterStructure();
 		String type = LIST + LEFT_ANGLE_BRACKETS + STRING + RIGHT_ANGLE_BRACKETS;
-		parameter.put(type, ConstantParameterName.PRIMARY_KEY_S);
+		p1.setType(type);
+		p1.setName(ConstantParameterName.PRIMARY_KEY_S);
+		parameter.add(p1);
 
 		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
 		String methodBody = TAB + TAB + FileNameTool.firstLetterToLowerCase(mapperInterfaceName) + POINT
-				+ ConstantMethodName.REMOVE_BY_PRIMARYKEYS + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY_S + RIGHT_BRACKET
-				+ SEMICOLON + RETURN_NEWLINE;
+				+ ConstantMethodName.REMOVE_BY_PRIMARYKEYS + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY_S
+				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

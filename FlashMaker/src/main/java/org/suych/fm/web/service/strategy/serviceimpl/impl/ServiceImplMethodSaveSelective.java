@@ -11,9 +11,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
@@ -23,6 +21,7 @@ import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.serviceimpl.IServiceImplMethod;
 
 @Component(ConstantStrategyComponentName.SERVICE_IMPL_SAVE_SELECTIVE)
@@ -31,6 +30,7 @@ public class ServiceImplMethodSaveSelective implements IServiceImplMethod {
 	@Override
 	public MethodStructure assemble() {
 		MethodStructure result = new MethodStructure();
+		String domainClassName = BaseInfo.getDomainClassName();
 
 		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
 		AnnotationStructure transactional = new AnnotationStructure();
@@ -40,9 +40,11 @@ public class ServiceImplMethodSaveSelective implements IServiceImplMethod {
 		annotation.add(transactional);
 		annotation.add(override);
 
-		Map<String, String> parameter = new HashMap<String, String>();
-		String domainClassName = BaseInfo.getDomainClassName();
-		parameter.put(domainClassName, FileNameTool.firstLetterToLowerCase(domainClassName));
+		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
+		ParamterStructure p1 = new ParamterStructure();
+		p1.setType(domainClassName);
+		p1.setName(FileNameTool.firstLetterToLowerCase(domainClassName));
+		parameter.add(p1);
 
 		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
 		String methodBody = TAB + TAB + FileNameTool.firstLetterToLowerCase(mapperInterfaceName) + POINT

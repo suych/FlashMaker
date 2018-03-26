@@ -1,5 +1,8 @@
 package org.suych.fm.constant;
 
+/**
+ * Java语法常量
+ */
 public class ConstantJavaSyntax {
 
 	public final static String PACKAGE = "package";

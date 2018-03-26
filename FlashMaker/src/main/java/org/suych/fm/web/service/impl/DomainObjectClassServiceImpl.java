@@ -31,10 +31,8 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -53,6 +51,7 @@ import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
+import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.model.model.FieldInfoModel;
 import org.suych.fm.web.model.model.ResultDoubleModel;
 import org.suych.fm.web.service.IDomainObjectClassService;
@@ -257,8 +256,13 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 
 	private MethodStructure assembleSetMethod(String fieldName, String javaType, String setMethodName) {
 		MethodStructure result = new MethodStructure();
-		Map<String, String> parameter = new HashMap<String, String>();
-		parameter.put(javaType, fieldName);
+
+		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
+		ParamterStructure p1 = new ParamterStructure();
+		p1.setType(javaType);
+		p1.setName(fieldName);
+		parameter.add(p1);
+
 		String methodBody = TAB + TAB + THIS + POINT + fieldName + SPACE + EQUAL_SIGN + SPACE + fieldName + SEMICOLON
 				+ RETURN_NEWLINE;
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
