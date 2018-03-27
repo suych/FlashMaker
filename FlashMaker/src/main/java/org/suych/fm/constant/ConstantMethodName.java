@@ -16,4 +16,7 @@ public class ConstantMethodName {
 
 	public final static String START_PAGE = "startPage";
 
+	public final static String GET_LIST = "getList";
+	public final static String FOREACH = "forEach";
+	public final static String PRINTLN = "println";
 }

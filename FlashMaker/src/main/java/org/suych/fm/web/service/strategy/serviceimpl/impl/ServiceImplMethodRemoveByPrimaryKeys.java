@@ -23,7 +23,6 @@ import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -51,8 +50,7 @@ public class ServiceImplMethodRemoveByPrimaryKeys implements IServiceImplMethod 
 		p1.setName(ConstantParameterName.PRIMARY_KEY_S);
 		parameter.add(p1);
 
-		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
-		String methodBody = TAB + TAB + FileNameTool.firstLetterToLowerCase(mapperInterfaceName) + POINT
+		String methodBody = TAB + TAB + BaseInfo.getMapperInterfaceFieldName() + POINT
 				+ ConstantMethodName.REMOVE_BY_PRIMARYKEYS + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY_S
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 

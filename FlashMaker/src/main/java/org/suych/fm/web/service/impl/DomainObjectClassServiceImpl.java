@@ -69,10 +69,9 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 		// 2.组装方法结构
 		List<MethodStructure> method = assembleMethod(importPackageAndField.second);
 		// 3.组装Domain类结构
-		ClassStructure doClassStructure = assembleClass(importPackageAndField.first, importPackageAndField.second,
-				method);
+		ClassStructure cs = assembleClass(importPackageAndField.first, importPackageAndField.second, method);
 		// 4.按规范输出至文件
-		GenerateClassUtil.generate(doClassStructure);
+		GenerateClassUtil.generate(cs);
 	}
 
 	/**

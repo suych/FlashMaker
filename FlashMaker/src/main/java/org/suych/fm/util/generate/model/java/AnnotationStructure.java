@@ -10,13 +10,26 @@ import org.suych.fm.util.generate.model.BaseStructure;
 public class AnnotationStructure extends BaseStructure {
 
 	/**
-	 * 属性
+	 * 直接赋值
+	 */
+	private String value;
+
+	/**
+	 * 属性赋值
 	 */
 	private Map<String, String> attribute;
 
 	@Override
 	public String toString() {
-		return "AnnotationStructure [attribute=" + attribute + "]";
+		return "AnnotationStructure [value=" + value + ", attribute=" + attribute + "]";
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public Map<String, String> getAttribute() {

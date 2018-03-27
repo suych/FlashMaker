@@ -48,9 +48,8 @@ public class ConstantJavaSyntax {
 	public final static String ANNOTATIONS_SERVICE = "@Service";
 	public final static String ANNOTATIONS_AUTOWIRED = "@Autowired";
 	public final static String ANNOTATIONS_TRANSACTIONAL = "@Transactional";
-
-	// 注解属性
-	public final static String ANNOTATIONS_ATTRIBUTE_READONLY = "readOnly";
+	public final static String ANNOTATIONS_REST_CONTROLLER = "@RestController";
+	public final static String ANNOTATIONS_REQUEST_MAPPING = "@RequestMapping";
 
 	// 符号
 	public final static String POINT = ".";
@@ -72,6 +71,7 @@ public class ConstantJavaSyntax {
 	public final static String EQUAL_SIGN = "=";
 	public final static String NUMBER_SIGN = "#";
 	public final static String EXCLAMATION_POINT = "!";
+	public final static String LINE = "-";
 	public final static String SPACE = " ";
 
 	public final static String RETURN_NEWLINE = "\r\n";

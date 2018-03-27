@@ -99,15 +99,14 @@ class GenerateCommonUtil {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
 		}
-		if (threePartyPackage != null || customPackage != null) {
-			fw.write(RETURN_NEWLINE);
-		}
 		if (threePartyPackage != null) {
+			fw.write(RETURN_NEWLINE);
 			for (String packageName : threePartyPackage) {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
 		}
 		if (customPackage != null) {
+			fw.write(RETURN_NEWLINE);
 			for (String packageName : customPackage) {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
@@ -144,21 +143,30 @@ class GenerateCommonUtil {
 			for (AnnotationStructure annotation : annotations) {
 				String name = annotation.getName();
 				fw.write(indent + name);
-				Map<String, String> attribute = annotation.getAttribute();
-				if (attribute != null && attribute.size() > 0) {
+				String annotationValue = StringUtil.null2Empty(annotation.getValue());
+				if (!"".equals(annotationValue)) {
+					// 直接赋值
 					fw.write(LEFT_BRACKET);
-					int i = 0;
-					int entryNum = attribute.entrySet().size();
-					for (Entry<String, String> entry : attribute.entrySet()) {
-						String key = entry.getKey();
-						String value = entry.getValue();
-						if (i == entryNum - 1) {
-							fw.write(key + SPACE + EQUAL_SIGN + SPACE + value);
-						} else {
-							fw.write(key + SPACE + EQUAL_SIGN + SPACE + value + COMMA + SPACE);
-						}
-					}
+					fw.write(annotationValue);
 					fw.write(RIGHT_BRACKET);
+				} else {
+					// 属性赋值
+					Map<String, String> attribute = annotation.getAttribute();
+					if (attribute != null && attribute.size() > 0) {
+						fw.write(LEFT_BRACKET);
+						int i = 0;
+						int entryNum = attribute.entrySet().size();
+						for (Entry<String, String> entry : attribute.entrySet()) {
+							String key = entry.getKey();
+							String value = entry.getValue();
+							fw.write(key + SPACE + EQUAL_SIGN + SPACE + value);
+							if (i != entryNum - 1) {
+								fw.write(COMMA + SPACE);
+							}
+							i++;
+						}
+						fw.write(RIGHT_BRACKET);
+					}
 				}
 				fw.write(RETURN_NEWLINE);
 			}

@@ -1,6 +1,5 @@
 package org.suych.fm.web.service.strategy.serviceimpl.impl;
 
-import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_ATTRIBUTE_READONLY;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_OVERRIDE;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_TRANSACTIONAL;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
@@ -25,7 +24,6 @@ import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -42,7 +40,7 @@ public class ServiceImplMethodGetByPrimaryKey implements IServiceImplMethod {
 		AnnotationStructure transactional = new AnnotationStructure();
 		transactional.setName(ANNOTATIONS_TRANSACTIONAL);
 		Map<String, String> attribute = new HashMap<String, String>();
-		attribute.put(ANNOTATIONS_ATTRIBUTE_READONLY, TRUE);
+		attribute.put(ConstantParameterName.READONLY, TRUE);
 		transactional.setAttribute(attribute);
 		AnnotationStructure override = new AnnotationStructure();
 		override.setName(ANNOTATIONS_OVERRIDE);
@@ -55,9 +53,8 @@ public class ServiceImplMethodGetByPrimaryKey implements IServiceImplMethod {
 		p1.setName(ConstantParameterName.PRIMARY_KEY);
 		parameter.add(p1);
 
-		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
-		String methodBody = TAB + TAB + RETURN + SPACE + FileNameTool.firstLetterToLowerCase(mapperInterfaceName)
-				+ POINT + ConstantMethodName.GET_BY_PRIMARYKEY + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY
+		String methodBody = TAB + TAB + RETURN + SPACE + BaseInfo.getMapperInterfaceFieldName() + POINT
+				+ ConstantMethodName.GET_BY_PRIMARYKEY + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 
 		result.setAnnotation(annotation);

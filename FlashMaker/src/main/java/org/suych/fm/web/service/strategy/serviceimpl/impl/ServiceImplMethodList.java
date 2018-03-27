@@ -1,6 +1,5 @@
 package org.suych.fm.web.service.strategy.serviceimpl.impl;
 
-import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_ATTRIBUTE_READONLY;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_OVERRIDE;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_TRANSACTIONAL;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
@@ -27,12 +26,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
+import org.suych.fm.constant.ConstantClassName;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.constant.ConstantUnclassified;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -49,14 +47,14 @@ public class ServiceImplMethodList implements IServiceImplMethod {
 		AnnotationStructure transactional = new AnnotationStructure();
 		transactional.setName(ANNOTATIONS_TRANSACTIONAL);
 		Map<String, String> attribute = new HashMap<String, String>();
-		attribute.put(ANNOTATIONS_ATTRIBUTE_READONLY, TRUE);
+		attribute.put(ConstantParameterName.READONLY, TRUE);
 		transactional.setAttribute(attribute);
 		AnnotationStructure override = new AnnotationStructure();
 		override.setName(ANNOTATIONS_OVERRIDE);
 		annotation.add(transactional);
 		annotation.add(override);
 		// 返回值
-		String returnValue = ConstantUnclassified.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
+		String returnValue = ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
 				+ RIGHT_ANGLE_BRACKETS;
 		// 方法名
 		String methodName = ConstantMethodName.LIST;
@@ -72,20 +70,19 @@ public class ServiceImplMethodList implements IServiceImplMethod {
 		parameter.add(p2);
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
-		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
-		String mapperInterfaceField = FileNameTool.firstLetterToLowerCase(mapperInterfaceName);
 		// 第一句
-		methodBody.append(TAB + TAB + ConstantUnclassified.PAGE_HELPER + POINT + ConstantMethodName.START_PAGE
+		methodBody.append(TAB + TAB + ConstantClassName.PAGE_HELPER + POINT + ConstantMethodName.START_PAGE
 				+ LEFT_BRACKET + ConstantParameterName.PAGE_NUM + COMMA + SPACE + ConstantParameterName.PAGE_SIZE
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 		// 第二句
 		methodBody.append(TAB + TAB + LIST + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName() + RIGHT_ANGLE_BRACKETS
-				+ SPACE + ConstantParameterName.LIST + SPACE + EQUAL_SIGN + SPACE + mapperInterfaceField + POINT
-				+ ConstantMethodName.LIST + LEFT_BRACKET + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
+				+ SPACE + ConstantParameterName.LIST + SPACE + EQUAL_SIGN + SPACE
+				+ BaseInfo.getMapperInterfaceFieldName() + POINT + ConstantMethodName.LIST + LEFT_BRACKET
+				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 		// 第三句
-		methodBody.append(TAB + TAB + RETURN + SPACE + NEW + SPACE + ConstantUnclassified.PAGE_INFO
-				+ LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName() + RIGHT_ANGLE_BRACKETS + LEFT_BRACKET
-				+ ConstantParameterName.LIST + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
+		methodBody.append(TAB + TAB + RETURN + SPACE + NEW + SPACE + ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS
+				+ BaseInfo.getDomainClassName() + RIGHT_ANGLE_BRACKETS + LEFT_BRACKET + ConstantParameterName.LIST
+				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

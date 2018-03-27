@@ -46,8 +46,7 @@ public class ServiceImplMethodSaveSelective implements IServiceImplMethod {
 		p1.setName(FileNameTool.firstLetterToLowerCase(domainClassName));
 		parameter.add(p1);
 
-		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
-		String methodBody = TAB + TAB + FileNameTool.firstLetterToLowerCase(mapperInterfaceName) + POINT
+		String methodBody = TAB + TAB + BaseInfo.getMapperInterfaceFieldName() + POINT
 				+ ConstantMethodName.SAVE_SELECTIVE + LEFT_BRACKET
 				+ FileNameTool.firstLetterToLowerCase(domainClassName) + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 

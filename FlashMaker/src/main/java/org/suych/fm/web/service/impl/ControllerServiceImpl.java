@@ -1,7 +1,10 @@
 package org.suych.fm.web.service.impl;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_AUTOWIRED;
-import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_SERVICE;
+import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REQUEST_MAPPING;
+import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REST_CONTROLLER;
+import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
+import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -21,14 +24,14 @@ import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.ImportPackageStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
-import org.suych.fm.web.service.IServiceImplService;
-import org.suych.fm.web.service.strategy.serviceimpl.ServiceImplMethodFactory;
+import org.suych.fm.web.service.IControllerService;
+import org.suych.fm.web.service.strategy.controller.ControllerMethodFactory;
 
 @Service
-public class ServiceImplServiceImpl implements IServiceImplService {
+public class ControllerServiceImpl implements IControllerService {
 
 	@Autowired
-	ServiceImplMethodFactory factory;
+	ControllerMethodFactory factory;
 
 	@Override
 	public void generate() {
@@ -44,26 +47,22 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 		GenerateClassUtil.generate(cs);
 	}
 
-	/**
-	 * 组装引入包名
-	 * 
-	 * @return
-	 */
 	private ImportPackageStructure assembleImportPackage() {
 		ImportPackageStructure result = new ImportPackageStructure();
 
 		Set<String> javaPackage = new LinkedHashSet<String>();
+		javaPackage.add(ConstantImportPackage.ARRAYLIST);
 		javaPackage.add(ConstantImportPackage.LIST);
+		javaPackage.add(ConstantImportPackage.HTTP_SERVLET_REQUEST);
 
 		Set<String> threePartyPackage = new LinkedHashSet<String>();
 		threePartyPackage.add(ConstantImportPackage.SPRING_AUTOWIRED);
-		threePartyPackage.add(ConstantImportPackage.SPRING_SERVICE);
-		threePartyPackage.add(ConstantImportPackage.SPRING_TRANSACTIONAL);
+		threePartyPackage.add(ConstantImportPackage.SPRING_REQUEST_MAPPING);
+		threePartyPackage.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
+		threePartyPackage.add(ConstantImportPackage.SPRING_REST_CONTROLLER);
 
 		Set<String> customPackage = new LinkedHashSet<String>();
-		customPackage.add(ConstantImportPackage.PAGE_HELPER);
 		customPackage.add(ConstantImportPackage.PAGE_INFO);
-		customPackage.add(BaseInfo.getMapperInterfaceImportPath()); // Mapper接口包名
 		customPackage.add(BaseInfo.getDomainClassImportPath()); // DO类包名
 		customPackage.add(BaseInfo.getServiceInterfaceImportPath());// Service接口包名
 
@@ -74,80 +73,60 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 		return result;
 	}
 
-	/**
-	 * 组装字段结构
-	 * 
-	 * @return
-	 */
 	private List<FieldStructure> assembleField() {
 		List<FieldStructure> result = new ArrayList<FieldStructure>();
 		FieldStructure field = new FieldStructure();
+		// 注解
 		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
 		AnnotationStructure autowired = new AnnotationStructure();
 		autowired.setName(ANNOTATIONS_AUTOWIRED);
 		annotation.add(autowired);
 		field.setAnnotation(annotation);
 		field.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
-		field.setJavaType(BaseInfo.getMapperInterfaceName());
-		field.setName(BaseInfo.getMapperInterfaceFieldName());
+		field.setJavaType(BaseInfo.getServiceInterfaceName());
+		field.setName(BaseInfo.getServiceInterfaceFieldName());
 		result.add(field);
 		return result;
 	}
 
-	/**
-	 * 组装方法结构
-	 * 
-	 * @return
-	 */
 	private List<MethodStructure> assembleMethod() {
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
 		// 1.List<DO类名> list()
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_LIST));
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_LIST));
 		// 2.DO类名 getByPrimaryKey(String id);
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_GET_BY_PRIMARYKEY));
+		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_GET_BY_PRIMARYKEY));
 		// 3.void save(DO类名 DO类名首字母小写);
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE));
+		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE));
 		// 4.void saveSelective(DO类名 DO类名首字母小写);
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE_SELECTIVE));
+		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE_SELECTIVE));
 		// 5.void updateByPrimaryKeySelective(DO类名 DO类名首字母小写);
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_UPDATE_BY_PRIMARYKEY_SELECTIVE));
+		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_UPDATE_BY_PRIMARYKEY_SELECTIVE));
 		// 6.void removeByPrimaryKeys(List<String> ids);
-		result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_REMOVE_BY_PRIMARYKEYS));
+		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_REMOVE_BY_PRIMARYKEYS));
 		return result;
 	}
 
-	/**
-	 *  组装类结构
-	 *  
-	 * @param importPackage
-	 * @param field
-	 * @param method
-	 * @return
-	 */
 	private ClassStructure assembleClass(ImportPackageStructure importPackage, List<FieldStructure> field,
 			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
-
+		// 注解
 		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
-		AnnotationStructure service = new AnnotationStructure();
-		service.setName(ANNOTATIONS_SERVICE);
-		annotation.add(service);
-
-		List<String> interfaceName = new ArrayList<String>();
-		interfaceName.add(BaseInfo.getServiceInterfaceName());
-
+		AnnotationStructure annotation1 = new AnnotationStructure();
+		annotation1.setName(ANNOTATIONS_REST_CONTROLLER);
+		AnnotationStructure annotation2 = new AnnotationStructure();
+		annotation2.setName(ANNOTATIONS_REQUEST_MAPPING);
+		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getTableInfo().getTableName() + DOUBLE_QUOTATION);
+		annotation.add(annotation1);
+		annotation.add(annotation2);
 		// 组装类结构
-		result.setLocalPackage(BaseInfo.getServiceImplLocalPackage());
+		result.setLocalPackage(BaseInfo.getControllerLocalPackage());
 		result.setImportPackage(importPackage);
 		result.setAnnotation(annotation);
 		result.setAcessModifier(ConstantClassAccessModifier.PUBLIC);
-		result.setName(BaseInfo.getServiceImplName());
-		result.setImplementInterface(true);
-		result.setInterfaceName(interfaceName);
+		result.setName(BaseInfo.getControllerName());
 		result.setField(field);
 		result.setMethod(method);
 
 		return result;
 	}
-
 }

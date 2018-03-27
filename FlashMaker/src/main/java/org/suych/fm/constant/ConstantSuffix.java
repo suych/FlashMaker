@@ -13,6 +13,8 @@ public class ConstantSuffix {
 	public static final ConstantSuffix SERVICE_IMPL = new ConstantSuffix("ServiceImpl");
 	public static final ConstantSuffix CONTROLLER = new ConstantSuffix("Controller");
 
+	public static final ConstantSuffix S = new ConstantSuffix("s");
+
 	public ConstantSuffix(String type) {
 		this.type = type;
 	}

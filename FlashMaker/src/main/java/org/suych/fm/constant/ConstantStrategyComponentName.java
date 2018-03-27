@@ -31,4 +31,11 @@ public class ConstantStrategyComponentName {
 	public final static String SERVICE_IMPL_UPDATE_BY_PRIMARYKEY_SELECTIVE = "service_impl_updateByPrimaryKeySelective";
 	public final static String SERVICE_IMPL_REMOVE_BY_PRIMARYKEYS = "service_impl_removeByPrimaryKeys";
 
+	public final static String CONTROLLER_LIST = "controller_list";
+	public final static String CONTROLLER_GET_BY_PRIMARYKEY = "controller_getByPrimaryKey";
+	public final static String CONTROLLER_SAVE = "controller_save";
+	public final static String CONTROLLER_SAVE_SELECTIVE = "controller_saveSelective";
+	public final static String CONTROLLER_UPDATE_BY_PRIMARYKEY_SELECTIVE = "controller_updateByPrimaryKeySelective";
+	public final static String CONTROLLER_REMOVE_BY_PRIMARYKEYS = "controller_removeByPrimaryKeys";
+
 }

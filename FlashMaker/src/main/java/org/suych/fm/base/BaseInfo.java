@@ -43,6 +43,11 @@ public class BaseInfo {
 	// Service接口引入路径
 	private static String serviceInterfaceImportPath = "";
 
+	// Mapper接口作为字段时名称
+	private static String mapperInterfaceFieldName = "";
+	// Service接口作为字段时名称
+	private static String serviceInterfaceFieldName = "";
+
 	// 数据库表信息
 	private static TableInfoModel tableInfo;
 
@@ -68,7 +73,9 @@ public class BaseInfo {
 		initLocalPackage();
 		// 4.初始化引入包路径信息
 		initImportPath();
-		// 5.初始化数据库表信息
+		// 5.初始化接口作为字段使用时的名称
+		initInterfaceFieldName();
+		// 6.初始化数据库表信息
 		BaseInfo.tableInfo = tableInfo;
 	}
 
@@ -216,6 +223,24 @@ public class BaseInfo {
 		return serviceInterfaceImportPath;
 	}
 
+	/**
+	 * 获取Mapper接口作为字段时名称
+	 * 
+	 * @return
+	 */
+	public static String getMapperInterfaceFieldName() {
+		return mapperInterfaceFieldName;
+	}
+
+	/**
+	 * 获取Service接口作为字段时名称
+	 * 
+	 * @return
+	 */
+	public static String getServiceInterfaceFieldName() {
+		return serviceInterfaceFieldName;
+	}
+
 	private static void initFileName(String tableName) {
 		domainClassName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.DOMAIN_OBJECT);
 		mapperInterfaceName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
@@ -240,6 +265,12 @@ public class BaseInfo {
 				+ BaseInfo.getMapperInterfaceName();
 		serviceInterfaceImportPath = BaseInfo.getServiceInterfaceLocalPackage() + POINT
 				+ BaseInfo.getServiceInterfaceName();
+	}
+
+	private static void initInterfaceFieldName() {
+		mapperInterfaceFieldName = FileNameTool.firstLetterToLowerCase(mapperInterfaceName);
+		String temp = serviceInterfaceName.substring(1, serviceInterfaceName.length());
+		serviceInterfaceFieldName = FileNameTool.firstLetterToLowerCase(temp);
 	}
 
 }

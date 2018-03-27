@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
+import org.suych.fm.constant.ConstantParameterValue;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.constant.ConstantUnclassified;
 import org.suych.fm.util.generate.model.xml.XmlCommonNode;
 import org.suych.fm.util.generate.model.xml.XmlSqlNode;
 import org.suych.fm.web.model.model.FieldInfoModel;
@@ -33,7 +33,7 @@ public class NodeMethodBaseColumn implements INode {
 			}
 		}
 		text.append(RETURN_NEWLINE + TAB);
-		result.setId(ConstantUnclassified.BASE_COLUMN_LIST);
+		result.setId(ConstantParameterValue.BASE_COLUMN_LIST);
 		result.setText(text.toString());
 		return result;
 	}

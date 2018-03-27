@@ -1,7 +1,6 @@
 package org.suych.fm.util.generate.model.java;
 
 import java.util.List;
-import java.util.Map;
 
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodNonAccessModifier;

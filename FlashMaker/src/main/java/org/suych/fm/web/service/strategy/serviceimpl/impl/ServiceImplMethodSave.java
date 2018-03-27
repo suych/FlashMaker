@@ -46,10 +46,9 @@ public class ServiceImplMethodSave implements IServiceImplMethod {
 		p1.setName(FileNameTool.firstLetterToLowerCase(domainClassName));
 		parameter.add(p1);
 
-		String mapperInterfaceName = BaseInfo.getMapperInterfaceName();
-		String methodBody = TAB + TAB + FileNameTool.firstLetterToLowerCase(mapperInterfaceName) + POINT
-				+ ConstantMethodName.SAVE + LEFT_BRACKET + FileNameTool.firstLetterToLowerCase(domainClassName)
-				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
+		String methodBody = TAB + TAB + BaseInfo.getMapperInterfaceFieldName() + POINT + ConstantMethodName.SAVE
+				+ LEFT_BRACKET + FileNameTool.firstLetterToLowerCase(domainClassName) + RIGHT_BRACKET + SEMICOLON
+				+ RETURN_NEWLINE;
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

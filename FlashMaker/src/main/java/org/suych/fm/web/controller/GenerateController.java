@@ -9,6 +9,7 @@ import org.suych.fm.base.BaseInfo;
 import org.suych.fm.exception.TableNameEmptyException;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.web.model.model.TableInfoModel;
+import org.suych.fm.web.service.IControllerService;
 import org.suych.fm.web.service.IDomainObjectClassService;
 import org.suych.fm.web.service.IMapperInterfaceService;
 import org.suych.fm.web.service.IMapperXmlService;
@@ -38,6 +39,9 @@ public class GenerateController {
 	@Autowired
 	private IServiceImplService serviceImplService;
 
+	@Autowired
+	private IControllerService controllerService;
+
 	/**
 	 * 入口方法
 	 * 
@@ -66,6 +70,8 @@ public class GenerateController {
 		serviceInterfaceService.generate();
 		// 7.生成ServiceImpl.java
 		serviceImplService.generate();
+		// 8.生成Controller.java
+		controllerService.generate();
 		System.out.println("-------mission completed-------");
 	}
 
