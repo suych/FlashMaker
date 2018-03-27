@@ -14,4 +14,6 @@ public class ConstantMethodName {
 	public final static String UPDATE_BY_PRIMARYKEY_SELECTIVE = "updateByPrimaryKeySelective";
 	public final static String REMOVE_BY_PRIMARYKEYS = "removeByPrimaryKeys";
 
+	public final static String START_PAGE = "startPage";
+
 }

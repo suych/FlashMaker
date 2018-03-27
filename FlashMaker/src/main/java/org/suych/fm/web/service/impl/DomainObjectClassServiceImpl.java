@@ -31,7 +31,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.TIMESTAMP;
 import static org.suych.fm.constant.ConstantJavaSyntax.VOID;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +50,7 @@ import org.suych.fm.util.generate.GenerateClassUtil;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
+import org.suych.fm.util.generate.model.java.ImportPackageStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.model.model.FieldInfoModel;
@@ -64,12 +65,12 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	@Override
 	public void generate() {
 		// 1.获得引入包名和字段结构
-		ResultDoubleModel<Set<String>, List<FieldStructure>> importPackageAndFieldStructure = assembleImportPackageAndFieldStructure();
+		ResultDoubleModel<ImportPackageStructure, List<FieldStructure>> importPackageAndField = assembleImportPackageAndField();
 		// 2.组装方法结构
-		List<MethodStructure> method = assembleMethodStructure(importPackageAndFieldStructure.second);
+		List<MethodStructure> method = assembleMethod(importPackageAndField.second);
 		// 3.组装Domain类结构
-		ClassStructure doClassStructure = assembleClassStructure(importPackageAndFieldStructure.first,
-				importPackageAndFieldStructure.second, method);
+		ClassStructure doClassStructure = assembleClass(importPackageAndField.first, importPackageAndField.second,
+				method);
 		// 4.按规范输出至文件
 		GenerateClassUtil.generate(doClassStructure);
 	}
@@ -79,8 +80,9 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	 * 
 	 * @return
 	 */
-	private ResultDoubleModel<Set<String>, List<FieldStructure>> assembleImportPackageAndFieldStructure() {
-		Set<String> importPackage = new HashSet<String>(); // 引用的包名
+	private ResultDoubleModel<ImportPackageStructure, List<FieldStructure>> assembleImportPackageAndField() {
+		ImportPackageStructure importPackage = new ImportPackageStructure(); // 引用的包名
+		Set<String> javaPackage = new LinkedHashSet<String>();
 		List<FieldStructure> fieldStructure = new ArrayList<FieldStructure>(); // 字段类型/字段名/字段注释
 		for (FieldInfoModel field : BaseInfo.getTableInfo().getField()) {
 			FieldStructure fs = new FieldStructure();
@@ -96,19 +98,20 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 
 			// 组装引入包名
 			if (TIMESTAMP.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.TIMESTAMP);
+				javaPackage.add(ConstantImportPackage.TIMESTAMP);
 			} else if (BIGDECIMAL.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.BIGDECIMAL);
+				javaPackage.add(ConstantImportPackage.BIGDECIMAL);
 			} else if (LIST.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.LIST);
+				javaPackage.add(ConstantImportPackage.LIST);
 			} else if (DATE.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.DATE);
+				javaPackage.add(ConstantImportPackage.DATE);
 			} else if (BYTE_ARRAY.equals(javaType)) {
-				importPackage.add(ConstantImportPackage.ARRAYS);
+				javaPackage.add(ConstantImportPackage.ARRAYS);
 			}
 
 		}
-		return new ResultDoubleModel<Set<String>, List<FieldStructure>>(importPackage, fieldStructure);
+		importPackage.setJavaPackage(javaPackage);
+		return new ResultDoubleModel<ImportPackageStructure, List<FieldStructure>>(importPackage, fieldStructure);
 	}
 
 	/**
@@ -118,7 +121,7 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	 *            字段结构
 	 * @return
 	 */
-	private List<MethodStructure> assembleMethodStructure(List<FieldStructure> field) {
+	private List<MethodStructure> assembleMethod(List<FieldStructure> field) {
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
 		// toString()方法
 		MethodStructure toString = assembleToStringMethod(field);
@@ -152,11 +155,11 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 	 *            方法结构
 	 * @return
 	 */
-	private ClassStructure assembleClassStructure(Set<String> importPackage, List<FieldStructure> field,
+	private ClassStructure assembleClass(ImportPackageStructure importPackage, List<FieldStructure> field,
 			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
 		// 组装类结构
-		result.setLocalPackage(BaseInfo.getLocalPackage());
+		result.setLocalPackage(BaseInfo.getDomainClassLocalPackage());
 		result.setImportPackage(importPackage);
 		result.setComments(StringUtil.null2Empty(BaseInfo.getTableInfo().getComments()));
 		result.setAcessModifier(ConstantClassAccessModifier.PUBLIC);

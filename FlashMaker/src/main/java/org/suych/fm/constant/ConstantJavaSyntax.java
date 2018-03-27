@@ -22,8 +22,7 @@ public class ConstantJavaSyntax {
 	public final static String SYNCHRONIZED = "synchronized";
 	public final static String EXTENDS = "extends";
 	public final static String IMPLEMENTS = "implements";
-	public final static String TRUE = "true";
-	public final static String FALSE = "false";
+	public final static String NEW = "new";
 
 	// java类型
 	public final static String VOID = "void";
@@ -41,6 +40,8 @@ public class ConstantJavaSyntax {
 	public final static String BYTE_ARRAY = "Byte[]";
 	public final static String LIST = "List";
 	public final static String NULL = "null";
+	public final static String TRUE = "true";
+	public final static String FALSE = "false";
 
 	// 注解
 	public final static String ANNOTATIONS_OVERRIDE = "@Override";

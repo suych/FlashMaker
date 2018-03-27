@@ -1,7 +1,5 @@
 package org.suych.fm.web.service.impl;
 
-import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +53,7 @@ public class MapperXmlServiceImpl implements IMapperXmlService {
 		result.setName(BaseInfo.getMapperXmlName());
 		result.setDocType("-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd");
 		result.setRootNodeName("mapper");
-		result.setNamespace(BaseInfo.getLocalPackage() + POINT + BaseInfo.getMapperInterfaceName());
+		result.setNamespace(BaseInfo.getMapperInterfaceImportPath());
 		result.setNode(node);
 		return result;
 	}

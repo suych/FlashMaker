@@ -2,10 +2,9 @@ package org.suych.fm.web.service.impl;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_AUTOWIRED;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_SERVICE;
-import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +20,7 @@ import org.suych.fm.util.generate.GenerateClassUtil;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
+import org.suych.fm.util.generate.model.java.ImportPackageStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.web.service.IServiceImplService;
 import org.suych.fm.web.service.strategy.serviceimpl.ServiceImplMethodFactory;
@@ -34,7 +34,7 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 	@Override
 	public void generate() {
 		// 1.组装引入包名
-		Set<String> importPackage = assembleImportPackage();
+		ImportPackageStructure importPackage = assembleImportPackage();
 		// 2.组装字段
 		List<FieldStructure> field = assembleFieldStructure();
 		// 3.组装方法结构
@@ -50,19 +50,28 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 	 * 
 	 * @return
 	 */
-	private Set<String> assembleImportPackage() {
-		Set<String> result = new HashSet<String>();
-		result.add(ConstantImportPackage.LIST);
-		result.add(ConstantImportPackage.SPRING_AUTOWIRED);
-		result.add(ConstantImportPackage.SPRING_SERVICE);
-		result.add(ConstantImportPackage.SPRING_TRANSACTIONAL);
-		String localPackage = BaseInfo.getLocalPackage();
-		String domainClassPackage = localPackage + POINT + BaseInfo.getDomainClassName(); // DO类包名
-		String mapperInterfacePackage = localPackage + POINT + BaseInfo.getMapperInterfaceName(); // Mapper接口包名
-		String serviceInterfacePackage = localPackage + POINT + BaseInfo.getServiceInterfaceName(); // Service接口包名
-		result.add(domainClassPackage);
-		result.add(mapperInterfacePackage);
-		result.add(serviceInterfacePackage);
+	private ImportPackageStructure assembleImportPackage() {
+		ImportPackageStructure result = new ImportPackageStructure();
+
+		Set<String> javaPackage = new LinkedHashSet<String>();
+		javaPackage.add(ConstantImportPackage.LIST);
+
+		Set<String> threePartyPackage = new LinkedHashSet<String>();
+		threePartyPackage.add(ConstantImportPackage.SPRING_AUTOWIRED);
+		threePartyPackage.add(ConstantImportPackage.SPRING_SERVICE);
+		threePartyPackage.add(ConstantImportPackage.SPRING_TRANSACTIONAL);
+		threePartyPackage.add(ConstantImportPackage.PAGE_HELPER);
+		threePartyPackage.add(ConstantImportPackage.PAGE_INFO);
+
+		Set<String> customPackage = new LinkedHashSet<String>();
+		customPackage.add(BaseInfo.getDomainClassImportPath()); // DO类包名
+		customPackage.add(BaseInfo.getMapperInterfaceImportPath()); // Mapper接口包名
+		customPackage.add(BaseInfo.getServiceInterfaceImportPath());// Service接口包名
+
+		result.setJavaPackage(javaPackage);
+		result.setThreePartyPackage(threePartyPackage);
+		result.setCustomPackage(customPackage);
+
 		return result;
 	}
 
@@ -110,11 +119,14 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 	}
 
 	/**
-	 * 组装类结构
-	 * 
+	 *  组装类结构
+	 *  
+	 * @param importPackage
+	 * @param field
+	 * @param method
 	 * @return
 	 */
-	private ClassStructure assembleClassStructure(Set<String> importPackage, List<FieldStructure> field,
+	private ClassStructure assembleClassStructure(ImportPackageStructure importPackage, List<FieldStructure> field,
 			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
 
@@ -127,7 +139,7 @@ public class ServiceImplServiceImpl implements IServiceImplService {
 		interfaceName.add(BaseInfo.getServiceInterfaceName());
 
 		// 组装类结构
-		result.setLocalPackage(BaseInfo.getLocalPackage());
+		result.setLocalPackage(BaseInfo.getServiceImplLocalPackage());
 		result.setImportPackage(importPackage);
 		result.setAnnotation(annotation);
 		result.setAcessModifier(ConstantClassAccessModifier.PUBLIC);

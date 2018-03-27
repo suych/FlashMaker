@@ -23,7 +23,7 @@ public class ServiceMethodList implements IServiceMethod {
 	@Override
 	public MethodStructure assemble() {
 		MethodStructure result = new MethodStructure();
-		String returnValue = ConstantUnclassified.PAGEINFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
+		String returnValue = ConstantUnclassified.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
 				+ RIGHT_ANGLE_BRACKETS;
 
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();

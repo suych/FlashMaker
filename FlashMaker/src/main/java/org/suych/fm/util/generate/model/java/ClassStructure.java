@@ -1,7 +1,6 @@
 package org.suych.fm.util.generate.model.java;
 
 import java.util.List;
-import java.util.Set;
 
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
@@ -20,7 +19,7 @@ public class ClassStructure extends BaseStructure {
 	/**
 	 * 引入包名
 	 */
-	private Set<String> importPackage;
+	private ImportPackageStructure importPackage;
 
 	/**
 	 * 类注释
@@ -91,11 +90,11 @@ public class ClassStructure extends BaseStructure {
 		this.localPackage = localPackage;
 	}
 
-	public Set<String> getImportPackage() {
+	public ImportPackageStructure getImportPackage() {
 		return importPackage;
 	}
 
-	public void setImportPackage(Set<String> importPackage) {
+	public void setImportPackage(ImportPackageStructure importPackage) {
 		this.importPackage = importPackage;
 	}
 

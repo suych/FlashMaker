@@ -1,5 +1,8 @@
 package org.suych.fm.base;
 
+import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
+
+import org.suych.fm.constant.ConstantJavaSyntax;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.web.model.model.TableInfoModel;
@@ -19,11 +22,36 @@ public class BaseInfo {
 	private static String serviceInterfaceName = "";
 	// Service实现类名称
 	private static String serviceImplName = "";
+	// Controller类名称
+	private static String controllerName = "";
+
+	// DO类本地包名
+	private static String domainClassLocalPackage = "";
+	// Mapper接口本地包名
+	private static String mapperInterfaceLocalPackage = "";
+	// Service接口本地包名
+	private static String serviceInterfaceLocalPackage = "";
+	// Service实现类本地包名
+	private static String serviceImplLocalPackage = "";
+	// Controller类本地包名
+	private static String controllerLocalPackage = "";
+
+	// DO类引入包路径
+	private static String domainClassImportPath = "";
+	// Mapper接口引入路径
+	private static String mapperInterfaceImportPath = "";
+	// Service接口引入路径
+	private static String serviceInterfaceImportPath = "";
 
 	// 数据库表信息
 	private static TableInfoModel tableInfo;
 
 	private static final String INTERFACE_PREFIX = "I";
+	private static final String MODEL = "model";
+	private static final String MAPPER = "mapper";
+	private static final String SERVICE = "service";
+	private static final String CONTROLLER = "controller";
+	private static final String IMPL = "impl";
 
 	/**
 	 * 初始化基础信息
@@ -36,7 +64,11 @@ public class BaseInfo {
 		BaseInfo.localPackage = localPackage;
 		// 2.初始化文件名信息
 		initFileName(tableInfo.getTableName());
-		// 3.初始化数据库表信息
+		// 3.初始化本地包名信息
+		initLocalPackage();
+		// 4.初始化引入包路径信息
+		initImportPath();
+		// 5.初始化数据库表信息
 		BaseInfo.tableInfo = tableInfo;
 	}
 
@@ -45,6 +77,7 @@ public class BaseInfo {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public static String getLocalPackage() {
 		return localPackage;
 	}
@@ -95,12 +128,92 @@ public class BaseInfo {
 	}
 
 	/**
+	 * 获得Controller类名称
+	 * @return
+	 */
+	public static String getControllerName() {
+		return controllerName;
+	}
+
+	/**
 	 * 获取数据库表信息
 	 * 
 	 * @return
 	 */
 	public static TableInfoModel getTableInfo() {
 		return tableInfo;
+	}
+
+	/**
+	 * 获取DO类本地包名
+	 * 
+	 * @return
+	 */
+	public static String getDomainClassLocalPackage() {
+		return domainClassLocalPackage;
+	}
+
+	/**
+	 * 获取Mapper接口本地包名
+	 * 
+	 * @return
+	 */
+	public static String getMapperInterfaceLocalPackage() {
+		return mapperInterfaceLocalPackage;
+	}
+
+	/**
+	 * 获取Service接口本地包名
+	 * 
+	 * @return
+	 */
+	public static String getServiceInterfaceLocalPackage() {
+		return serviceInterfaceLocalPackage;
+	}
+
+	/**
+	 * 获取Service实现类本地包名
+	 * 
+	 * @return
+	 */
+	public static String getServiceImplLocalPackage() {
+		return serviceImplLocalPackage;
+	}
+
+	/**
+	 * 获取Controller类本地包名
+	 * 
+	 * @return
+	 */
+	public static String getControllerLocalPackage() {
+		return controllerLocalPackage;
+	}
+
+	/**
+	 * 获取DO类引入包路径
+	 * 
+	 * @return
+	 */
+	public static String getDomainClassImportPath() {
+		return domainClassImportPath;
+	}
+
+	/**
+	 * 获取Mapper接口引入路径
+	 * 
+	 * @return
+	 */
+	public static String getMapperInterfaceImportPath() {
+		return mapperInterfaceImportPath;
+	}
+
+	/**
+	 * 获取Service接口引入路径
+	 * 
+	 * @return
+	 */
+	public static String getServiceInterfaceImportPath() {
+		return serviceInterfaceImportPath;
 	}
 
 	private static void initFileName(String tableName) {
@@ -110,6 +223,23 @@ public class BaseInfo {
 		serviceInterfaceName = INTERFACE_PREFIX
 				+ FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.SERVICE);
 		serviceImplName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.SERVICE_IMPL);
+		controllerName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.CONTROLLER);
+	}
+
+	private static void initLocalPackage() {
+		domainClassLocalPackage = localPackage + ConstantJavaSyntax.POINT + MODEL;
+		mapperInterfaceLocalPackage = localPackage + ConstantJavaSyntax.POINT + MAPPER;
+		serviceInterfaceLocalPackage = localPackage + ConstantJavaSyntax.POINT + SERVICE;
+		serviceImplLocalPackage = localPackage + ConstantJavaSyntax.POINT + SERVICE + ConstantJavaSyntax.POINT + IMPL;
+		controllerLocalPackage = localPackage + ConstantJavaSyntax.POINT + CONTROLLER;
+	}
+
+	private static void initImportPath() {
+		domainClassImportPath = BaseInfo.getDomainClassLocalPackage() + POINT + BaseInfo.getDomainClassName();
+		mapperInterfaceImportPath = BaseInfo.getMapperInterfaceLocalPackage() + POINT
+				+ BaseInfo.getMapperInterfaceName();
+		serviceInterfaceImportPath = BaseInfo.getServiceInterfaceLocalPackage() + POINT
+				+ BaseInfo.getServiceInterfaceName();
 	}
 
 }

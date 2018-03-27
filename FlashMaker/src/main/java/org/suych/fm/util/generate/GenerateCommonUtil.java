@@ -21,11 +21,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.suych.fm.constant.ConfigureContainer;
+import org.suych.fm.constant.ConstantJavaSyntax;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.model.BaseStructure;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
+import org.suych.fm.util.generate.model.java.ImportPackageStructure;
 import org.suych.fm.util.generate.model.java.InterfaceStructure;
 import org.suych.fm.util.generate.model.xml.XmlStructure;
 
@@ -34,13 +36,21 @@ class GenerateCommonUtil {
 	protected static File getFile(BaseStructure handle) {
 		String outputPath = ConfigureContainer.constantMap.get("file.output.path");
 		String fileName = handle.getName();
-		String pathName = outputPath + fileName;
-		if (handle instanceof ClassStructure || handle instanceof InterfaceStructure) {
-			pathName += ConstantSuffix.JAVA_FILE.getType();
+		String filePath = outputPath;
+		if (handle instanceof ClassStructure) {
+			String localPackage = ((ClassStructure) handle).getLocalPackage();
+			String packagePath = localPackage.replace(ConstantJavaSyntax.POINT, ConstantJavaSyntax.SLASH)
+					+ ConstantJavaSyntax.SLASH;
+			filePath += packagePath + fileName + ConstantSuffix.JAVA_FILE.getType();
+		} else if (handle instanceof InterfaceStructure) {
+			String localPackage = ((InterfaceStructure) handle).getLocalPackage();
+			String packagePath = localPackage.replace(ConstantJavaSyntax.POINT, ConstantJavaSyntax.SLASH)
+					+ ConstantJavaSyntax.SLASH;
+			filePath += packagePath + fileName + ConstantSuffix.JAVA_FILE.getType();
 		} else if (handle instanceof XmlStructure) {
-			pathName += ConstantSuffix.XML.getType();
+			filePath += fileName + ConstantSuffix.XML.getType();
 		}
-		File file = new File(pathName);
+		File file = new File(filePath);
 		if (!file.exists()) {
 			File parentFile = file.getParentFile();
 			if (!parentFile.exists()) {
@@ -73,16 +83,36 @@ class GenerateCommonUtil {
 	 * 打印引入包名
 	 * 
 	 * @param fw
-	 * @param importPackages
+	 * @param importPackage
 	 * @throws IOException
 	 */
-	protected static void printImportPackage(FileWriter fw, Set<String> importPackages) throws IOException {
-		if (importPackages != null && importPackages.size() > 0) {
-			for (String importPackage : importPackages) {
-				fw.write(IMPORT + SPACE + importPackage + SEMICOLON + RETURN_NEWLINE);
+	protected static void printImportPackage(FileWriter fw, ImportPackageStructure importPackage) throws IOException {
+		if (importPackage == null) {
+			return;
+		}
+		Set<String> javaPackage = importPackage.getJavaPackage();
+		Set<String> threePartyPackage = importPackage.getThreePartyPackage();
+		Set<String> customPackage = importPackage.getCustomPackage();
+
+		if (javaPackage != null) {
+			for (String packageName : javaPackage) {
+				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
+		}
+		if (threePartyPackage != null || customPackage != null) {
 			fw.write(RETURN_NEWLINE);
 		}
+		if (threePartyPackage != null) {
+			for (String packageName : threePartyPackage) {
+				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
+			}
+		}
+		if (customPackage != null) {
+			for (String packageName : customPackage) {
+				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
+			}
+		}
+		fw.write(RETURN_NEWLINE);
 	}
 
 	/**

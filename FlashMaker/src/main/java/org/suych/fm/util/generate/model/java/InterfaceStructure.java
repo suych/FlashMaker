@@ -1,7 +1,6 @@
 package org.suych.fm.util.generate.model.java;
 
 import java.util.List;
-import java.util.Set;
 
 import org.suych.fm.constant.ConstantInterfaceAccessModifier;
 import org.suych.fm.util.generate.model.BaseStructure;
@@ -19,7 +18,7 @@ public class InterfaceStructure extends BaseStructure {
 	/**
 	 * 引入包名
 	 */
-	private Set<String> importPackage;
+	private ImportPackageStructure importPackage;
 
 	/**
 	 * 接口注释
@@ -62,11 +61,11 @@ public class InterfaceStructure extends BaseStructure {
 		this.localPackage = localPackage;
 	}
 
-	public Set<String> getImportPackage() {
+	public ImportPackageStructure getImportPackage() {
 		return importPackage;
 	}
 
-	public void setImportPackage(Set<String> importPackage) {
+	public void setImportPackage(ImportPackageStructure importPackage) {
 		this.importPackage = importPackage;
 	}
 
