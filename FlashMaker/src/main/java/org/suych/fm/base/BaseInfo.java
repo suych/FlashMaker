@@ -43,6 +43,8 @@ public class BaseInfo {
 	// Service接口引入路径
 	private static String serviceInterfaceImportPath = "";
 
+	// DO类作为字段时名称
+	private static String domainClassFieldName = "";
 	// Mapper接口作为字段时名称
 	private static String mapperInterfaceFieldName = "";
 	// Service接口作为字段时名称
@@ -241,6 +243,15 @@ public class BaseInfo {
 		return serviceInterfaceFieldName;
 	}
 
+	/**
+	 * 获得DO类作为字段时名称 
+	 * 
+	 * @return
+	 */
+	public static String getDomainClassFieldName() {
+		return domainClassFieldName;
+	}
+
 	private static void initFileName(String tableName) {
 		domainClassName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.DOMAIN_OBJECT);
 		mapperInterfaceName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
@@ -268,6 +279,7 @@ public class BaseInfo {
 	}
 
 	private static void initInterfaceFieldName() {
+		domainClassFieldName = FileNameTool.firstLetterToLowerCase(domainClassName);
 		mapperInterfaceFieldName = FileNameTool.firstLetterToLowerCase(mapperInterfaceName);
 		String temp = serviceInterfaceName.substring(1, serviceInterfaceName.length());
 		serviceInterfaceFieldName = FileNameTool.firstLetterToLowerCase(temp);

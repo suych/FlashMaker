@@ -91,18 +91,18 @@ public class ControllerServiceImpl implements IControllerService {
 
 	private List<MethodStructure> assembleMethod() {
 		List<MethodStructure> result = new ArrayList<MethodStructure>();
-		// 1.List<DO类名> list()
+		// 1.String list()
 		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_LIST));
-		// 2.DO类名 getByPrimaryKey(String id);
-		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_GET_BY_PRIMARYKEY));
-		// 3.void save(DO类名 DO类名首字母小写);
-		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE));
-		// 4.void saveSelective(DO类名 DO类名首字母小写);
-		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_SAVE_SELECTIVE));
-		// 5.void updateByPrimaryKeySelective(DO类名 DO类名首字母小写);
-		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_UPDATE_BY_PRIMARYKEY_SELECTIVE));
-		// 6.void removeByPrimaryKeys(List<String> ids);
-		// result.add(factory.assemble(ConstantStrategyComponentName.SERVICE_IMPL_REMOVE_BY_PRIMARYKEYS));
+		// 2.String getByPrimaryKey(String id);
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_GET_BY_PRIMARYKEY));
+		// 3.String save(DO类名 DO类名首字母小写);
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_SAVE));
+		// 4.String saveSelective(DO类名 DO类名首字母小写);
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_SAVE_SELECTIVE));
+		// 5.String updateByPrimaryKeySelective(DO类名 DO类名首字母小写);
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_UPDATE_BY_PRIMARYKEY_SELECTIVE));
+		// 6.String removeByPrimaryKeys(List<String> ids);
+		result.add(factory.assemble(ConstantStrategyComponentName.CONTROLLER_REMOVE_BY_PRIMARYKEYS));
 		return result;
 	}
 

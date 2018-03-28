@@ -39,6 +39,7 @@ public class ConstantJavaSyntax {
 	public final static String FLOAT = "Float";
 	public final static String BYTE_ARRAY = "Byte[]";
 	public final static String LIST = "List";
+	public final static String ARRAYLIST = "ArrayList";
 	public final static String NULL = "null";
 	public final static String TRUE = "true";
 	public final static String FALSE = "false";
@@ -76,5 +77,7 @@ public class ConstantJavaSyntax {
 
 	public final static String RETURN_NEWLINE = "\r\n";
 	public final static String TAB = "\t";
+
+	public final static String TODO = "TODO";
 
 }

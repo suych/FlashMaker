@@ -4,16 +4,13 @@ import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REQUEST_MAPPI
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
 import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
-import static org.suych.fm.constant.ConstantJavaSyntax.INTEGER;
-import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_ANGLE_BRACKETS;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
-import static org.suych.fm.constant.ConstantJavaSyntax.LINE;
+import static org.suych.fm.constant.ConstantJavaSyntax.NEW;
 import static org.suych.fm.constant.ConstantJavaSyntax.NULL;
 import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN;
 import static org.suych.fm.constant.ConstantJavaSyntax.RETURN_NEWLINE;
-import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_ANGLE_BRACKETS;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
@@ -21,6 +18,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.STRING;
 import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
+import static org.suych.fm.constant.ConstantJavaSyntax.TODO;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,15 +33,13 @@ import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantParameterValue;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.constant.ConstantSuffix;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.controller.IControllerMethod;
 
-@Component(ConstantStrategyComponentName.CONTROLLER_LIST)
-public class ControllerMethodList implements IControllerMethod {
+@Component(ConstantStrategyComponentName.CONTROLLER_SAVE_SELECTIVE)
+public class ControllerMethodSaveSelective implements IControllerMethod {
 
 	@Override
 	public MethodStructure assemble() {
@@ -51,10 +47,9 @@ public class ControllerMethodList implements IControllerMethod {
 		// 注解
 		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
 		AnnotationStructure requestMapping = new AnnotationStructure();
-
 		// 注解属性
 		Map<String, String> attribute = new LinkedHashMap<String, String>();
-		String value = DOUBLE_QUOTATION + SLASH + ConstantMethodName.LIST + DOUBLE_QUOTATION;
+		String value = DOUBLE_QUOTATION + SLASH + ConstantMethodName.SAVE_SELECTIVE + DOUBLE_QUOTATION;
 		String method = LEFT_BRACE + SPACE + ConstantClassName.REQUEST_METHOD + POINT + ConstantParameterName.POST
 				+ COMMA + SPACE + ConstantClassName.REQUEST_METHOD + POINT + ConstantParameterName.GET + SPACE
 				+ RIGHT_BRACE;
@@ -68,7 +63,7 @@ public class ControllerMethodList implements IControllerMethod {
 		// 返回值
 		String returnValue = STRING;
 		// 方法名
-		String methodName = ConstantMethodName.LIST;
+		String methodName = ConstantMethodName.SAVE_SELECTIVE;
 		// 参数
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
 		ParamterStructure p1 = new ParamterStructure();
@@ -78,30 +73,14 @@ public class ControllerMethodList implements IControllerMethod {
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
 		// L1
-		methodBody.append(TAB + TAB + INTEGER + SPACE + ConstantParameterName.PAGE_NUM + SPACE + EQUAL_SIGN + SPACE
-				+ ConstantParameterValue.ONE + SEMICOLON + RETURN_NEWLINE);
+		methodBody.append(TAB + TAB + BaseInfo.getDomainClassName() + SPACE + BaseInfo.getDomainClassFieldName() + SPACE
+				+ EQUAL_SIGN + SPACE + NEW + SPACE + BaseInfo.getDomainClassName() + LEFT_BRACKET + RIGHT_BRACKET
+				+ SEMICOLON + SPACE + SLASH + SLASH + TODO + RETURN_NEWLINE);
 		// L2
-		methodBody.append(TAB + TAB + INTEGER + SPACE + ConstantParameterName.PAGE_SIZE + SPACE + EQUAL_SIGN + SPACE
-				+ ConstantParameterValue.TWENTY + SEMICOLON + RETURN_NEWLINE);
+		methodBody.append(TAB + TAB + BaseInfo.getServiceInterfaceFieldName() + POINT
+				+ ConstantMethodName.SAVE_SELECTIVE + LEFT_BRACKET + BaseInfo.getDomainClassFieldName() + RIGHT_BRACKET
+				+ SEMICOLON + RETURN_NEWLINE);
 		// L3
-		String domainClassName = BaseInfo.getDomainClassName();
-		String resultField = FileNameTool.firstLetterToLowerCase(domainClassName) + ConstantSuffix.S.getType();
-		methodBody.append(
-				TAB + TAB + ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS + domainClassName + RIGHT_ANGLE_BRACKETS
-						+ SPACE + resultField + SPACE + EQUAL_SIGN + SPACE + BaseInfo.getServiceInterfaceFieldName()
-						+ POINT + ConstantMethodName.LIST + LEFT_BRACKET + ConstantParameterName.PAGE_NUM + COMMA
-						+ SPACE + ConstantParameterName.PAGE_SIZE + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
-		// L4
-		methodBody.append(TAB + TAB + resultField + POINT + ConstantMethodName.GET_LIST + LEFT_BRACKET + RIGHT_BRACKET
-				+ POINT + ConstantMethodName.FOREACH + LEFT_BRACKET + LEFT_BRACKET + ConstantParameterName.N
-				+ RIGHT_BRACKET + SPACE + LINE + RIGHT_ANGLE_BRACKETS + SPACE + LEFT_BRACE + RETURN_NEWLINE);
-		// L5
-		methodBody.append(TAB + TAB + TAB + ConstantClassName.SYSTEM + POINT + ConstantParameterName.OUT + POINT
-				+ ConstantMethodName.PRINTLN + LEFT_BRACKET + ConstantParameterName.N + RIGHT_BRACKET + SEMICOLON
-				+ RETURN_NEWLINE);
-		// L6
-		methodBody.append(TAB + TAB + RIGHT_BRACE + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
-		// L7
 		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 
 		result.setAnnotation(annotation);

@@ -19,4 +19,6 @@ public class ConstantMethodName {
 	public final static String GET_LIST = "getList";
 	public final static String FOREACH = "forEach";
 	public final static String PRINTLN = "println";
+
+	public final static String ADD = "add";
 }
