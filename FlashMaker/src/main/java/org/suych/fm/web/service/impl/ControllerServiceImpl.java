@@ -115,7 +115,7 @@ public class ControllerServiceImpl implements IControllerService {
 		annotation1.setName(ANNOTATIONS_REST_CONTROLLER);
 		AnnotationStructure annotation2 = new AnnotationStructure();
 		annotation2.setName(ANNOTATIONS_REQUEST_MAPPING);
-		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getTableInfo().getTableName() + DOUBLE_QUOTATION);
+		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getControllerRequestMappingName() + DOUBLE_QUOTATION);
 		annotation.add(annotation1);
 		annotation.add(annotation2);
 		// 组装类结构

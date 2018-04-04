@@ -50,6 +50,9 @@ public class BaseInfo {
 	// Service接口作为字段时名称
 	private static String serviceInterfaceFieldName = "";
 
+	// Controller类请求映射名称
+	private static String controllerRequestMappingName = "";
+
 	// 数据库表信息
 	private static TableInfoModel tableInfo;
 
@@ -69,16 +72,19 @@ public class BaseInfo {
 	public static void init(String localPackage, TableInfoModel tableInfo) {
 		// 1.初始化本地包名
 		BaseInfo.localPackage = localPackage;
-		// 2.初始化文件名信息
-		initFileName(tableInfo.getTableName());
-		// 3.初始化本地包名信息
-		initLocalPackage();
-		// 4.初始化引入包路径信息
-		initImportPath();
-		// 5.初始化接口作为字段使用时的名称
-		initInterfaceFieldName();
-		// 6.初始化数据库表信息
+		// 2.初始化数据库表信息
 		BaseInfo.tableInfo = tableInfo;
+		// 3.初始化文件名信息
+		initFileName();
+		// 4.初始化本地包名信息
+		initLocalPackage();
+		// 5.初始化引入包路径信息
+		initImportPath();
+		// 6.初始化接口作为字段使用时的名称
+		initInterfaceFieldName();
+		// 7.初始化请求映射名称
+		initRequestMappingName();
+
 	}
 
 	/**
@@ -252,7 +258,17 @@ public class BaseInfo {
 		return domainClassFieldName;
 	}
 
-	private static void initFileName(String tableName) {
+	/**
+	 * 获得Controller类请求映射名称
+	 * 
+	 * @return
+	 */
+	public static String getControllerRequestMappingName() {
+		return controllerRequestMappingName;
+	}
+
+	private static void initFileName() {
+		String tableName = BaseInfo.getTableInfo().getTableName();
 		domainClassName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.DOMAIN_OBJECT);
 		mapperInterfaceName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
 		mapperXmlName = FileNameTool.assembleClassOrInterfaceName(tableName, ConstantSuffix.MAPPER);
@@ -285,4 +301,8 @@ public class BaseInfo {
 		serviceInterfaceFieldName = FileNameTool.firstLetterToLowerCase(temp);
 	}
 
+	private static void initRequestMappingName() {
+		controllerRequestMappingName = FileNameTool.firstLetterToLowerCase(
+				FileNameTool.assembleClassOrInterfaceName(BaseInfo.getTableInfo().getTableName(), ConstantSuffix.NULL));
+	}
 }

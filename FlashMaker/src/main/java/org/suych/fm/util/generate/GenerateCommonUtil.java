@@ -93,25 +93,24 @@ class GenerateCommonUtil {
 		Set<String> javaPackage = importPackage.getJavaPackage();
 		Set<String> threePartyPackage = importPackage.getThreePartyPackage();
 		Set<String> customPackage = importPackage.getCustomPackage();
-
-		if (javaPackage != null) {
+		if (javaPackage != null && javaPackage.size() > 0) {
 			for (String packageName : javaPackage) {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
-		}
-		if (threePartyPackage != null) {
 			fw.write(RETURN_NEWLINE);
+		}
+		if (threePartyPackage != null && threePartyPackage.size() > 0) {
 			for (String packageName : threePartyPackage) {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
-		}
-		if (customPackage != null) {
 			fw.write(RETURN_NEWLINE);
+		}
+		if (customPackage != null && customPackage.size() > 0) {
 			for (String packageName : customPackage) {
 				fw.write(IMPORT + SPACE + packageName + SEMICOLON + RETURN_NEWLINE);
 			}
+			fw.write(RETURN_NEWLINE);
 		}
-		fw.write(RETURN_NEWLINE);
 	}
 
 	/**
