@@ -17,10 +17,11 @@
     3.Mapper.xml(MyBatis的sql配置文件)    
     4.IService.java(Spring的Service接口文件)
     5.ServiceImpl.java(Service的实现类)
-    
+    6.Controller.java(Spring的Controller文件)
+    
 当前版本：<br>
 
-    0.0.6
+    0.1.0.Beta
 
 开发环境配置如下：<br>
 
