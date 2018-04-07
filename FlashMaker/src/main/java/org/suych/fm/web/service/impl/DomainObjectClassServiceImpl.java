@@ -92,7 +92,7 @@ public class DomainObjectClassServiceImpl implements IDomainObjectClassService {
 			fs.setComments(StringUtil.null2Empty(field.getComments()));
 			fs.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
 			fs.setJavaType(javaType);
-			fs.setName(StringUtil.null2Empty(field.getColumnName()));
+			fs.setName(StringUtil.null2Empty(field.getPropertyName()));
 			fieldStructure.add(fs);
 
 			// 组装引入包名

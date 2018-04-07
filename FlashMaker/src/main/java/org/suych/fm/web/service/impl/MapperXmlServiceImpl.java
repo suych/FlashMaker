@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.suych.fm.base.BaseInfo;
+import org.suych.fm.constant.ConstantMapperXml;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.generate.GenerateXmlUtil;
 import org.suych.fm.util.generate.model.xml.XmlCommonNode;
@@ -31,19 +32,21 @@ public class MapperXmlServiceImpl implements IMapperXmlService {
 
 	private List<XmlCommonNode> assembleNode() {
 		List<XmlCommonNode> result = new ArrayList<XmlCommonNode>();
-		// 1.基础列
+		// 1.resultMap定义
+		result.add(factory.assemble(ConstantStrategyComponentName.NODE_RESULT_MAP));
+		// 2.基础列
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_BASE_COLUMN));
-		// 2.list方法
+		// 3.list方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_LIST));
-		// 3.getById方法
+		// 4.getById方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_GET_BY_PRIMARYKEY));
-		// 4.save方法
+		// 5.save方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_SAVE));
-		// 5.saveSelective方法
+		// 6.saveSelective方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_SAVE_SELECTIVE));
-		// 6.updateById方法
+		// 7.updateById方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_UPDATE_BY_PRIMARYKEY_SELECTIVE));
-		// 7.removeByIds方法
+		// 8.removeByIds方法
 		result.add(factory.assemble(ConstantStrategyComponentName.NODE_REMOVE_BY_PRIMARYKEYS));
 		return result;
 	}
@@ -51,8 +54,8 @@ public class MapperXmlServiceImpl implements IMapperXmlService {
 	private XmlStructure assembleXml(List<XmlCommonNode> node) {
 		XmlStructure result = new XmlStructure();
 		result.setName(BaseInfo.getMapperXmlName());
-		result.setDocType("-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd");
-		result.setRootNodeName("mapper");
+		result.setDocType(ConstantMapperXml.DOCTYPE);
+		result.setRootNodeName(ConstantMapperXml.ROOT_NODE_NAME);
 		result.setNamespace(BaseInfo.getMapperInterfaceImportPath());
 		result.setNode(node);
 		return result;

@@ -36,7 +36,6 @@ import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantParameterValue;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.constant.ConstantSuffix;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -85,7 +84,7 @@ public class ControllerMethodList implements IControllerMethod {
 				+ ConstantParameterValue.TWENTY + SEMICOLON + RETURN_NEWLINE);
 		// L3
 		String domainClassName = BaseInfo.getDomainClassName();
-		String resultField = FileNameTool.firstLetterToLowerCase(domainClassName) + ConstantSuffix.S.getType();
+		String resultField = BaseInfo.getDomainClassFieldName() + ConstantSuffix.S.getType();
 		methodBody.append(
 				TAB + TAB + ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS + domainClassName + RIGHT_ANGLE_BRACKETS
 						+ SPACE + resultField + SPACE + EQUAL_SIGN + SPACE + BaseInfo.getServiceInterfaceFieldName()

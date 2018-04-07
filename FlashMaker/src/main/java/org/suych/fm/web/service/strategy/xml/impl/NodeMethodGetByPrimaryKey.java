@@ -20,6 +20,7 @@ import org.suych.fm.tool.DataTypeTool;
 import org.suych.fm.util.generate.model.xml.XmlCommonNode;
 import org.suych.fm.util.generate.model.xml.XmlIncludeNode;
 import org.suych.fm.util.generate.model.xml.XmlSelectNode;
+import org.suych.fm.web.model.model.PrimaryKeyInfoModel;
 import org.suych.fm.web.service.strategy.xml.INode;
 
 @Component(ConstantStrategyComponentName.NODE_GET_BY_PRIMARYKEY)
@@ -28,8 +29,8 @@ public class NodeMethodGetByPrimaryKey implements INode {
 	@Override
 	public XmlCommonNode assemble() {
 		XmlSelectNode result = new XmlSelectNode();
-		String primaryKeyDataType = DataTypeTool
-				.parseDataType2JdbcType(BaseInfo.getTableInfo().getPrimaryKeyDataType());
+		PrimaryKeyInfoModel primaryKey = BaseInfo.getTableInfo().getPrimaryKey();
+		String primaryKeyJdbcType = DataTypeTool.parseDataType2JdbcType(primaryKey.getDataType());
 
 		StringBuilder textOne = new StringBuilder();
 		textOne.append(RETURN_NEWLINE + TAB + TAB + ConstantSqlSyntax.SELECT);
@@ -41,9 +42,9 @@ public class NodeMethodGetByPrimaryKey implements INode {
 		textTwo.append(RETURN_NEWLINE + TAB + TAB + ConstantSqlSyntax.FROM + RETURN_NEWLINE);
 		textTwo.append(TAB + TAB + TAB + BaseInfo.getTableInfo().getTableName() + RETURN_NEWLINE);
 		textTwo.append(TAB + TAB + ConstantSqlSyntax.WHERE + RETURN_NEWLINE);
-		textTwo.append(TAB + TAB + TAB + BaseInfo.getTableInfo().getPrimaryKey() + SPACE + EQUAL_SIGN + SPACE
-				+ NUMBER_SIGN + LEFT_BRACE + ConstantParameterName.PRIMARY_KEY + COMMA + SPACE
-				+ ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + primaryKeyDataType + RIGHT_BRACE);
+		textTwo.append(TAB + TAB + TAB + primaryKey.getColumnName() + SPACE + EQUAL_SIGN + SPACE + NUMBER_SIGN
+				+ LEFT_BRACE + ConstantParameterName.PRIMARY_KEY + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE
+				+ EQUAL_SIGN + primaryKeyJdbcType + RIGHT_BRACE);
 
 		result.setId(ConstantMethodName.GET_BY_PRIMARYKEY);
 		result.setResultType(BaseInfo.getDomainClassName());

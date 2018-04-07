@@ -14,6 +14,7 @@ public interface FieldInfoConverter {
 	FieldInfoConverter INSTANCE = Mappers.getMapper(FieldInfoConverter.class);
 
 	@Mapping(target = "columnName", expression = "java(domain.getColumn_name().toLowerCase())")
+	@Mapping(target = "propertyName", expression = "java(domain.getColumn_name().toLowerCase())")
 	@Mapping(target = "dataType", source = "data_type")
 	@Mapping(target = "dataLength", source = "data_length")
 	@Mapping(target = "dataPrecision", source = "data_precision")

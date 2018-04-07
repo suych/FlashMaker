@@ -16,6 +16,9 @@ import org.suych.fm.util.generate.model.xml.XmlForeachNode;
 import org.suych.fm.util.generate.model.xml.XmlIfNode;
 import org.suych.fm.util.generate.model.xml.XmlIncludeNode;
 import org.suych.fm.util.generate.model.xml.XmlInsertNode;
+import org.suych.fm.util.generate.model.xml.XmlResultMapIdNode;
+import org.suych.fm.util.generate.model.xml.XmlResultMapNode;
+import org.suych.fm.util.generate.model.xml.XmlResultMapResultNode;
 import org.suych.fm.util.generate.model.xml.XmlSelectNode;
 import org.suych.fm.util.generate.model.xml.XmlSqlNode;
 import org.suych.fm.util.generate.model.xml.XmlStructure;
@@ -64,7 +67,9 @@ public class GenerateXmlUtil extends GenerateCommonUtil {
 
 		List<XmlCommonNode> node = xs.getNode();
 		for (XmlCommonNode xmlCommonNode : node) {
-			if (xmlCommonNode instanceof XmlSqlNode) {
+			if (xmlCommonNode instanceof XmlResultMapNode) {
+				assembleResultMapElement(mapperElement, xmlCommonNode);
+			} else if (xmlCommonNode instanceof XmlSqlNode) {
 				assembleSqlElement(mapperElement, xmlCommonNode);
 			} else if (xmlCommonNode instanceof XmlSelectNode) {
 				assembleSelectElement(mapperElement, xmlCommonNode);
@@ -77,6 +82,27 @@ public class GenerateXmlUtil extends GenerateCommonUtil {
 			}
 		}
 		return document;
+	}
+
+	private static void assembleResultMapElement(Element mapperElement, XmlCommonNode xmlCommonNode) {
+		XmlResultMapNode resultMapNode = (XmlResultMapNode) xmlCommonNode;
+		XmlResultMapIdNode idNode = resultMapNode.getIdNode();
+		List<XmlResultMapResultNode> resultNodes = resultMapNode.getResultNode();
+		Element resultMapElement = mapperElement.addElement("resultMap");
+		resultMapElement.addAttribute("id", resultMapNode.getId());
+		resultMapElement.addAttribute("type", resultMapNode.getType());
+
+		Element idElement = resultMapElement.addElement("id");
+		idElement.addAttribute("column", idNode.getColumn());
+		idElement.addAttribute("property", idNode.getProperty());
+		idElement.addAttribute("jdbcType", idNode.getJdbcType());
+
+		for (XmlResultMapResultNode resultNode : resultNodes) {
+			Element resultElement = resultMapElement.addElement("result");
+			resultElement.addAttribute("column", resultNode.getColumn());
+			resultElement.addAttribute("property", resultNode.getProperty());
+			resultElement.addAttribute("jdbcType", resultNode.getJdbcType());
+		}
 	}
 
 	private static void assembleSqlElement(Element mapperElement, XmlCommonNode xmlCommonNode) {

@@ -11,6 +11,7 @@ import org.suych.fm.web.mapper.TableInfoMapper;
 import org.suych.fm.web.model.domain.FieldInfoDO;
 import org.suych.fm.web.model.domain.TableBaseInfoDO;
 import org.suych.fm.web.model.model.FieldInfoModel;
+import org.suych.fm.web.model.model.PrimaryKeyInfoModel;
 import org.suych.fm.web.model.model.TableInfoModel;
 import org.suych.fm.web.service.ITableInfoService;
 
@@ -31,24 +32,31 @@ public class TableInfoServiceImpl implements ITableInfoService {
 		// 2.加载字段信息，增加字段排序OrderBy
 		List<FieldInfoDO> fieldInfoDOs = tableInfoMapper.listFieldInfo(tableName);
 		List<FieldInfoModel> fieldInfo = FieldInfoConverter.INSTANCE.listDomainToModel(fieldInfoDOs);
-
-		// 3.加载主键信息，如果查询主键为空，以fieldInfo第一个字段名称为主键
-		String primaryKey = StringUtil.null2Empty(tableInfoMapper.getPrimaryKey(tableName));
-		if ("".equals(primaryKey)) {
-			primaryKey = fieldInfo.get(0).getColumnName();
+		for (FieldInfoModel temp : fieldInfo) {
+			temp.setPropertyName(StringUtil.underlineToCamelAndFirstLetterToLowerCase(temp.getPropertyName()));
 		}
 
-		// 4.加载主键的字段类型
-		String primaryKeyDataType = "";
+		// 3.加载主键信息，如果查询主键为空，以fieldInfo第一个字段名称为主键
+		String primaryKeyName = StringUtil.null2Empty(tableInfoMapper.getPrimaryKey(tableName));
+		if ("".equals(primaryKeyName)) {
+			primaryKeyName = fieldInfo.get(0).getColumnName();
+		}
+
+		// 4.加载主键信息
+		PrimaryKeyInfoModel primaryKeyInfo = new PrimaryKeyInfoModel();
 		for (FieldInfoModel field : fieldInfo) {
-			if (field.getColumnName().equals(primaryKey.toLowerCase())) {
-				primaryKeyDataType = field.getDataType();
+			if (field.getColumnName().equalsIgnoreCase(primaryKeyName)) {
+				primaryKeyInfo.setColumnName(field.getColumnName());
+				primaryKeyInfo.setPropertyName(field.getPropertyName());
+				primaryKeyInfo.setDataType(field.getDataType());
+				primaryKeyInfo.setDataLength(field.getDataLength());
+				primaryKeyInfo.setDataPrecision(field.getDataPrecision());
+				primaryKeyInfo.setComments(field.getComments());
 				break;
 			}
 		}
 
-		result.setPrimaryKey(primaryKey.toLowerCase());
-		result.setPrimaryKeyDataType(primaryKeyDataType);
+		result.setPrimaryKey(primaryKeyInfo);
 		result.setField(fieldInfo);
 		return result;
 	}

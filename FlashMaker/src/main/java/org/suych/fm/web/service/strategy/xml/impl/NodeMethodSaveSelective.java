@@ -49,7 +49,8 @@ public class NodeMethodSaveSelective implements INode {
 		List<XmlIfNode> if1 = new ArrayList<XmlIfNode>();
 		for (FieldInfoModel field : fields) {
 			XmlIfNode ifNode = new XmlIfNode();
-			ifNode.setTest(field.getColumnName() + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
+			String propertyName = field.getPropertyName();
+			ifNode.setTest(propertyName + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
 			ifNode.setText(RETURN_NEWLINE + TAB + TAB + TAB + TAB + field.getColumnName() + COMMA + RETURN_NEWLINE + TAB
 					+ TAB + TAB);
 			if1.add(ifNode);
@@ -63,12 +64,12 @@ public class NodeMethodSaveSelective implements INode {
 		List<XmlIfNode> if2 = new ArrayList<XmlIfNode>();
 		for (FieldInfoModel field : fields) {
 			XmlIfNode ifNode = new XmlIfNode();
-			String fieldName = field.getColumnName();
+			String propertyName = field.getPropertyName();
 			String jdbcType = DataTypeTool.parseDataType2JdbcType(field.getDataType());
-			ifNode.setTest(fieldName + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
-			ifNode.setText(RETURN_NEWLINE + TAB + TAB + TAB + TAB + NUMBER_SIGN + LEFT_BRACE + fieldName + COMMA + SPACE
-					+ ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + jdbcType + RIGHT_BRACE + COMMA + RETURN_NEWLINE + TAB
-					+ TAB + TAB);
+			ifNode.setTest(propertyName + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
+			ifNode.setText(RETURN_NEWLINE + TAB + TAB + TAB + TAB + NUMBER_SIGN + LEFT_BRACE + propertyName + COMMA
+					+ SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + jdbcType + RIGHT_BRACE + COMMA + RETURN_NEWLINE
+					+ TAB + TAB + TAB);
 			if2.add(ifNode);
 		}
 		trim2.setPrefix(ConstantSqlSyntax.VALUES + SPACE + LEFT_BRACKET);

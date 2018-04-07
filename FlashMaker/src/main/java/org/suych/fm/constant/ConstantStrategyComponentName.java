@@ -9,6 +9,7 @@ public class ConstantStrategyComponentName {
 	public final static String MAPPER_UPDATE_BY_PRIMARYKEY_SELECTIVE = "mapper_updateByPrimaryKeySelective";
 	public final static String MAPPER_REMOVE_BY_PRIMARYKEYS = "mapper_removeByPrimaryKeys";
 
+	public final static String NODE_RESULT_MAP = "node_resultMap";
 	public final static String NODE_BASE_COLUMN = "node_baseColumn";
 	public final static String NODE_LIST = "node_list";
 	public final static String NODE_GET_BY_PRIMARYKEY = "node_getByPrimaryKey";

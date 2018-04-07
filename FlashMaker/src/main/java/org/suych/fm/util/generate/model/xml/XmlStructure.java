@@ -15,7 +15,7 @@ public class XmlStructure extends BaseStructure {
 	private String docType;
 
 	/**
-	 * 根节点
+	 * 根节点名称
 	 */
 	private String rootNodeName;
 

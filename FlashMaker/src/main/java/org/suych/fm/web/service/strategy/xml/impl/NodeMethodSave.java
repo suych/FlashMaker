@@ -39,8 +39,8 @@ public class NodeMethodSave implements INode {
 				+ RETURN_NEWLINE);
 		text.append(TAB + TAB + TAB + tableInfo.getTableName() + SPACE + LEFT_BRACKET);
 		for (int i = 0, j = fields.size(); i < j; i++) {
-			String fieldName = fields.get(i).getColumnName();
-			text.append(fieldName);
+			String columnName = fields.get(i).getColumnName();
+			text.append(columnName);
 			if (i != j - 1) {
 				text.append(COMMA + SPACE);
 			}
@@ -50,10 +50,10 @@ public class NodeMethodSave implements INode {
 		text.append(TAB + TAB + TAB + LEFT_BRACKET);
 		for (int i = 0, j = fields.size(); i < j; i++) {
 			FieldInfoModel field = fields.get(i);
-			String fieldName = field.getColumnName();
+			String propertyName = field.getPropertyName();
 			String jdbcType = DataTypeTool.parseDataType2JdbcType(field.getDataType());
-			text.append(NUMBER_SIGN + LEFT_BRACE + fieldName + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN
-					+ jdbcType + RIGHT_BRACE);
+			text.append(NUMBER_SIGN + LEFT_BRACE + propertyName + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE
+					+ EQUAL_SIGN + jdbcType + RIGHT_BRACE);
 			if (i != j - 1) {
 				text.append(COMMA + RETURN_NEWLINE + TAB + TAB + TAB + SPACE);
 			}

@@ -25,6 +25,7 @@ import org.suych.fm.util.generate.model.xml.XmlIfNode;
 import org.suych.fm.util.generate.model.xml.XmlTrimNode;
 import org.suych.fm.util.generate.model.xml.XmlUpdateNode;
 import org.suych.fm.web.model.model.FieldInfoModel;
+import org.suych.fm.web.model.model.PrimaryKeyInfoModel;
 import org.suych.fm.web.model.model.TableInfoModel;
 import org.suych.fm.web.service.strategy.xml.INode;
 
@@ -35,10 +36,9 @@ public class NodeMethodUpdateByPrimaryKeySelective implements INode {
 	public XmlCommonNode assemble() {
 		XmlUpdateNode result = new XmlUpdateNode();
 		TableInfoModel tableInfo = BaseInfo.getTableInfo();
-		String primaryKey = tableInfo.getPrimaryKey();
+		PrimaryKeyInfoModel primaryKey = BaseInfo.getTableInfo().getPrimaryKey();
 		List<FieldInfoModel> fields = tableInfo.getField();
-		String primaryKeyDataType = DataTypeTool
-				.parseDataType2JdbcType(BaseInfo.getTableInfo().getPrimaryKeyDataType());
+		String primaryKeyJdbcType = DataTypeTool.parseDataType2JdbcType(primaryKey.getDataType());
 
 		StringBuilder textOne = new StringBuilder();
 		textOne.append(RETURN_NEWLINE + TAB + TAB + ConstantSqlSyntax.UPDATE + RETURN_NEWLINE);
@@ -49,17 +49,18 @@ public class NodeMethodUpdateByPrimaryKeySelective implements INode {
 		XmlTrimNode trim1 = new XmlTrimNode();
 		List<XmlIfNode> if1 = new ArrayList<XmlIfNode>();
 		for (FieldInfoModel field : fields) {
-			if (field.getColumnName().equals(primaryKey)) {
+			if (field.getColumnName().equals(primaryKey.getColumnName())) {
 				continue;
 			}
 			XmlIfNode ifNode = new XmlIfNode();
-			String fieldName = field.getColumnName();
+			String columnName = field.getColumnName();
+			String propertyName = field.getPropertyName();
 			String jdbcType = DataTypeTool.parseDataType2JdbcType(field.getDataType());
 			StringBuilder text = new StringBuilder();
-			text.append(RETURN_NEWLINE + TAB + TAB + TAB + TAB + fieldName + SPACE + EQUAL_SIGN + SPACE + NUMBER_SIGN
-					+ LEFT_BRACE + fieldName + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + jdbcType
+			text.append(RETURN_NEWLINE + TAB + TAB + TAB + TAB + columnName + SPACE + EQUAL_SIGN + SPACE + NUMBER_SIGN
+					+ LEFT_BRACE + propertyName + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + jdbcType
 					+ RIGHT_BRACE + COMMA + RETURN_NEWLINE + TAB + TAB + TAB);
-			ifNode.setTest(field.getColumnName() + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
+			ifNode.setTest(propertyName + SPACE + EXCLAMATION_POINT + EQUAL_SIGN + SPACE + NULL);
 			ifNode.setText(text.toString());
 			if1.add(ifNode);
 		}
@@ -69,8 +70,9 @@ public class NodeMethodUpdateByPrimaryKeySelective implements INode {
 
 		StringBuilder textTwo = new StringBuilder();
 		textTwo.append(RETURN_NEWLINE + TAB + TAB + ConstantSqlSyntax.WHERE + RETURN_NEWLINE);
-		textTwo.append(TAB + TAB + TAB + primaryKey + SPACE + EQUAL_SIGN + SPACE + NUMBER_SIGN + LEFT_BRACE + primaryKey
-				+ COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN + primaryKeyDataType + RIGHT_BRACE);
+		textTwo.append(TAB + TAB + TAB + primaryKey.getColumnName() + SPACE + EQUAL_SIGN + SPACE + NUMBER_SIGN
+				+ LEFT_BRACE + primaryKey.getColumnName() + COMMA + SPACE + ConstantSqlSyntax.JDBCTYPE + EQUAL_SIGN
+				+ primaryKeyJdbcType + RIGHT_BRACE);
 
 		result.setId(ConstantMethodName.UPDATE_BY_PRIMARYKEY_SELECTIVE);
 		result.setParameterType(BaseInfo.getDomainClassName());

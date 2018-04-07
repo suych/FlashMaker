@@ -1,6 +1,7 @@
 package org.suych.fm.tool;
 
 import org.suych.fm.constant.ConstantSuffix;
+import org.suych.fm.util.StringUtil;
 
 /**
  * 文件名工具类
@@ -25,52 +26,16 @@ public class FileNameTool {
 				String[] tableNameArray = tableName.split("_");
 				for (String tableNamePiece : tableNameArray) {
 					// 驼峰写法命名
-					result += firstLetterToUpperCase(tableNamePiece);
+					result += StringUtil.firstLetterToUpperCase(tableNamePiece);
 				}
 			} else {
-				result = firstLetterToUpperCase(tableName);
+				result = StringUtil.firstLetterToUpperCase(tableName);
 			}
 
 		} else {
 			result = tableName.toUpperCase();
 		}
 		result += suffix.getType();
-		return result;
-	}
-
-	/**
-	 * 将字符串首字母大写
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public static String firstLetterToUpperCase(String param) {
-		String result = "";
-		if (param.length() > 1) {
-			String classNameFirstChar = param.substring(0, 1).toUpperCase(); // 类名首字母小写
-			String classNameOtherChar = param.substring(1);
-			result = classNameFirstChar + classNameOtherChar;
-		} else {
-			result = param.toUpperCase();
-		}
-		return result;
-	}
-
-	/**
-	 * 将字符串首字母小写
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public static String firstLetterToLowerCase(String param) {
-		String result = "";
-		if (param.length() > 1) {
-			String classNameFirstChar = param.substring(0, 1).toLowerCase(); // 类名首字母小写
-			String classNameOtherChar = param.substring(1);
-			result = classNameFirstChar + classNameOtherChar;
-		} else {
-			result = param.toUpperCase();
-		}
 		return result;
 	}
 

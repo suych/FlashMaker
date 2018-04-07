@@ -5,6 +5,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.POINT;
 import org.suych.fm.constant.ConstantJavaSyntax;
 import org.suych.fm.constant.ConstantSuffix;
 import org.suych.fm.tool.FileNameTool;
+import org.suych.fm.util.StringUtil;
 import org.suych.fm.web.model.model.TableInfoModel;
 
 public class BaseInfo {
@@ -295,14 +296,14 @@ public class BaseInfo {
 	}
 
 	private static void initInterfaceFieldName() {
-		domainClassFieldName = FileNameTool.firstLetterToLowerCase(domainClassName);
-		mapperInterfaceFieldName = FileNameTool.firstLetterToLowerCase(mapperInterfaceName);
+		domainClassFieldName = StringUtil.firstLetterToLowerCase(domainClassName);
+		mapperInterfaceFieldName = StringUtil.firstLetterToLowerCase(mapperInterfaceName);
 		String temp = serviceInterfaceName.substring(1, serviceInterfaceName.length());
-		serviceInterfaceFieldName = FileNameTool.firstLetterToLowerCase(temp);
+		serviceInterfaceFieldName = StringUtil.firstLetterToLowerCase(temp);
 	}
 
 	private static void initRequestMappingName() {
-		controllerRequestMappingName = FileNameTool.firstLetterToLowerCase(
+		controllerRequestMappingName = StringUtil.firstLetterToLowerCase(
 				FileNameTool.assembleClassOrInterfaceName(BaseInfo.getTableInfo().getTableName(), ConstantSuffix.NULL));
 	}
 }

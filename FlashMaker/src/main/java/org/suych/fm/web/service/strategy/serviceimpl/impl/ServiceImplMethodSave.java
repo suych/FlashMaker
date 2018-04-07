@@ -18,7 +18,6 @@ import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -43,12 +42,11 @@ public class ServiceImplMethodSave implements IServiceImplMethod {
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
 		ParamterStructure p1 = new ParamterStructure();
 		p1.setType(domainClassName);
-		p1.setName(FileNameTool.firstLetterToLowerCase(domainClassName));
+		p1.setName(BaseInfo.getDomainClassFieldName());
 		parameter.add(p1);
 
 		String methodBody = TAB + TAB + BaseInfo.getMapperInterfaceFieldName() + POINT + ConstantMethodName.SAVE
-				+ LEFT_BRACKET + FileNameTool.firstLetterToLowerCase(domainClassName) + RIGHT_BRACKET + SEMICOLON
-				+ RETURN_NEWLINE;
+				+ LEFT_BRACKET + BaseInfo.getDomainClassFieldName() + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE;
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

@@ -17,7 +17,7 @@ import org.suych.fm.web.model.model.FieldInfoModel;
 import org.suych.fm.web.service.strategy.xml.INode;
 
 @Component(ConstantStrategyComponentName.NODE_BASE_COLUMN)
-public class NodeMethodBaseColumn implements INode {
+public class NodeBaseColumn implements INode {
 
 	@Override
 	public XmlCommonNode assemble() {

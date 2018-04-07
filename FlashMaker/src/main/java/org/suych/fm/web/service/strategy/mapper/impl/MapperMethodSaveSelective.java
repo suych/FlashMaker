@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantStrategyComponentName;
-import org.suych.fm.tool.FileNameTool;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.mapper.IMapperMethod;
@@ -25,7 +24,7 @@ public class MapperMethodSaveSelective implements IMapperMethod {
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
 		ParamterStructure p1 = new ParamterStructure();
 		p1.setType(domainClassName);
-		p1.setName(FileNameTool.firstLetterToLowerCase(domainClassName));
+		p1.setName(BaseInfo.getDomainClassFieldName());
 		parameter.add(p1);
 
 		result.setReturnValue(VOID);

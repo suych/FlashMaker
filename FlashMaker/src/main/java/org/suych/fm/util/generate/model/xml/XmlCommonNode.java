@@ -9,8 +9,6 @@ public class XmlCommonNode {
 	 * id
 	 */
 	private String id;
-	
-	
 
 	@Override
 	public String toString() {
