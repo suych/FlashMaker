@@ -30,7 +30,7 @@ public class NodeMethodList implements INode {
 		textTwo.append(TAB + TAB + ConstantSqlSyntax.WHERE + RETURN_NEWLINE);
 		textTwo.append(TAB + TAB + TAB + "1=1");
 		result.setId(ConstantMethodName.LIST);
-		result.setResultType(BaseInfo.getDomainClassName());
+		result.setResultMap(BaseInfo.getDomainClassFieldName());
 		result.setTextOne(textOne.toString());
 		result.setInclude(include);
 		result.setTextTwo(textTwo.toString());

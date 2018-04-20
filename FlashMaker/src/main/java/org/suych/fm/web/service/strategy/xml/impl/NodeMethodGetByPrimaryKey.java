@@ -47,7 +47,7 @@ public class NodeMethodGetByPrimaryKey implements INode {
 				+ EQUAL_SIGN + primaryKeyJdbcType + RIGHT_BRACE);
 
 		result.setId(ConstantMethodName.GET_BY_PRIMARYKEY);
-		result.setResultType(BaseInfo.getDomainClassName());
+		result.setResultMap(BaseInfo.getDomainClassFieldName());
 		result.setTextOne(textOne.toString());
 		result.setInclude(include);
 		result.setTextTwo(textTwo.toString());

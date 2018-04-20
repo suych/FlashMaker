@@ -116,7 +116,7 @@ public class GenerateXmlUtil extends GenerateCommonUtil {
 		XmlSelectNode selectNode = (XmlSelectNode) xmlCommonNode;
 		Element selectElement = mapperElement.addElement("select");
 		selectElement.addAttribute("id", selectNode.getId());
-		selectElement.addAttribute("resultType", selectNode.getResultType());
+		selectElement.addAttribute("resultMap", selectNode.getResultMap());
 		selectElement.addText(selectNode.getTextOne());
 		if (selectNode.getInclude() != null) {
 			XmlIncludeNode includeNode = selectNode.getInclude();

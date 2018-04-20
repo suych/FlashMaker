@@ -1,1 +1,4 @@
 *.class
+FlashMaker/target/m2e-jee/web-resources/META-INF/maven/org.suych/FlashMaker/pom.properties
+FlashMaker/target/m2e-jee/web-resources/META-INF/MANIFEST.MF
+FlashMaker/target/classes/properties/jdbc.properties

@@ -8,7 +8,7 @@ public class XmlSelectNode extends XmlCommonNode {
 	/**
 	 * 返回类型
 	 */
-	private String resultType;
+	private String resultMap;
 
 	/**
 	 * sql语句第一部分
@@ -27,16 +27,16 @@ public class XmlSelectNode extends XmlCommonNode {
 
 	@Override
 	public String toString() {
-		return "XmlSelectNode [resultType=" + resultType + ", textOne=" + textOne + ", include=" + include
-				+ ", textTwo=" + textTwo + "]";
+		return "XmlSelectNode [resultMap=" + resultMap + ", textOne=" + textOne + ", include=" + include + ", textTwo="
+				+ textTwo + "]";
 	}
 
-	public String getResultType() {
-		return resultType;
+	public String getResultMap() {
+		return resultMap;
 	}
 
-	public void setResultType(String resultType) {
-		this.resultType = resultType;
+	public void setResultMap(String resultMap) {
+		this.resultMap = resultMap;
 	}
 
 	public String getTextOne() {
