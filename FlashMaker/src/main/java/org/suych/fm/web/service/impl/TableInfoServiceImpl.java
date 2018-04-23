@@ -3,6 +3,7 @@ package org.suych.fm.web.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.suych.fm.converter.FieldInfoConverter;
 import org.suych.fm.converter.TableInfoConverter;
@@ -18,6 +19,9 @@ import org.suych.fm.web.service.ITableInfoService;
 @Service
 public class TableInfoServiceImpl implements ITableInfoService {
 
+	@Value("${jdbc.username}")
+	private String jdbcUsername;
+
 	@Autowired
 	private TableInfoMapper tableInfoMapper;
 
@@ -30,7 +34,7 @@ public class TableInfoServiceImpl implements ITableInfoService {
 		TableInfoModel result = TableInfoConverter.INSTANCE.domainToModel(tableBaseInfoDO);
 
 		// 2.加载字段信息，增加字段排序OrderBy
-		List<FieldInfoDO> fieldInfoDOs = tableInfoMapper.listFieldInfo(tableName);
+		List<FieldInfoDO> fieldInfoDOs = tableInfoMapper.listFieldInfo(tableName, jdbcUsername.toUpperCase());
 		List<FieldInfoModel> fieldInfo = FieldInfoConverter.INSTANCE.listDomainToModel(fieldInfoDOs);
 		for (FieldInfoModel temp : fieldInfo) {
 			temp.setPropertyName(StringUtil.underlineToCamelAndFirstLetterToLowerCase(temp.getPropertyName()));

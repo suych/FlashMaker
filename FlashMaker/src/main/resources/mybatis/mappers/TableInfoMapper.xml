@@ -22,6 +22,8 @@
 			a.column_name = b.column_name 
 		AND 
 			a.table_name = #{tableName}
+		AND 
+			b.owner = #{userName}
 		ORDER BY 
 			b.COLUMN_ID
 	</select>
