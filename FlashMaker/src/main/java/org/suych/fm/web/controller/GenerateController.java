@@ -1,9 +1,10 @@
 package org.suych.fm.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.suych.fm.base.BaseInfo;
 import org.suych.fm.exception.TableNameEmptyException;
@@ -48,9 +49,8 @@ public class GenerateController {
 	 * @param tableName 生成DO类对应的数据库表名称，不可为空
 	 * @param localPackage 生成DO类所在的包，可为空
 	 */
-	@RequestMapping(value = "/generate/{tableName}/{localPackage}", method = { RequestMethod.GET,
-			RequestMethod.POST }, produces = "application/json;charset=UTF-8")
-	public void generate(@PathVariable("tableName") String tableName,
+	@GetMapping(value = "/generate/{tableName}/{localPackage}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String generate(@PathVariable("tableName") String tableName,
 			@PathVariable("localPackage") String localPackage) {
 		if ("".equals(StringUtil.null2Empty(tableName))) {
 			throw new TableNameEmptyException();
@@ -73,6 +73,7 @@ public class GenerateController {
 		// 8.生成Controller.java
 		controllerService.generate();
 		System.out.println("-------mission completed-------");
+		return "mission completed";
 	}
 
 }

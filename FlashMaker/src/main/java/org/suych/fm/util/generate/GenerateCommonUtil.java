@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.suych.fm.constant.ConfigureContainer;
 import org.suych.fm.constant.ConstantJavaSyntax;
 import org.suych.fm.constant.ConstantSuffix;
+import org.suych.fm.util.PropertyUtils;
 import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.model.BaseStructure;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
@@ -34,7 +34,10 @@ import org.suych.fm.util.generate.model.xml.XmlStructure;
 class GenerateCommonUtil {
 
 	protected static File getFile(BaseStructure handle) {
-		String outputPath = ConfigureContainer.constantMap.get("file.output.path");
+		String outputPath = PropertyUtils.getProperty("file.output.path");
+		// ConfigureContainer.constantMap.get("file.output.path");
+		// String outputPath =
+		// ConfigureContainer.constantMap.get("file.output.path");
 		String fileName = handle.getName();
 		String filePath = outputPath;
 		if (handle instanceof ClassStructure) {

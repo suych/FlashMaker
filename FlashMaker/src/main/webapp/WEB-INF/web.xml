@@ -26,8 +26,8 @@
 		<param-name>log4jRefreshInterval</param-name>
 		<param-value>1800000</param-value>
 	</context-param>
-	
-	<!--FlashMaker Banner-->
+
+	<!--FlashMaker Banner -->
 	<listener>
 		<listener-class>org.suych.fm.listener.BannerListener</listener-class>
 	</listener>
@@ -45,11 +45,6 @@
 	<!-- 防止spring内存溢出监听器 -->
 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-	</listener>
-
-	<!-- 加载properties文件 -->
-	<listener>
-		<listener-class>org.suych.fm.listener.ConfigurePropertiesListener</listener-class>
 	</listener>
 
 	<filter>
