@@ -23,6 +23,10 @@ public class ConstantJavaSyntax {
 	public final static String EXTENDS = "extends";
 	public final static String IMPLEMENTS = "implements";
 	public final static String NEW = "new";
+	public final static String TRY = "try";
+	public final static String CATCH = "catch";
+	public final static String IF = "if";
+	public final static String ELSE = "else";
 
 	// java类型
 	public final static String VOID = "void";

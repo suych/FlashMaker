@@ -21,4 +21,8 @@ public class ConstantMethodName {
 	public final static String PRINTLN = "println";
 
 	public final static String ADD = "add";
+
+	public final static String IS_DEBUG_ENABLED = "isDebugEnabled";
+	public final static String DEBUG = "debug";
+	public final static String ERROR = "error";
 }

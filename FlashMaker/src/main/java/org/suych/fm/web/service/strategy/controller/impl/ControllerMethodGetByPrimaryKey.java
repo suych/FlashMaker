@@ -26,16 +26,18 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
-import org.suych.fm.constant.ConstantClassName;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
+import org.suych.fm.constant.ConstantParameterType;
 import org.suych.fm.constant.ConstantParameterValue;
 import org.suych.fm.constant.ConstantStrategyComponentName;
+import org.suych.fm.util.PropertyUtils;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
 import org.suych.fm.web.service.strategy.controller.IControllerMethod;
+import org.suych.fm.web.service.strategy.controller.impl.common.LoggerBody;
 
 @Component(ConstantStrategyComponentName.CONTROLLER_GET_BY_PRIMARYKEY)
 public class ControllerMethodGetByPrimaryKey implements IControllerMethod {
@@ -49,8 +51,8 @@ public class ControllerMethodGetByPrimaryKey implements IControllerMethod {
 		// 注解属性
 		Map<String, String> attribute = new LinkedHashMap<String, String>();
 		String value = DOUBLE_QUOTATION + SLASH + ConstantMethodName.GET_BY_PRIMARYKEY + DOUBLE_QUOTATION;
-		String method = LEFT_BRACE + SPACE + ConstantClassName.REQUEST_METHOD + POINT + ConstantParameterName.POST
-				+ COMMA + SPACE + ConstantClassName.REQUEST_METHOD + POINT + ConstantParameterName.GET + SPACE
+		String method = LEFT_BRACE + SPACE + ConstantParameterType.REQUEST_METHOD + POINT + ConstantParameterName.POST
+				+ COMMA + SPACE + ConstantParameterType.REQUEST_METHOD + POINT + ConstantParameterName.GET + SPACE
 				+ RIGHT_BRACE;
 		String produces = ConstantParameterValue.PRODUCES_VALUE;
 		attribute.put(ConstantParameterName.VALUE, value);
@@ -66,25 +68,35 @@ public class ControllerMethodGetByPrimaryKey implements IControllerMethod {
 		// 参数
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
 		ParamterStructure p1 = new ParamterStructure();
-		p1.setType(ConstantClassName.HTTP_SERVLET_REQUEST);
+		p1.setType(ConstantParameterType.HTTP_SERVLET_REQUEST);
 		p1.setName(ConstantParameterName.REQUEST);
 		parameter.add(p1);
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
+		// 是否使用Logger
+		Boolean useLogger = Boolean.valueOf(PropertyUtils.getProperty("controller.logger.use"));
+		// Logger1~4
+		LoggerBody.addPrefix(methodBody, useLogger);
 		// L1
+		LoggerBody.addTab(methodBody, useLogger);
 		methodBody.append(TAB + TAB + STRING + SPACE + ConstantParameterName.PRIMARY_KEY + SPACE + EQUAL_SIGN + SPACE
 				+ DOUBLE_QUOTATION + DOUBLE_QUOTATION + SEMICOLON + SPACE + SLASH + SLASH + TODO + RETURN_NEWLINE);
 		// L2
+		LoggerBody.addTab(methodBody, useLogger);
 		methodBody.append(TAB + TAB + BaseInfo.getDomainClassName() + SPACE + BaseInfo.getDomainClassFieldName() + SPACE
 				+ EQUAL_SIGN + SPACE + BaseInfo.getServiceInterfaceFieldName() + POINT
 				+ ConstantMethodName.GET_BY_PRIMARYKEY + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 		// L3
-		methodBody.append(TAB + TAB + ConstantClassName.SYSTEM + POINT + ConstantParameterName.OUT + POINT
+		LoggerBody.addTab(methodBody, useLogger);
+		methodBody.append(TAB + TAB + ConstantParameterType.SYSTEM + POINT + ConstantParameterName.OUT + POINT
 				+ ConstantMethodName.PRINTLN + LEFT_BRACKET + BaseInfo.getDomainClassFieldName() + RIGHT_BRACKET
 				+ SEMICOLON + RETURN_NEWLINE);
 		// L4
+		LoggerBody.addTab(methodBody, useLogger);
 		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
+		// Logger5~7
+		LoggerBody.addSuffix(methodBody, useLogger);
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

@@ -28,4 +28,6 @@ public class ConstantParameterName {
 	public final static String METHOD = "method";
 	public final static String PRODUCES = "produces";
 
+	public final static String E = "e";
+
 }

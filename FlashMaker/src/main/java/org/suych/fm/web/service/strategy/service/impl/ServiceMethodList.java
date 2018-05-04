@@ -9,9 +9,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
-import org.suych.fm.constant.ConstantClassName;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
+import org.suych.fm.constant.ConstantParameterType;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.generate.model.java.MethodStructure;
 import org.suych.fm.util.generate.model.java.ParamterStructure;
@@ -23,7 +23,7 @@ public class ServiceMethodList implements IServiceMethod {
 	@Override
 	public MethodStructure assemble() {
 		MethodStructure result = new MethodStructure();
-		String returnValue = ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
+		String returnValue = ConstantParameterType.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
 				+ RIGHT_ANGLE_BRACKETS;
 
 		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();

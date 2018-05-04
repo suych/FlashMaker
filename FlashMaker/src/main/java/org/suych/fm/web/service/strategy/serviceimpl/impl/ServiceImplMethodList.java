@@ -26,10 +26,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
-import org.suych.fm.constant.ConstantClassName;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodName;
 import org.suych.fm.constant.ConstantParameterName;
+import org.suych.fm.constant.ConstantParameterType;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
@@ -54,7 +54,7 @@ public class ServiceImplMethodList implements IServiceImplMethod {
 		annotation.add(transactional);
 		annotation.add(override);
 		// 返回值
-		String returnValue = ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
+		String returnValue = ConstantParameterType.PAGE_INFO + LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName()
 				+ RIGHT_ANGLE_BRACKETS;
 		// 方法名
 		String methodName = ConstantMethodName.LIST;
@@ -71,7 +71,7 @@ public class ServiceImplMethodList implements IServiceImplMethod {
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
 		// 第一句
-		methodBody.append(TAB + TAB + ConstantClassName.PAGE_HELPER + POINT + ConstantMethodName.START_PAGE
+		methodBody.append(TAB + TAB + ConstantParameterType.PAGE_HELPER + POINT + ConstantMethodName.START_PAGE
 				+ LEFT_BRACKET + ConstantParameterName.PAGE_NUM + COMMA + SPACE + ConstantParameterName.PAGE_SIZE
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 		// 第二句
@@ -80,9 +80,9 @@ public class ServiceImplMethodList implements IServiceImplMethod {
 				+ BaseInfo.getMapperInterfaceFieldName() + POINT + ConstantMethodName.LIST + LEFT_BRACKET
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 		// 第三句
-		methodBody.append(TAB + TAB + RETURN + SPACE + NEW + SPACE + ConstantClassName.PAGE_INFO + LEFT_ANGLE_BRACKETS
-				+ BaseInfo.getDomainClassName() + RIGHT_ANGLE_BRACKETS + LEFT_BRACKET + ConstantParameterName.LIST
-				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
+		methodBody.append(TAB + TAB + RETURN + SPACE + NEW + SPACE + ConstantParameterType.PAGE_INFO
+				+ LEFT_ANGLE_BRACKETS + BaseInfo.getDomainClassName() + RIGHT_ANGLE_BRACKETS + LEFT_BRACKET
+				+ ConstantParameterName.LIST + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
