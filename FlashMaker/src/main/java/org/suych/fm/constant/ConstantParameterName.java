@@ -2,7 +2,7 @@ package org.suych.fm.constant;
 
 /**
  * 参数名常量
- * 入参/临时变量/注解属性
+ * 成员变量/入参/临时变量/注解属性
  */
 public class ConstantParameterName {
 
@@ -19,6 +19,8 @@ public class ConstantParameterName {
 	public final static String REQUEST = "request";
 	public final static String OUT = "out";
 	public final static String N = "n";
+
+	public final static String LOGGER = "LOGGER";
 
 	// 注解属性
 	public final static String READONLY = "readOnly";

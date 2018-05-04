@@ -36,10 +36,21 @@ public class FieldStructure extends BaseStructure {
 	 */
 	private String javaType;
 
+	/**
+	 * 是否初始化，默认不初始化
+	 */
+	private Boolean initialization = false;
+
+	/**
+	 * 初始化语句
+	 */
+	private String initializationValue;
+
 	@Override
 	public String toString() {
 		return "FieldStructure [comments=" + comments + ", annotation=" + annotation + ", accessModifier="
-				+ accessModifier + ", nonAccessModifier=" + nonAccessModifier + ", javaType=" + javaType + "]";
+				+ accessModifier + ", nonAccessModifier=" + nonAccessModifier + ", javaType=" + javaType
+				+ ", initialization=" + initialization + ", initializationValue=" + initializationValue + "]";
 	}
 
 	public String getComments() {
@@ -80,6 +91,22 @@ public class FieldStructure extends BaseStructure {
 
 	public void setJavaType(String javaType) {
 		this.javaType = javaType;
+	}
+
+	public Boolean getInitialization() {
+		return initialization;
+	}
+
+	public void setInitialization(Boolean initialization) {
+		this.initialization = initialization;
+	}
+
+	public String getInitializationValue() {
+		return initializationValue;
+	}
+
+	public void setInitializationValue(String initializationValue) {
+		this.initializationValue = initializationValue;
 	}
 
 }

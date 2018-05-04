@@ -35,9 +35,6 @@ class GenerateCommonUtil {
 
 	protected static File getFile(BaseStructure handle) {
 		String outputPath = PropertyUtils.getProperty("file.output.path");
-		// ConfigureContainer.constantMap.get("file.output.path");
-		// String outputPath =
-		// ConfigureContainer.constantMap.get("file.output.path");
 		String fileName = handle.getName();
 		String filePath = outputPath;
 		if (handle instanceof ClassStructure) {

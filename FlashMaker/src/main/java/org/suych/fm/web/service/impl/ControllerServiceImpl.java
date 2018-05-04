@@ -7,6 +7,7 @@ import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +17,12 @@ import org.springframework.stereotype.Service;
 import org.suych.fm.base.BaseInfo;
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantFieldAccessModifier;
+import org.suych.fm.constant.ConstantFieldNonAccessModifier;
 import org.suych.fm.constant.ConstantImportPackage;
+import org.suych.fm.constant.ConstantParameterName;
+import org.suych.fm.constant.ConstantParameterType;
 import org.suych.fm.constant.ConstantStrategyComponentName;
+import org.suych.fm.util.PropertyUtils;
 import org.suych.fm.util.generate.GenerateClassUtil;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
@@ -49,43 +54,80 @@ public class ControllerServiceImpl implements IControllerService {
 
 	private ImportPackageStructure assembleImportPackage() {
 		ImportPackageStructure result = new ImportPackageStructure();
-
-		Set<String> javaPackage = new LinkedHashSet<String>();
-		javaPackage.add(ConstantImportPackage.ARRAYLIST);
-		javaPackage.add(ConstantImportPackage.LIST);
-		javaPackage.add(ConstantImportPackage.HTTP_SERVLET_REQUEST);
-
-		Set<String> threePartyPackage = new LinkedHashSet<String>();
-		threePartyPackage.add(ConstantImportPackage.SPRING_AUTOWIRED);
-		threePartyPackage.add(ConstantImportPackage.SPRING_REQUEST_MAPPING);
-		threePartyPackage.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
-		threePartyPackage.add(ConstantImportPackage.SPRING_REST_CONTROLLER);
-
-		Set<String> customPackage = new LinkedHashSet<String>();
-		customPackage.add(ConstantImportPackage.PAGE_INFO);
-		customPackage.add(BaseInfo.getDomainClassImportPath()); // DO类包名
-		customPackage.add(BaseInfo.getServiceInterfaceImportPath());// Service接口包名
-
+		Set<String> javaPackage = assembleJavaPackage();
+		Set<String> threePartyPackage = assembleThreePartyPackage();
+		Set<String> customPackage = assembleCustomPackage();
 		result.setJavaPackage(javaPackage);
 		result.setThreePartyPackage(threePartyPackage);
 		result.setCustomPackage(customPackage);
+		return result;
+	}
 
+	private Set<String> assembleJavaPackage() {
+		Set<String> result = new LinkedHashSet<String>();
+		result.add(ConstantImportPackage.ARRAYLIST);
+		result.add(ConstantImportPackage.LIST);
+		result.add(ConstantImportPackage.HTTP_SERVLET_REQUEST);
+		return result;
+	}
+
+	private Set<String> assembleThreePartyPackage() {
+		Set<String> result = new LinkedHashSet<String>();
+		if (Boolean.valueOf(PropertyUtils.getProperty("controller.logger"))) {
+			result.add(ConstantImportPackage.SLF4J_LOGGER);
+			result.add(ConstantImportPackage.SLF4J_LOGGERFACTORY);
+		}
+		result.add(ConstantImportPackage.SPRING_AUTOWIRED);
+		result.add(ConstantImportPackage.SPRING_REQUEST_MAPPING);
+		result.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
+		result.add(ConstantImportPackage.SPRING_REST_CONTROLLER);
+		return result;
+	}
+
+	private Set<String> assembleCustomPackage() {
+		Set<String> result = new LinkedHashSet<String>();
+		result.add(ConstantImportPackage.PAGE_INFO);
+		result.add(BaseInfo.getDomainClassImportPath()); // DO类包名
+		result.add(BaseInfo.getServiceInterfaceImportPath());// Service接口包名
 		return result;
 	}
 
 	private List<FieldStructure> assembleField() {
 		List<FieldStructure> result = new ArrayList<FieldStructure>();
-		FieldStructure field = new FieldStructure();
+		// 组装LOGGER字段
+		if (Boolean.valueOf(PropertyUtils.getProperty("controller.logger"))) {
+			FieldStructure logger = assembleFieldLogger();
+			result.add(logger);
+		}
+		// 组装Service接口字段
+		FieldStructure field = assembleFieldServiceInterface();
+		result.add(field);
+		return result;
+	}
+
+	private FieldStructure assembleFieldLogger() {
+		FieldStructure result = new FieldStructure();
+		result.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
+		result.setNonAccessModifier(
+				Arrays.asList(ConstantFieldNonAccessModifier.STATIC, ConstantFieldNonAccessModifier.FINAL));
+		result.setJavaType(ConstantParameterType.LOGGER);
+		result.setName(ConstantParameterName.LOGGER);
+		result.setInitialization(Boolean.TRUE);
+		result.setInitializationValue("LoggerFactory.getLogger(" + BaseInfo.getControllerName() + ".class)");
+		return result;
+	}
+
+	private FieldStructure assembleFieldServiceInterface() {
+		FieldStructure result = new FieldStructure();
 		// 注解
 		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
 		AnnotationStructure autowired = new AnnotationStructure();
 		autowired.setName(ANNOTATIONS_AUTOWIRED);
 		annotation.add(autowired);
-		field.setAnnotation(annotation);
-		field.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
-		field.setJavaType(BaseInfo.getServiceInterfaceName());
-		field.setName(BaseInfo.getServiceInterfaceFieldName());
-		result.add(field);
+		result.setAnnotation(annotation);
+		result.setAccessModifier(ConstantFieldAccessModifier.PRIVATE);
+		result.setJavaType(BaseInfo.getServiceInterfaceName());
+		result.setName(BaseInfo.getServiceInterfaceFieldName());
 		return result;
 	}
 
@@ -109,15 +151,7 @@ public class ControllerServiceImpl implements IControllerService {
 	private ClassStructure assembleClass(ImportPackageStructure importPackage, List<FieldStructure> field,
 			List<MethodStructure> method) {
 		ClassStructure result = new ClassStructure();
-		// 注解
-		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
-		AnnotationStructure annotation1 = new AnnotationStructure();
-		annotation1.setName(ANNOTATIONS_REST_CONTROLLER);
-		AnnotationStructure annotation2 = new AnnotationStructure();
-		annotation2.setName(ANNOTATIONS_REQUEST_MAPPING);
-		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getControllerRequestMappingName() + DOUBLE_QUOTATION);
-		annotation.add(annotation1);
-		annotation.add(annotation2);
+		List<AnnotationStructure> annotation = assembleClassAnnotation();
 		// 组装类结构
 		result.setLocalPackage(BaseInfo.getControllerLocalPackage());
 		result.setImportPackage(importPackage);
@@ -127,6 +161,18 @@ public class ControllerServiceImpl implements IControllerService {
 		result.setField(field);
 		result.setMethod(method);
 
+		return result;
+	}
+
+	private List<AnnotationStructure> assembleClassAnnotation() {
+		List<AnnotationStructure> result = new ArrayList<AnnotationStructure>();
+		AnnotationStructure annotation1 = new AnnotationStructure();
+		annotation1.setName(ANNOTATIONS_REST_CONTROLLER);
+		AnnotationStructure annotation2 = new AnnotationStructure();
+		annotation2.setName(ANNOTATIONS_REQUEST_MAPPING);
+		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getControllerRequestMappingName() + DOUBLE_QUOTATION);
+		result.add(annotation1);
+		result.add(annotation2);
 		return result;
 	}
 }

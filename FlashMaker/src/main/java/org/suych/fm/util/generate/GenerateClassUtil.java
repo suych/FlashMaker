@@ -3,6 +3,7 @@ package org.suych.fm.util.generate;
 import static org.suych.fm.constant.ConstantJavaSyntax.ABSTRACT;
 import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
+import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.EXTENDS;
 import static org.suych.fm.constant.ConstantJavaSyntax.FINAL;
 import static org.suych.fm.constant.ConstantJavaSyntax.IMPLEMENTS;
@@ -157,7 +158,13 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 			String javaType = field.getJavaType();
 			// 字段名
 			String fieldName = field.getName();
-			fw.write(javaType + SPACE + fieldName + SEMICOLON + RETURN_NEWLINE);
+			fw.write(javaType + SPACE + fieldName);
+			// 是否初始化
+			if (field.getInitialization()) {
+				String initializationValue = field.getInitializationValue();
+				fw.write(SPACE + EQUAL_SIGN + SPACE + initializationValue);
+			}
+			fw.write(SEMICOLON + RETURN_NEWLINE);
 		}
 		fw.write(RETURN_NEWLINE);
 	}

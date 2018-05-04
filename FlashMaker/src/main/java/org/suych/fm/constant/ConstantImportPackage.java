@@ -11,6 +11,9 @@ public class ConstantImportPackage {
 
 	public final static String HTTP_SERVLET_REQUEST = "javax.servlet.http.HttpServletRequest";
 
+	public final static String SLF4J_LOGGER = "org.slf4j.Logger";
+	public final static String SLF4J_LOGGERFACTORY = "org.slf4j.LoggerFactory";
+
 	public final static String SPRING_AUTOWIRED = "org.springframework.beans.factory.annotation.Autowired";
 	public final static String SPRING_SERVICE = "org.springframework.stereotype.Service";
 	public final static String SPRING_TRANSACTIONAL = "org.springframework.transaction.annotation.Transactional";
