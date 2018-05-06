@@ -67,11 +67,7 @@ public class ControllerMethodSave implements IControllerMethod {
 		// 方法名
 		String methodName = ConstantMethodName.SAVE;
 		// 参数
-		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
-		ParamterStructure p1 = new ParamterStructure();
-		p1.setType(ConstantParameterType.HTTP_SERVLET_REQUEST);
-		p1.setName(ConstantParameterName.REQUEST);
-		parameter.add(p1);
+		List<ParamterStructure> parameter = assembleParameter();
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
 		// 是否使用Logger
@@ -87,11 +83,10 @@ public class ControllerMethodSave implements IControllerMethod {
 		LoggerBody.addTab(methodBody, useLogger);
 		methodBody.append(TAB + TAB + BaseInfo.getServiceInterfaceFieldName() + POINT + ConstantMethodName.SAVE
 				+ LEFT_BRACKET + BaseInfo.getDomainClassFieldName() + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
-		// L3
-		LoggerBody.addTab(methodBody, useLogger);
-		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 		// Logger5~7
 		LoggerBody.addSuffix(methodBody, useLogger);
+		// L3
+		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

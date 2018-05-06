@@ -1,9 +1,10 @@
 package org.suych.fm.web.service.impl;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_AUTOWIRED;
+import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_PATH_VARIABLE;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REQUEST_MAPPING;
+import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REQUEST_PARAM;
 import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REST_CONTROLLER;
-import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantParameterType;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.PropertyUtils;
+import org.suych.fm.util.StringUtil;
 import org.suych.fm.util.generate.GenerateClassUtil;
 import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
@@ -67,7 +69,11 @@ public class ControllerServiceImpl implements IControllerService {
 		Set<String> result = new LinkedHashSet<String>();
 		result.add(ConstantImportPackage.ARRAYLIST);
 		result.add(ConstantImportPackage.LIST);
-		result.add(ConstantImportPackage.HTTP_SERVLET_REQUEST);
+		// 是否使用自定义参数
+		if (!Boolean.valueOf(PropertyUtils.getProperty("controller.method.specifed.param.use"))) {
+			// 默认参数引入包
+			result.add(ConstantImportPackage.HTTP_SERVLET_REQUEST);
+		}
 		return result;
 	}
 
@@ -78,6 +84,25 @@ public class ControllerServiceImpl implements IControllerService {
 			result.add(ConstantImportPackage.SLF4J_LOGGERFACTORY);
 		}
 		result.add(ConstantImportPackage.SPRING_AUTOWIRED);
+		// 是否使用自定义参数
+		if (Boolean.valueOf(PropertyUtils.getProperty("controller.method.specifed.param.use"))) {
+			// 参数个数
+			int count = Integer.valueOf(PropertyUtils.getProperty("controller.method.specifed.param.count"));
+			// 注解名称
+			String[] annotationNameArray = StringUtil
+					.null2Empty(PropertyUtils.getProperty("controller.method.specifed.param.annotation.name"))
+					.split(",");
+			for (int i = 0; i < count; i++) {
+				String annotationName = annotationNameArray[i];
+				if (ANNOTATIONS_PATH_VARIABLE.equals(annotationName)) {
+					result.add(ConstantImportPackage.SPRING_PATH_VARIABLE);
+				} else if (ANNOTATIONS_REQUEST_PARAM.equals(annotationName)) {
+					result.add(ConstantImportPackage.SPRING_REQUEST_PARAM);
+				}
+			}
+
+		}
+
 		result.add(ConstantImportPackage.SPRING_REQUEST_MAPPING);
 		result.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
 		result.add(ConstantImportPackage.SPRING_REST_CONTROLLER);
@@ -94,7 +119,7 @@ public class ControllerServiceImpl implements IControllerService {
 
 	private List<FieldStructure> assembleField() {
 		List<FieldStructure> result = new ArrayList<FieldStructure>();
-		// 组装LOGGER字段
+		// 是否组装LOGGER字段
 		if (Boolean.valueOf(PropertyUtils.getProperty("controller.logger"))) {
 			FieldStructure logger = assembleFieldLogger();
 			result.add(logger);
@@ -170,7 +195,7 @@ public class ControllerServiceImpl implements IControllerService {
 		annotation1.setName(ANNOTATIONS_REST_CONTROLLER);
 		AnnotationStructure annotation2 = new AnnotationStructure();
 		annotation2.setName(ANNOTATIONS_REQUEST_MAPPING);
-		annotation2.setValue(DOUBLE_QUOTATION + SLASH + BaseInfo.getControllerRequestMappingName() + DOUBLE_QUOTATION);
+		annotation2.setValue(SLASH + BaseInfo.getControllerRequestMappingName());
 		result.add(annotation1);
 		result.add(annotation2);
 		return result;

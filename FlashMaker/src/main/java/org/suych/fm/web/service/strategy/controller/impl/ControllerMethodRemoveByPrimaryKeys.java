@@ -71,11 +71,7 @@ public class ControllerMethodRemoveByPrimaryKeys implements IControllerMethod {
 		// 方法名
 		String methodName = ConstantMethodName.REMOVE_BY_PRIMARYKEYS;
 		// 参数
-		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
-		ParamterStructure p1 = new ParamterStructure();
-		p1.setType(ConstantParameterType.HTTP_SERVLET_REQUEST);
-		p1.setName(ConstantParameterName.REQUEST);
-		parameter.add(p1);
+		List<ParamterStructure> parameter = assembleParameter();
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
 		// 是否使用Logger
@@ -98,11 +94,10 @@ public class ControllerMethodRemoveByPrimaryKeys implements IControllerMethod {
 		methodBody.append(TAB + TAB + BaseInfo.getServiceInterfaceFieldName() + POINT
 				+ ConstantMethodName.REMOVE_BY_PRIMARYKEYS + LEFT_BRACKET + ConstantParameterName.PRIMARY_KEY_S
 				+ RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
-		// L4
-		LoggerBody.addTab(methodBody, useLogger);
-		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 		// Logger5~7
 		LoggerBody.addSuffix(methodBody, useLogger);
+		// L4
+		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 
 		result.setAnnotation(annotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);

@@ -49,10 +49,9 @@ public class ControllerMethodList implements IControllerMethod {
 	@Override
 	public MethodStructure assemble() {
 		MethodStructure result = new MethodStructure();
-		// 注解
-		List<AnnotationStructure> annotation = new ArrayList<AnnotationStructure>();
+		// 方法注解
+		List<AnnotationStructure> methodAnnotation = new ArrayList<AnnotationStructure>();
 		AnnotationStructure requestMapping = new AnnotationStructure();
-
 		// 注解属性
 		Map<String, String> attribute = new LinkedHashMap<String, String>();
 		String value = DOUBLE_QUOTATION + SLASH + ConstantMethodName.LIST + DOUBLE_QUOTATION;
@@ -65,17 +64,13 @@ public class ControllerMethodList implements IControllerMethod {
 		attribute.put(ConstantParameterName.PRODUCES, DOUBLE_QUOTATION + produces + DOUBLE_QUOTATION);
 		requestMapping.setName(ANNOTATIONS_REQUEST_MAPPING);
 		requestMapping.setAttribute(attribute);
-		annotation.add(requestMapping);
+		methodAnnotation.add(requestMapping);
 		// 返回值
 		String returnValue = STRING;
 		// 方法名
 		String methodName = ConstantMethodName.LIST;
 		// 参数
-		List<ParamterStructure> parameter = new ArrayList<ParamterStructure>();
-		ParamterStructure p1 = new ParamterStructure();
-		p1.setType(ConstantParameterType.HTTP_SERVLET_REQUEST);
-		p1.setName(ConstantParameterName.REQUEST);
-		parameter.add(p1);
+		List<ParamterStructure> parameter = assembleParameter();
 		// 方法体
 		StringBuilder methodBody = new StringBuilder();
 		// 是否使用Logger
@@ -112,13 +107,12 @@ public class ControllerMethodList implements IControllerMethod {
 		// L6
 		LoggerBody.addTab(methodBody, useLogger);
 		methodBody.append(TAB + TAB + RIGHT_BRACE + RIGHT_BRACKET + SEMICOLON + RETURN_NEWLINE);
-		// L7
-		LoggerBody.addTab(methodBody, useLogger);
-		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 		// Logger5~7
 		LoggerBody.addSuffix(methodBody, useLogger);
+		// L7
+		methodBody.append(TAB + TAB + RETURN + SPACE + NULL + SEMICOLON + RETURN_NEWLINE);
 
-		result.setAnnotation(annotation);
+		result.setAnnotation(methodAnnotation);
 		result.setAccessModifier(ConstantMethodAccessModifier.PUBLIC);
 		result.setReturnValue(returnValue);
 		result.setName(methodName);

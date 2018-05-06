@@ -55,6 +55,8 @@ public class ConstantJavaSyntax {
 	public final static String ANNOTATIONS_TRANSACTIONAL = "@Transactional";
 	public final static String ANNOTATIONS_REST_CONTROLLER = "@RestController";
 	public final static String ANNOTATIONS_REQUEST_MAPPING = "@RequestMapping";
+	public final static String ANNOTATIONS_PATH_VARIABLE = "@PathVariable";
+	public final static String ANNOTATIONS_REQUEST_PARAM = "@RequestParam";
 
 	// 符号
 	public final static String POINT = ".";

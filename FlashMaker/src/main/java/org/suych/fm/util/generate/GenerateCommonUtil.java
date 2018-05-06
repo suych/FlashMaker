@@ -2,6 +2,7 @@ package org.suych.fm.util.generate;
 
 import static org.suych.fm.constant.ConstantJavaSyntax.ASTERISK;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
+import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.IMPORT;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_BRACKET;
@@ -133,42 +134,43 @@ class GenerateCommonUtil {
 	 * 
 	 * @param fw
 	 * @param annotations
-	 * @param indent
+	 * @param indent 缩进
 	 * @throws IOException
 	 */
 	protected static void printAnnotation(FileWriter fw, List<AnnotationStructure> annotations, String indent)
 			throws IOException {
-		if (annotations != null) {
-			for (AnnotationStructure annotation : annotations) {
-				String name = annotation.getName();
-				fw.write(indent + name);
-				String annotationValue = StringUtil.null2Empty(annotation.getValue());
-				if (!"".equals(annotationValue)) {
-					// 直接赋值
+		if (annotations == null) {
+			return;
+		}
+		for (AnnotationStructure annotation : annotations) {
+			String name = annotation.getName();
+			fw.write(indent + name);
+			String annotationValue = StringUtil.null2Empty(annotation.getValue());
+			if (!"".equals(annotationValue)) {
+				// 直接赋值
+				fw.write(LEFT_BRACKET);
+				fw.write(DOUBLE_QUOTATION + annotationValue + DOUBLE_QUOTATION);
+				fw.write(RIGHT_BRACKET);
+			} else {
+				// 属性赋值
+				Map<String, String> attribute = annotation.getAttribute();
+				if (attribute != null && attribute.size() > 0) {
 					fw.write(LEFT_BRACKET);
-					fw.write(annotationValue);
-					fw.write(RIGHT_BRACKET);
-				} else {
-					// 属性赋值
-					Map<String, String> attribute = annotation.getAttribute();
-					if (attribute != null && attribute.size() > 0) {
-						fw.write(LEFT_BRACKET);
-						int i = 0;
-						int entryNum = attribute.entrySet().size();
-						for (Entry<String, String> entry : attribute.entrySet()) {
-							String key = entry.getKey();
-							String value = entry.getValue();
-							fw.write(key + SPACE + EQUAL_SIGN + SPACE + value);
-							if (i != entryNum - 1) {
-								fw.write(COMMA + SPACE);
-							}
-							i++;
+					int i = 0;
+					int entryNum = attribute.entrySet().size();
+					for (Entry<String, String> entry : attribute.entrySet()) {
+						String key = entry.getKey();
+						String value = entry.getValue();
+						fw.write(key + SPACE + EQUAL_SIGN + SPACE + value);
+						if (i != entryNum - 1) {
+							fw.write(COMMA + SPACE);
 						}
-						fw.write(RIGHT_BRACKET);
+						i++;
 					}
+					fw.write(RIGHT_BRACKET);
 				}
-				fw.write(RETURN_NEWLINE);
 			}
+			fw.write(RETURN_NEWLINE);
 		}
 	}
 }

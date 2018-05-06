@@ -3,6 +3,7 @@ package org.suych.fm.util.generate;
 import static org.suych.fm.constant.ConstantJavaSyntax.ABSTRACT;
 import static org.suych.fm.constant.ConstantJavaSyntax.CLASS;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
+import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.EXTENDS;
 import static org.suych.fm.constant.ConstantJavaSyntax.FINAL;
@@ -27,6 +28,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.suych.fm.constant.ConstantClassAccessModifier;
 import org.suych.fm.constant.ConstantClassNonAccessModifier;
@@ -34,6 +37,8 @@ import org.suych.fm.constant.ConstantFieldAccessModifier;
 import org.suych.fm.constant.ConstantFieldNonAccessModifier;
 import org.suych.fm.constant.ConstantMethodAccessModifier;
 import org.suych.fm.constant.ConstantMethodNonAccessModifier;
+import org.suych.fm.util.StringUtil;
+import org.suych.fm.util.generate.model.java.AnnotationStructure;
 import org.suych.fm.util.generate.model.java.ClassStructure;
 import org.suych.fm.util.generate.model.java.FieldStructure;
 import org.suych.fm.util.generate.model.java.MethodStructure;
@@ -225,6 +230,10 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 					ParamterStructure parameter = parameters.get(i);
 					String javaType = parameter.getType();
 					String fieldName = parameter.getName();
+					if (parameter.getAnnotation() != null) {
+						printAnnotation4MethodParam(fw, parameter.getAnnotation(), "");
+						fw.write(SPACE);
+					}
 					fw.write(javaType + SPACE + fieldName);
 					if (i != j - 1) {
 						fw.write(COMMA + SPACE);
@@ -237,6 +246,48 @@ public class GenerateClassUtil extends GenerateCommonUtil {
 			fw.write(methodBody);
 			fw.write(TAB + RIGHT_BRACE + RETURN_NEWLINE);
 			fw.write(RETURN_NEWLINE);
+		}
+	}
+
+	/**
+	 * 打印方法参数的注解
+	 * 
+	 * @param fw
+	 * @param annotations
+	 * @param indent 缩进
+	 * @throws IOException
+	 */
+	protected static void printAnnotation4MethodParam(FileWriter fw, AnnotationStructure annotation, String indent)
+			throws IOException {
+		if (annotation == null) {
+			return;
+		}
+		String name = annotation.getName();
+		fw.write(indent + name);
+		String annotationValue = StringUtil.null2Empty(annotation.getValue());
+		if (!"".equals(annotationValue)) {
+			// 直接赋值
+			fw.write(LEFT_BRACKET);
+			fw.write(DOUBLE_QUOTATION + annotationValue + DOUBLE_QUOTATION);
+			fw.write(RIGHT_BRACKET);
+		} else {
+			// 属性赋值
+			Map<String, String> attribute = annotation.getAttribute();
+			if (attribute != null && attribute.size() > 0) {
+				fw.write(LEFT_BRACKET);
+				int i = 0;
+				int entryNum = attribute.entrySet().size();
+				for (Entry<String, String> entry : attribute.entrySet()) {
+					String key = entry.getKey();
+					String value = entry.getValue();
+					fw.write(key + SPACE + EQUAL_SIGN + SPACE + value);
+					if (i != entryNum - 1) {
+						fw.write(COMMA + SPACE);
+					}
+					i++;
+				}
+				fw.write(RIGHT_BRACKET);
+			}
 		}
 	}
 

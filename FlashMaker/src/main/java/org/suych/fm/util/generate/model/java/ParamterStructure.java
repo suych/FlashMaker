@@ -6,6 +6,11 @@ package org.suych.fm.util.generate.model.java;
 public class ParamterStructure {
 
 	/**
+	 * 注解
+	 */
+	private AnnotationStructure annotation;
+
+	/**
 	 * 参数类型
 	 */
 	private String type;
@@ -17,7 +22,15 @@ public class ParamterStructure {
 
 	@Override
 	public String toString() {
-		return "ParamterStructure [type=" + type + ", name=" + name + "]";
+		return "ParamterStructure [annotation=" + annotation + ", type=" + type + ", name=" + name + "]";
+	}
+
+	public AnnotationStructure getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(AnnotationStructure annotation) {
+		this.annotation = annotation;
 	}
 
 	public String getType() {

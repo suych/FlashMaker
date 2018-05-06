@@ -15,10 +15,13 @@ public class ConstantImportPackage {
 	public final static String SLF4J_LOGGERFACTORY = "org.slf4j.LoggerFactory";
 
 	public final static String SPRING_AUTOWIRED = "org.springframework.beans.factory.annotation.Autowired";
-	public final static String SPRING_SERVICE = "org.springframework.stereotype.Service";
-	public final static String SPRING_TRANSACTIONAL = "org.springframework.transaction.annotation.Transactional";
+	public final static String SPRING_PATH_VARIABLE = "org.springframework.web.bind.annotation.PathVariable";
+	public final static String SPRING_REQUEST_PARAM = "org.springframework.web.bind.annotation.RequestParam";
 	public final static String SPRING_REQUEST_MAPPING = "org.springframework.web.bind.annotation.RequestMapping";
 	public final static String SPRING_REQUEST_METHOD = "org.springframework.web.bind.annotation.RequestMethod";
+	public final static String SPRING_SERVICE = "org.springframework.stereotype.Service";
+	public final static String SPRING_TRANSACTIONAL = "org.springframework.transaction.annotation.Transactional";
+
 	public final static String SPRING_REST_CONTROLLER = "org.springframework.web.bind.annotation.RestController";
 
 	public final static String PAGE_INFO = "com.github.pagehelper.PageInfo";
