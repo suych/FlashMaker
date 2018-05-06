@@ -57,6 +57,10 @@ public class ConstantJavaSyntax {
 	public final static String ANNOTATIONS_REQUEST_MAPPING = "@RequestMapping";
 	public final static String ANNOTATIONS_PATH_VARIABLE = "@PathVariable";
 	public final static String ANNOTATIONS_REQUEST_PARAM = "@RequestParam";
+	public final static String ANNOTATIONS_POST_MAPPING = "@PostMapping";
+	public final static String ANNOTATIONS_GET_MAPPING = "@GetMapping";
+	public final static String ANNOTATIONS_PUT_MAPPING = "@PutMapping";
+	public final static String ANNOTATIONS_DELETE_MAPPING = "@DeleteMapping";
 
 	// 符号
 	public final static String POINT = ".";

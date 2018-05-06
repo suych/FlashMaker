@@ -21,8 +21,12 @@ public class ConstantImportPackage {
 	public final static String SPRING_REQUEST_METHOD = "org.springframework.web.bind.annotation.RequestMethod";
 	public final static String SPRING_SERVICE = "org.springframework.stereotype.Service";
 	public final static String SPRING_TRANSACTIONAL = "org.springframework.transaction.annotation.Transactional";
-
 	public final static String SPRING_REST_CONTROLLER = "org.springframework.web.bind.annotation.RestController";
+	public final static String SPRING_MEDIATYPE = "org.springframework.http.MediaType";
+	public final static String SPRING_GET_MAPPING = "org.springframework.web.bind.annotation.GetMapping";
+	public final static String SPRING_POST_MAPPING = "org.springframework.web.bind.annotation.PostMapping";
+	public final static String SPRING_PUT_MAPPING = "org.springframework.web.bind.annotation.PutMapping";
+	public final static String SPRING_DELETE_MAPPING = "org.springframework.web.bind.annotation.DeleteMapping";
 
 	public final static String PAGE_INFO = "com.github.pagehelper.PageInfo";
 	public final static String PAGE_HELPER = "com.github.pagehelper.PageHelper";

@@ -1,8 +1,6 @@
 package org.suych.fm.web.service.strategy.controller.impl;
 
-import static org.suych.fm.constant.ConstantJavaSyntax.ANNOTATIONS_REQUEST_MAPPING;
 import static org.suych.fm.constant.ConstantJavaSyntax.COMMA;
-import static org.suych.fm.constant.ConstantJavaSyntax.DOUBLE_QUOTATION;
 import static org.suych.fm.constant.ConstantJavaSyntax.EQUAL_SIGN;
 import static org.suych.fm.constant.ConstantJavaSyntax.INTEGER;
 import static org.suych.fm.constant.ConstantJavaSyntax.LEFT_ANGLE_BRACKETS;
@@ -17,15 +15,11 @@ import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_ANGLE_BRACKETS;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.RIGHT_BRACKET;
 import static org.suych.fm.constant.ConstantJavaSyntax.SEMICOLON;
-import static org.suych.fm.constant.ConstantJavaSyntax.SLASH;
 import static org.suych.fm.constant.ConstantJavaSyntax.SPACE;
 import static org.suych.fm.constant.ConstantJavaSyntax.STRING;
 import static org.suych.fm.constant.ConstantJavaSyntax.TAB;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.suych.fm.base.BaseInfo;
@@ -49,22 +43,8 @@ public class ControllerMethodList implements IControllerMethod {
 	@Override
 	public MethodStructure assemble() {
 		MethodStructure result = new MethodStructure();
-		// 方法注解
-		List<AnnotationStructure> methodAnnotation = new ArrayList<AnnotationStructure>();
-		AnnotationStructure requestMapping = new AnnotationStructure();
-		// 注解属性
-		Map<String, String> attribute = new LinkedHashMap<String, String>();
-		String value = DOUBLE_QUOTATION + SLASH + ConstantMethodName.LIST + DOUBLE_QUOTATION;
-		String method = LEFT_BRACE + SPACE + ConstantParameterType.REQUEST_METHOD + POINT + ConstantParameterName.POST
-				+ COMMA + SPACE + ConstantParameterType.REQUEST_METHOD + POINT + ConstantParameterName.GET + SPACE
-				+ RIGHT_BRACE;
-		String produces = ConstantParameterValue.PRODUCES_VALUE;
-		attribute.put(ConstantParameterName.VALUE, value);
-		attribute.put(ConstantParameterName.METHOD, method);
-		attribute.put(ConstantParameterName.PRODUCES, DOUBLE_QUOTATION + produces + DOUBLE_QUOTATION);
-		requestMapping.setName(ANNOTATIONS_REQUEST_MAPPING);
-		requestMapping.setAttribute(attribute);
-		methodAnnotation.add(requestMapping);
+		// 注解
+		List<AnnotationStructure> methodAnnotation = assembleMethodAnnotation(ConstantMethodName.LIST);
 		// 返回值
 		String returnValue = STRING;
 		// 方法名

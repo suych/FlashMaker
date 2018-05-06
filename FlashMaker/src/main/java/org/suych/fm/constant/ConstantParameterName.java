@@ -14,8 +14,6 @@ public class ConstantParameterName {
 
 	public final static String LIST = "list";
 
-	public final static String POST = "POST";
-	public final static String GET = "GET";
 	public final static String REQUEST = "request";
 	public final static String OUT = "out";
 	public final static String N = "n";

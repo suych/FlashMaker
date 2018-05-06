@@ -22,6 +22,7 @@ import org.suych.fm.constant.ConstantFieldNonAccessModifier;
 import org.suych.fm.constant.ConstantImportPackage;
 import org.suych.fm.constant.ConstantParameterName;
 import org.suych.fm.constant.ConstantParameterType;
+import org.suych.fm.constant.ConstantParameterValue;
 import org.suych.fm.constant.ConstantStrategyComponentName;
 import org.suych.fm.util.PropertyUtils;
 import org.suych.fm.util.StringUtil;
@@ -84,6 +85,37 @@ public class ControllerServiceImpl implements IControllerService {
 			result.add(ConstantImportPackage.SLF4J_LOGGERFACTORY);
 		}
 		result.add(ConstantImportPackage.SPRING_AUTOWIRED);
+		result.add(ConstantImportPackage.SPRING_MEDIATYPE);
+
+		// 方法http类型
+		String httpTypeSwitch = StringUtil.null2Empty(PropertyUtils.getProperty("controller.method.http.type"));
+		if ("".equals(httpTypeSwitch)) {
+			// 默认@RequestMethod
+			result.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
+		} else {
+			String[] httpType = httpTypeSwitch.split(",");
+			int httpTypeLength = httpType.length;
+			if (httpTypeLength > 1) {
+				// 多个method属性@RequestMethod
+				result.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
+			} else {
+				// 配置单个method属性
+				if (ConstantParameterValue.GET.equalsIgnoreCase(httpType[0])) {
+					// @GetMapping
+					result.add(ConstantImportPackage.SPRING_GET_MAPPING);
+				} else if (ConstantParameterValue.POST.equalsIgnoreCase(httpType[0])) {
+					// @PostMapping
+					result.add(ConstantImportPackage.SPRING_POST_MAPPING);
+				} else if (ConstantParameterValue.PUT.equalsIgnoreCase(httpType[0])) {
+					// @PutMapping
+					result.add(ConstantImportPackage.SPRING_PUT_MAPPING);
+				} else if (ConstantParameterValue.DELETE.equalsIgnoreCase(httpType[0])) {
+					// @DeleteMapping
+					result.add(ConstantImportPackage.SPRING_DELETE_MAPPING);
+				}
+			}
+		}
+
 		// 是否使用自定义参数
 		if (Boolean.valueOf(PropertyUtils.getProperty("controller.method.specifed.param.use"))) {
 			// 参数个数
@@ -104,7 +136,6 @@ public class ControllerServiceImpl implements IControllerService {
 		}
 
 		result.add(ConstantImportPackage.SPRING_REQUEST_MAPPING);
-		result.add(ConstantImportPackage.SPRING_REQUEST_METHOD);
 		result.add(ConstantImportPackage.SPRING_REST_CONTROLLER);
 		return result;
 	}

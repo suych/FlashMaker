@@ -12,6 +12,12 @@ public class ConstantParameterValue {
 	/**
 	 * 注解produces的值
 	 */
-	public final static String PRODUCES_VALUE = "application/json;charset=UTF-8";
+	public final static String APPLICATION_JSON_UTF8_VALUE = "MediaType.APPLICATION_JSON_UTF8_VALUE";
+
+	// http请求类型
+	public final static String POST = "POST";
+	public final static String GET = "GET";
+	public final static String PUT = "PUT";
+	public final static String DELETE = "DELETE";
 
 }
