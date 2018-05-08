@@ -13,7 +13,7 @@ public class BannerListener implements ServletContextListener {
 		System.out.println(" |     \\   |  |__/ __ \\_\\___ \\|   Y  \\/    Y    \\/ __ \\|    <\\  ___/|  | \\/");
 		System.out.println(" \\___  /   |____(____  /____  >___|  /\\____|__  (____  /__|_ \\\\___  >__|   ");
 		System.out.println("     \\/              \\/     \\/     \\/         \\/     \\/     \\/    \\/       ");
-		System.out.println(":: Flash Maker :: :: Make business development easier :: :: :: (v0.1.0.Beta)");
+		System.out.println(":: Flash Maker :: :: Make business development easier :: :: :: (v0.3.0.Beta)");
 	}
 
 	@Override
